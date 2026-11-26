@@ -19,6 +19,7 @@ const ROOMS_JSON_PATH: String = "res://data/rooms.json"
 
 var _rooms_by_id: Dictionary = {}
 var _elapsed: float = 0.0
+var _map_icons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -219,29 +220,41 @@ func _on_map_canvas_draw() -> void:
 		var border_col: Color = UITokens.PALE_GOLD if is_current else Color(UITokens.WARM_SAND, 0.75)
 		map_canvas.draw_rect(sr, border_col, false, 4.0 if is_current else 2.0)
 
-		# Shrine marker (pale gold diamond)
+		# DROP-002 ink map icons (32 px); drawn shapes remain as a fallback.
 		if bool(rdata.get("has_shrine", false)):
 			var sp: Vector2 = Vector2(sr.position.x + 20.0, sr.position.y + 20.0)
-			var diamond := PackedVector2Array([
-				sp + Vector2(0.0, -9.0),
-				sp + Vector2(9.0, 0.0),
-				sp + Vector2(0.0, 9.0),
-				sp + Vector2(-9.0, 0.0),
-			])
-			map_canvas.draw_colored_polygon(diamond, UITokens.PALE_GOLD)
+			var shrine_icon: Texture2D = _map_icon("shrine")
+			if shrine_icon != null:
+				map_canvas.draw_texture_rect(shrine_icon, Rect2(sp - Vector2(16.0, 16.0), Vector2(32.0, 32.0)), false)
+			else:
+				var diamond := PackedVector2Array([
+					sp + Vector2(0.0, -9.0),
+					sp + Vector2(9.0, 0.0),
+					sp + Vector2(0.0, 9.0),
+					sp + Vector2(-9.0, 0.0),
+				])
+				map_canvas.draw_colored_polygon(diamond, UITokens.PALE_GOLD)
 
-		# Boss marker (desert red / gold crown diamond)
 		if bool(rdata.get("has_boss", false)):
 			var bp: Vector2 = Vector2(sr.end.x - 20.0, sr.position.y + 20.0)
-			var boss_col: Color = UITokens.EMBER if not GameState.is_boss_defeated("boss_spire_warden") else Color(UITokens.MUD_BRICK, 0.65)
-			map_canvas.draw_circle(bp, 9.0, boss_col)
-			map_canvas.draw_arc(bp, 11.0, 0.0, TAU, 16, UITokens.PALE_GOLD, 2.0, true)
+			var defeated: bool = GameState.is_boss_defeated("boss_spire_warden")
+			var boss_icon: Texture2D = _map_icon("boss")
+			if boss_icon != null:
+				var tint: Color = Color(1.0, 1.0, 1.0, 0.5) if defeated else Color.WHITE
+				map_canvas.draw_texture_rect(boss_icon, Rect2(bp - Vector2(16.0, 16.0), Vector2(32.0, 32.0)), false, tint)
+			else:
+				var boss_col: Color = UITokens.EMBER if not defeated else Color(UITokens.MUD_BRICK, 0.65)
+				map_canvas.draw_circle(bp, 9.0, boss_col)
+				map_canvas.draw_arc(bp, 11.0, 0.0, TAU, 16, UITokens.PALE_GOLD, 2.0, true)
 
-		# Current player pulse dot
 		if is_current:
 			var pulse_r: float = 8.0 + 3.0 * sin(_elapsed * 4.0)
-			map_canvas.draw_circle(sr.get_center(), pulse_r + 4.0, Color(UITokens.PALE_GOLD, 0.25))
-			map_canvas.draw_circle(sr.get_center(), 6.5, UITokens.PALE_GOLD)
+			map_canvas.draw_circle(sr.get_center(), pulse_r + 6.0, Color(UITokens.PALE_GOLD, 0.25))
+			var player_icon: Texture2D = _map_icon("player")
+			if player_icon != null:
+				map_canvas.draw_texture_rect(player_icon, Rect2(sr.get_center() - Vector2(16.0, 16.0), Vector2(32.0, 32.0)), false)
+			else:
+				map_canvas.draw_circle(sr.get_center(), 6.5, UITokens.PALE_GOLD)
 
 		# Room area title caption inside wide enough cells
 		var title_key: String = str(rdata.get("title_key", ""))
@@ -269,3 +282,13 @@ func _color_for_area(area_id: String) -> Color:
 			return Color(UITokens.GLASS_TEAL, 0.55)
 		_:
 			return Color(UITokens.NIGHT_INDIGO, 0.75)
+
+
+
+func _map_icon(icon_name: String) -> Texture2D:
+	if _map_icons.has(icon_name):
+		return _map_icons[icon_name] as Texture2D
+	var path: String = "res://assets/final/ui/map_icon_%s.png" % icon_name
+	var tex: Texture2D = load(path) as Texture2D if ResourceLoader.exists(path) else null
+	_map_icons[icon_name] = tex
+	return tex

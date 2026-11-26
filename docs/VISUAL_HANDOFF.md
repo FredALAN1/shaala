@@ -71,14 +71,14 @@ This is the living handoff queue between **Gemini (Visual Design Lead & Instruct
 
 | Drop ID | Title | Milestone | Status | Notes |
 | :--- | :--- | :---: | :---: | :--- |
-| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `READY_FOR_TECH` *(P2/P3 fonts & all 34 UI PNGs delivered by Gemini)* | Fred approved P0 & D1–D6 (2026-11-26). 9 OFL font/licence files + 34 PNG-32 UI ornaments committed under `assets/final/`; `scripts/` & `scenes/` untouched for clean P1 rebase. |
+| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `VERIFIED` *(P1–P3 integrated; map-in-notebook + atlas packing open)* | Fred approved P0 & D1–D6 (2026-11-26). 9 OFL font/licence files + 34 PNG-32 UI ornaments integrated by tech: title, HUD, dialogue, vignette, notebook pause, journal, confirm slip. Gate 25/25 PASS. |
 | **`DROP-001`** | M1 Baseline Painterly Visual Kit & 1:1 Sprite Replacement Queue | M1 | `BASELINE_VERIFIED` *(Queue Open for Final PNGs)* | Shaders, `ShaalaPalette`, and procedural silhouettes verified live in Godot 4.3; awaiting Batch 1A–1E final PNG & OFL font drops from Gemini. |
 
 ---
 
 ## DROP-002 — UI Identity "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `READY_FOR_TECH` → **Next actor: Claude Opus (P2/P3 integration after P1)**
+- **Status:** `VERIFIED` (P1–P3, 2026-11-26) → **Next actor: Fred (playtest review)**; open tech follow-ups listed in §8.
 - **Date:** 2026-11-26
 - **Milestone:** M1 (P0–P3), M2 (P4: 2034 skin, Time Shift, Grey Eye)
 - **Visual Lead:** Gemini
@@ -248,13 +248,23 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 
 ### 7. Integration Checklist for Claude Opus
 - [x] P1 (no art needed, done 2026-11-26): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
-- [ ] P2: fonts discovered per role in `ar` (RTL) and `en` (LTR), zero tofu; title, HUD, prompts, dialogue, vignette rebuilt per plan §6.1–6.4.
-- [ ] P3: notebook pause, journal, map, settings, confirm slip per plan §6.5–6.9.
-- [ ] Import presets applied (`Lossless`, 9-slice margins), atlas packed, UI draw calls within budget (plan §9).
-- [ ] `python3 tools/verify_m1.py --strict`, `godot --headless --path . --import --quit`, `godot --headless --path . --quit-after 3` all 0 errors.
-- [ ] Before/after screenshots added next to `docs/ui_audit/`; status → `VERIFIED`.
+- [x] P2: fonts discovered per role in `ar` (RTL) and `en` (LTR), zero tofu; title, HUD, prompts, dialogue, vignette rebuilt per plan §6.1–6.4.
+- [x] P3: notebook pause, journal, settings, confirm slip per plan §6.5–6.9. *Map: DROP-002 icons wired; moving the map onto the notebook page (§6.7) is a follow-up.*
+- [x] Import presets applied (`Lossless`, mipmaps only on notebook/paper/logo/ribbons, 9-slice margins from §6.6). *Atlas packing deferred (see §8).*
+- [x] `python3 tools/verify_m1.py --strict`, `godot --headless --path . --import --quit`, `godot --headless --path . --quit-after 3` all 0 errors.
+- [x] Before/after screenshots added in `docs/ui_audit/after/`; status → `VERIFIED`.
 
 ### 8. Technical Sign-Off Notes (Claude Opus)
+- **2026-11-26 (P2/P3 integration):**
+  - **Fonts:** roles resolve to `FontVariation`s over the bundled OFL files (display wght 600, body/hand 400) with the body font + system chain as glyph fallback; zero tofu on the §2 test strings in `ar` and `en`. Font discovery also matches `*.ttf.import` so exported builds find them. English role sizes use the 0.88 optical scale.
+  - **Title (§6.1):** card removed; `logo_shaala.png` on the start third, Ruqaa subtitle, furjat divider, box-free text menu (warm sand 70%, pale gold + `focus_ember.png` with a capped flicker on focus), `العربية | English` toggle bottom end-corner. Skyline moved to the end side so it never crosses the menu.
+  - **HUD (§6.2):** `hp_ember_full/ash.png` (36×48), flame strip = `TextureProgressBar` + `flame_strip_fill_t0..t2` with `flame_strip_frame.png` overlay, `flip_h` in RTL so notches stay at 35/70 from the start edge (verified in both directions); tier whisper beside the strip; area banner Reem Kufi 96 with shaping-safe write-on + furjat rule; prompt = input glyph (`InputGlyphs`, kbm atlas cells from §6.6) + verb on a soft radial scrim; toasts bottom start-corner with furjat bullet; boss bar `boss_bar_frame/fill.png`, name Reem Kufi 64, no numbers unless "Show numbers". HUD hides during dialogue/memories.
+  - **Dialogue (§6.3):** letterbox bars (6%), `scrim_bottom.png` 9-slice-free stretch, speaker Reem Kufi 30 ember, line Readex 36 start-aligned, pulsing ember advance mark, no counter / no "press to continue".
+  - **Vignette (§6.4):** full screen, lines centered in Aref Ruqaa 52 with write-on, ability card (Reem Kufi 96) as its own final beat.
+  - **Notebook (§6.5–§6.9):** `notebook_spread.png` panel, menu on the start page (Ruqaa heading, Resume, furjat, Save & Quit in `INK_DESTRUCTIVE_PAPER`), five ribbons on the end page (`الدفتر` nearest the spine) with horizontal labels on the woven band, ink-on-paper theme (furjat toggles, Sadu slider track + ember knob), Journal pages on `paper_scrap_a/b/c.png` in Ruqaa (Readex at text scale ≥125%), missing pages = `torn_stub.png` flush on the spine (mirrored in LTR), Save & Quit asks on `paper_slip.png`.
+  - **Fixed along the way:** `align_reading_edge` now uses `HORIZONTAL_ALIGNMENT_LEFT` (Godot mirrors it under RTL, so RIGHT was putting text on the wrong edge).
+  - **Open follow-ups (tech):** move the map onto the notebook page as an ink map (§6.7; icons already wired), blurred world still behind the notebook, sand-wipe room transitions and save ember (§6.10), packing small ornaments into `ui_atlas.png`.
+  - **Gate:** `verify_m1.py --strict` 25/25 PASS (new `UI_IDENTITY_P2_P3` check), Godot import and boot clean. Screens: `docs/ui_audit/after/`.
 - **2026-11-26 (P1 code):** `UITokens`, font roles, Arabic-Indic digits, 4 new accessibility settings, HUD/title/vignette behaviour per plan §6.1–6.4, em-dash copy pass, capped ambient redraw. Gate: `verify_m1.py --strict` 24/24 PASS, Godot import and boot clean. Fonts from §2 will be picked up by role automatically when dropped in `assets/final/fonts/`.
 - **2026-11-26 (P0 review):** Style frames reviewed against the plan. All five Gemini adjustments in §6.4 accepted and folded into `UI_DESIGN_PLAN.md` (dual-surface tokens, 128 px ribbons, 30% wounded HUD floor, Ruqaa line-height 1.95–2.0 + Readex fallback, start-edge fill). Open notes for Fred: real-landmark-in-ruins depiction in `sf02`, and `sf02` world art style differs from the painterly direction (HUD layer only is approved as reference).
 - **2026-11-26:** Brief and plan written; current UI audited from live Godot 4.3 renders (`docs/ui_audit/`). No code changed yet.

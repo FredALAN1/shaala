@@ -2697,6 +2697,43 @@ class M1Verifier:
         if problems == 0:
             self.add(sec, "PASS", "UI_IDENTITY_P1", "Notebook & Ember P1 contracts hold (tokens, font roles, digits, settings, no em-dash UI copy, capped redraw).")
 
+        # DROP-002 P2/P3: final UI art and OFL fonts are present, imported lossless, and wired.
+        p2_problems = 0
+        fonts_dir = self.root / "assets/final/fonts"
+        for font_name in ("reem_kufi_variable.ttf", "aref_ruqaa_regular.ttf", "readex_pro_variable.ttf", "eb_garamond_italic_variable.ttf"):
+            if not (fonts_dir / font_name).exists():
+                self.add(sec, "HIGH", "UI_FONT_MISSING", f"DROP-002 font missing: {font_name}", "assets/final/fonts")
+                p2_problems += 1
+        for lic in ("ofl_reem_kufi.txt", "ofl_aref_ruqaa.txt", "ofl_readex_pro.txt", "ofl_eb_garamond.txt"):
+            if not (fonts_dir / lic).exists():
+                self.add(sec, "HIGH", "UI_FONT_LICENCE_MISSING", f"OFL licence file missing: {lic}", "assets/final/fonts")
+                p2_problems += 1
+        ui_art = self.root / "assets/final/ui"
+        if ui_art.exists():
+            for png in sorted(ui_art.glob("*.png")):
+                imp = png.with_name(png.name + ".import")
+                if imp.exists() and "compress/mode=0" not in imp.read_text(encoding="utf-8"):
+                    self.add(sec, "MEDIUM", "UI_ART_NOT_LOSSLESS", f"UI art must import Lossless (compress/mode=0): {png.name}", imp.relative_to(self.root).as_posix())
+                    p2_problems += 1
+        wiring = [
+            ("scenes/ui/title_screen.tscn", ("logo_shaala.png", "furjat_divider.png")),
+            ("scenes/ui/hud.tscn", ("flame_strip_frame.png", "boss_bar_frame.png", "TextureProgressBar")),
+            ("scripts/ui/hud.gd", ("hp_ember_full.png", "hp_ember_ash.png", "InputGlyphs")),
+            ("scenes/ui/vignette_player.tscn", ("scrim_bottom.png", "LetterboxTop")),
+            ("scripts/ui/pause_settings_menu.gd", ("notebook_spread.png", "notebook_ribbon", "torn_stub.png", "paper_slip.png", "UI_CONFIRM_SAVE_QUIT")),
+        ]
+        for rp, tokens in wiring:
+            p_ = self.root / rp
+            if not p_.exists():
+                continue
+            txt = p_.read_text(encoding="utf-8")
+            for tok in tokens:
+                if tok not in txt:
+                    self.add(sec, "HIGH", "UI_ART_NOT_WIRED", f"DROP-002 element '{tok}' not wired in {rp}", rp)
+                    p2_problems += 1
+        if p2_problems == 0:
+            self.add(sec, "PASS", "UI_IDENTITY_P2_P3", "Notebook & Ember P2/P3 art and OFL fonts present, Lossless, and wired (title, HUD, story, notebook).")
+
     def check_section_e(self) -> None:
         sec = "E"
         # 1. GDD.md

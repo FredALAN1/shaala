@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
 [ext_resource type="Theme" path="res://assets/placeholder/theme/shaala_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/flame_strip_fill_t0.png" id="3_fill_t0"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/flame_strip_frame.png" id="4_strip_frame"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/furjat_divider.png" id="5_furjat"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/furjat_toggle_on.png" id="6_bullet"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/boss_bar_fill.png" id="7_boss_fill"]
+[ext_resource type="Texture2D" path="res://assets/final/ui/boss_bar_frame.png" id="8_boss_frame"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -49,16 +55,33 @@ theme_override_constants/separation = 8
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 
-[node name="FlameBar" type="ProgressBar" parent="TopRow/StatusPanel/VBox"]
-custom_minimum_size = Vector2(300, 18)
+[node name="FlameRow" type="HBoxContainer" parent="TopRow/StatusPanel/VBox"]
 layout_mode = 2
 mouse_filter = 2
-max_value = 100.0
-show_percentage = false
+theme_override_constants/separation = 16
 
-[node name="DaggerTierLabel" type="Label" parent="TopRow/StatusPanel/VBox"]
+[node name="FlameBar" type="TextureProgressBar" parent="TopRow/StatusPanel/VBox/FlameRow"]
+custom_minimum_size = Vector2(320, 24)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+size_flags_vertical = 4
+mouse_filter = 2
+max_value = 100.0
+texture_progress = ExtResource("3_fill_t0")
+texture_progress_offset = Vector2(12, 6)
+
+[node name="FlameFrame" type="TextureRect" parent="TopRow/StatusPanel/VBox/FlameRow/FlameBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_strip_frame")
+
+[node name="DaggerTierLabel" type="Label" parent="TopRow/StatusPanel/VBox/FlameRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
 
 [node name="TopSpacer" type="Control" parent="TopRow"]
 layout_mode = 2
@@ -80,43 +103,72 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -380.0
-offset_top = 42.0
-offset_right = 380.0
-offset_bottom = 136.0
+offset_left = -700.0
+offset_top = 150.0
+offset_right = 700.0
+offset_bottom = 330.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 10
 
 [node name="AreaTitleLabel" type="Label" parent="AreaBanner"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_colors/font_shadow_color = Color(0.0509804, 0.0627451, 0.129412, 0.7)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 12
+theme_override_font_sizes/font_size = 96
 horizontal_alignment = 1
 
-[node name="AreaRule" type="HSeparator" parent="AreaBanner"]
+[node name="AreaRule" type="TextureRect" parent="AreaBanner"]
+custom_minimum_size = Vector2(160, 16)
 layout_mode = 2
+size_flags_horizontal = 4
 mouse_filter = 2
+texture = ExtResource("5_furjat")
+stretch_mode = 2
 
-[node name="ToastPanel" type="PanelContainer" parent="."]
-visible = false
+[node name="ToastAnchor" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -380.0
-offset_top = 148.0
-offset_right = 380.0
-offset_bottom = 212.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 56
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 56
+theme_override_constants/margin_bottom = 56
+
+[node name="ToastPanel" type="PanelContainer" parent="ToastAnchor"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
 mouse_filter = 2
 
-[node name="ToastLabel" type="Label" parent="ToastPanel"]
+[node name="ToastRow" type="HBoxContainer" parent="ToastAnchor/ToastPanel"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
-theme_override_font_sizes/font_size = 22
-horizontal_alignment = 1
-autowrap_mode = 3
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="ToastBullet" type="TextureRect" parent="ToastAnchor/ToastPanel/ToastRow"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("6_bullet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ToastLabel" type="Label" parent="ToastAnchor/ToastPanel/ToastRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
+theme_override_colors/font_shadow_color = Color(0.0509804, 0.0627451, 0.129412, 0.8)
+theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 30
 
 [node name="PromptPill" type="PanelContainer" parent="."]
 visible = false
@@ -126,20 +178,34 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -340.0
-offset_top = -236.0
-offset_right = 340.0
+offset_left = -420.0
+offset_top = -250.0
+offset_right = 420.0
 offset_bottom = -170.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="PromptLabel" type="Label" parent="PromptPill"]
+[node name="PromptRow" type="HBoxContainer" parent="PromptPill"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
-theme_override_font_sizes/font_size = 22
-horizontal_alignment = 1
-autowrap_mode = 3
+mouse_filter = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PromptGlyph" type="TextureRect" parent="PromptPill/PromptRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PromptLabel" type="Label" parent="PromptPill/PromptRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
+theme_override_colors/font_shadow_color = Color(0.0509804, 0.0627451, 0.129412, 0.8)
+theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 30
 
 [node name="BossPanel" type="PanelContainer" parent="."]
 visible = false
@@ -149,10 +215,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -450.0
-offset_top = -152.0
-offset_right = 450.0
-offset_bottom = -34.0
+offset_left = -620.0
+offset_top = -210.0
+offset_right = 620.0
+offset_bottom = -44.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
@@ -161,6 +227,7 @@ mouse_filter = 2
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
+alignment = 2
 
 [node name="HeaderRow" type="HBoxContainer" parent="BossPanel/VBox"]
 layout_mode = 2
@@ -170,22 +237,30 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_colors/font_shadow_color = Color(0.0509804, 0.0627451, 0.129412, 0.7)
+theme_override_constants/shadow_outline_size = 12
+theme_override_font_sizes/font_size = 64
+horizontal_alignment = 1
 
 [node name="BossHpNumbersLabel" type="Label" parent="BossPanel/VBox/HeaderRow"]
 layout_mode = 2
+size_flags_vertical = 8
 theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 
 [node name="BossSubtitleLabel" type="Label" parent="BossPanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.776471, 0.545098, 0.34902, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
 
-[node name="BossHpBar" type="ProgressBar" parent="BossPanel/VBox"]
-custom_minimum_size = Vector2(0, 22)
+[node name="BossHpBar" type="TextureProgressBar" parent="BossPanel/VBox"]
+custom_minimum_size = Vector2(1200, 28)
 layout_mode = 2
+size_flags_horizontal = 4
 mouse_filter = 2
 max_value = 280.0
 value = 280.0
-show_percentage = false
+texture_over = ExtResource("8_boss_frame")
+texture_progress = ExtResource("7_boss_fill")
+texture_progress_offset = Vector2(24, 6)

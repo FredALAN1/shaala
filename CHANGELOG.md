@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added (UI, DROP-002 P2/P3 "Notebook & Ember" art integration)
+- Gemini's 5 OFL fonts and 34 UI ornaments wired in: hand-lettered logo title with a box-free text menu and ember focus mark; ember HP, Sadu flame strip (start-edge fill, mirrored notches) and shurfat boss bar; input-glyph prompts (`scripts/ui/input_glyphs.gd`); cinematic dialogue with letterbox and bottom scrim; full-screen memory vignette with a separate ability card; pause as an open notebook with Sadu ribbons, pasted journal pages, torn stubs for missing pages, ink-on-paper settings and a paper-slip Save & Quit confirmation; DROP-002 map icons.
+- `strings.csv`: `UI_RIBBON_JOURNAL`, `UI_RIBBON_ACCESS`, `UI_CONFIRM_SAVE_QUIT`, `UI_CONFIRM_YES`, `UI_CONFIRM_NO`.
+- `verify_m1.py`: `UI_IDENTITY_P2_P3` (fonts + licences present, UI art imported Lossless, art wired into title/HUD/story/notebook).
+
+### Fixed (UI)
+- `align_reading_edge` labels sat on the wrong edge under RTL (Godot mirrors LEFT/RIGHT); fonts in exported builds are now found via their `.import` entries.
+
 ### Added (UI, DROP-002 P1 "Notebook & Ember")
 - `scripts/ui/ui_tokens.gd` (`UITokens`): dark-surface and paper-surface colour tokens, type scale, motion timings, HUD fade constants; replaces per-script `COLOR_*` constants in all UI scripts.
 - `ArabicFontSetup`: font roles (`display` / `hand` / `body`) discovered by OFL file-name prefix with SystemFont fallbacks; `localize_digits()` / `format_number()` / `format_percent()` (Arabic-Indic digits in `ar`); text-scale support for theme and explicit font sizes.

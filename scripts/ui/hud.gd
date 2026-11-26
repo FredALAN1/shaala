@@ -1,8 +1,8 @@
 class_name HUDController
 extends Control
 ## Painterly minimal gameplay HUD for SHAALA (شعلة).
-## Shows Vitality flame pips, Flame resource bar, Dagger Tier, Era badge,
-## Area Name poetic banner, Interaction Prompt pill, Boss Health Bar, and Toasts.
+## Ember HP, Sadu flame strip with tier whisper, era mark (M2), area banner with furjat rule,
+## glyph interaction prompt on a soft scrim, start-corner toasts and the shurfat boss bar.
 
 ## Colours come from UITokens ("Notebook & Ember"); HUD behaviour follows docs/UI_DESIGN_PLAN.md §6.2:
 ## no panels, numbers only when SettingsManager.show_numbers, tier name as a short whisper on change,
@@ -11,8 +11,9 @@ extends Control
 @onready var hp_label: Label = $TopRow/StatusPanel/VBox/HpHeaderLabel
 @onready var health_pips_box: HBoxContainer = $TopRow/StatusPanel/VBox/HealthPipsBox
 @onready var flame_label: Label = $TopRow/StatusPanel/VBox/FlameHeaderLabel
-@onready var flame_bar: ProgressBar = $TopRow/StatusPanel/VBox/FlameBar
-@onready var dagger_tier_label: Label = $TopRow/StatusPanel/VBox/DaggerTierLabel
+@onready var flame_bar: TextureProgressBar = $TopRow/StatusPanel/VBox/FlameRow/FlameBar
+@onready var flame_frame: TextureRect = $TopRow/StatusPanel/VBox/FlameRow/FlameBar/FlameFrame
+@onready var dagger_tier_label: Label = $TopRow/StatusPanel/VBox/FlameRow/DaggerTierLabel
 
 @onready var era_badge: PanelContainer = $TopRow/EraBadge
 @onready var era_label: Label = $TopRow/EraBadge/EraLabel
@@ -20,17 +21,27 @@ extends Control
 @onready var area_banner: VBoxContainer = $AreaBanner
 @onready var area_title_label: Label = $AreaBanner/AreaTitleLabel
 
-@onready var toast_panel: PanelContainer = $ToastPanel
-@onready var toast_label: Label = $ToastPanel/ToastLabel
+@onready var toast_panel: PanelContainer = $ToastAnchor/ToastPanel
+@onready var toast_label: Label = $ToastAnchor/ToastPanel/ToastRow/ToastLabel
 
 @onready var prompt_pill: PanelContainer = $PromptPill
-@onready var prompt_label: Label = $PromptPill/PromptLabel
+@onready var prompt_glyph: TextureRect = $PromptPill/PromptRow/PromptGlyph
+@onready var prompt_label: Label = $PromptPill/PromptRow/PromptLabel
 
 @onready var boss_panel: PanelContainer = $BossPanel
 @onready var boss_name_label: Label = $BossPanel/VBox/HeaderRow/BossNameLabel
 @onready var boss_hp_numbers_label: Label = $BossPanel/VBox/HeaderRow/BossHpNumbersLabel
 @onready var boss_subtitle_label: Label = $BossPanel/VBox/BossSubtitleLabel
-@onready var boss_hp_bar: ProgressBar = $BossPanel/VBox/BossHpBar
+@onready var boss_hp_bar: TextureProgressBar = $BossPanel/VBox/BossHpBar
+
+const HP_EMBER_FULL_PATH: String = "res://assets/final/ui/hp_ember_full.png"
+const HP_EMBER_ASH_PATH: String = "res://assets/final/ui/hp_ember_ash.png"
+const FLAME_FILL_PATHS: Array = [
+	"res://assets/final/ui/flame_strip_fill_t0.png",
+	"res://assets/final/ui/flame_strip_fill_t1.png",
+	"res://assets/final/ui/flame_strip_fill_t2.png",
+]
+const HP_EMBER_SIZE: Vector2 = Vector2(36.0, 48.0)
 
 var _current_hp: int = 5
 var _max_hp: int = 5
@@ -52,6 +63,7 @@ var _boss_max_hp: int = 1
 var _boss_phase: int = 1
 
 var _idle_time: float = 0.0
+var _cinematic: bool = false
 var _last_tier_shown: int = -1
 var _tier_tween: Tween = null
 
@@ -94,6 +106,13 @@ func _process(delta: float) -> void:
 		top_row.modulate.a = move_toward(top_row.modulate.a, target_alpha, rate)
 
 
+## Dialogue and memories own the screen: hide the status corner and the prompt meanwhile.
+func set_cinematic(active: bool) -> void:
+	_cinematic = active
+	($TopRow as Control).visible = not active
+	_update_prompt_label()
+
+
 ## Marks gameplay activity so the HUD wakes from its idle fade.
 func wake_hud() -> void:
 	_idle_time = 0.0
@@ -103,6 +122,26 @@ func _strip_panel_boxes() -> void:
 	var empty := StyleBoxEmpty.new()
 	($TopRow/StatusPanel as PanelContainer).add_theme_stylebox_override("panel", empty)
 	era_badge.add_theme_stylebox_override("panel", empty)
+	toast_panel.add_theme_stylebox_override("panel", empty)
+	boss_panel.add_theme_stylebox_override("panel", empty)
+	# Prompt: soft radial scrim, never a pill or a hard border (plan §6.2).
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(UITokens.NIGHT_DEEP, 0.62))
+	gradient.set_color(1, Color(UITokens.NIGHT_DEEP, 0.0))
+	var scrim_tex := GradientTexture2D.new()
+	scrim_tex.gradient = gradient
+	scrim_tex.fill = GradientTexture2D.FILL_RADIAL
+	scrim_tex.fill_from = Vector2(0.5, 0.5)
+	scrim_tex.fill_to = Vector2(0.5, 0.0)
+	scrim_tex.width = 256
+	scrim_tex.height = 64
+	var scrim := StyleBoxTexture.new()
+	scrim.texture = scrim_tex
+	scrim.content_margin_left = 64.0
+	scrim.content_margin_right = 64.0
+	scrim.content_margin_top = 14.0
+	scrim.content_margin_bottom = 14.0
+	prompt_pill.add_theme_stylebox_override("panel", scrim)
 
 
 func _connect_event_bus() -> void:
@@ -131,6 +170,7 @@ func refresh_all() -> void:
 
 
 func refresh_texts() -> void:
+	_update_resource_display()
 	_update_number_labels()
 	_update_dagger_tier_label()
 	_update_era_label()
@@ -178,22 +218,17 @@ func _rebuild_health_pips() -> void:
 	for child: Node in health_pips_box.get_children():
 		child.queue_free()
 
+	var full_tex: Texture2D = load(HP_EMBER_FULL_PATH) as Texture2D if ResourceLoader.exists(HP_EMBER_FULL_PATH) else null
+	var ash_tex: Texture2D = load(HP_EMBER_ASH_PATH) as Texture2D if ResourceLoader.exists(HP_EMBER_ASH_PATH) else null
 	for i: int in range(_max_hp):
 		var is_lit: bool = i < _current_hp
-		# Lit ember = filled teardrop; ash ember = smaller hollow shape (shape differs, not only colour).
-		var pip := Panel.new()
-		pip.custom_minimum_size = Vector2(28.0, 34.0) if is_lit else Vector2(22.0, 26.0)
-		pip.size_flags_vertical = Control.SIZE_SHRINK_END
+		# Lit ember teardrop vs cold ash ember: different silhouettes, not only colour.
+		var pip := TextureRect.new()
+		pip.texture = full_tex if is_lit else ash_tex
+		pip.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pip.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pip.custom_minimum_size = HP_EMBER_SIZE
 		pip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var style := StyleBoxFlat.new()
-		style.bg_color = UITokens.EMBER if is_lit else Color(UITokens.HP_ASH_FILL, 0.55)
-		style.set_border_width_all(2)
-		style.border_color = UITokens.PALE_GOLD if is_lit else UITokens.HP_ASH_STROKE
-		style.corner_radius_top_left = 14 if is_lit else 4
-		style.corner_radius_top_right = 2 if is_lit else 4
-		style.corner_radius_bottom_right = 14 if is_lit else 11
-		style.corner_radius_bottom_left = 14 if is_lit else 11
-		pip.add_theme_stylebox_override("panel", style)
 		health_pips_box.add_child(pip)
 
 
@@ -201,23 +236,16 @@ func _update_resource_display() -> void:
 	flame_bar.max_value = maxf(1.0, _max_resource)
 	flame_bar.value = clampf(_current_resource, 0.0, _max_resource)
 
-	var fill_style := StyleBoxFlat.new()
-	match _dagger_tier:
-		2:
-			fill_style.bg_color = UITokens.PALE_GOLD
-		1:
-			fill_style.bg_color = UITokens.EMBER
-		_:
-			fill_style.bg_color = UITokens.MUD_BRICK
-	fill_style.corner_radius_top_left = 3
-	fill_style.corner_radius_top_right = 3
-	fill_style.corner_radius_bottom_right = 3
-	fill_style.corner_radius_bottom_left = 3
-	flame_bar.add_theme_stylebox_override("fill", fill_style)
-	# Fill from the reading start edge (DROP-002 §6.4 #5): FILL_BEGIN_TO_END already follows
-	# the RTL layout direction, so the strip fills right-to-left in Arabic and left-to-right in English.
-	flame_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
-	flame_bar.show_percentage = false
+	var tier: int = clampi(_dagger_tier, 0, 2)
+	var fill_path: String = str(FLAME_FILL_PATHS[tier])
+	if ResourceLoader.exists(fill_path):
+		flame_bar.texture_progress = load(fill_path) as Texture2D
+	# Fill from the reading start edge (DROP-002 §6.4 #5). TextureProgressBar does not follow the
+	# layout direction, so pick the fill side here; the frame is flipped so the furjat notches
+	# stay at 35% / 70% measured from the start edge.
+	var rtl: bool = is_layout_rtl()
+	flame_bar.fill_mode = TextureProgressBar.FILL_RIGHT_TO_LEFT if rtl else TextureProgressBar.FILL_LEFT_TO_RIGHT
+	flame_frame.flip_h = rtl
 
 
 func _update_dagger_tier_label() -> void:
@@ -259,11 +287,19 @@ func _update_era_label() -> void:
 
 
 func _update_prompt_label() -> void:
-	prompt_pill.visible = _prompt_visible and not _active_prompt_key.is_empty()
+	prompt_pill.visible = _prompt_visible and not _active_prompt_key.is_empty() and not _cinematic
 	if not prompt_pill.visible:
 		return
 	var translated: String = tr(_active_prompt_key)
+	prompt_glyph.visible = false
 	if _active_prompt_key.begins_with("TUT_"):
+		prompt_label.text = translated
+		return
+	# Input glyph icon + verb; text keycap only when the key has no drawn glyph.
+	var glyph: Texture2D = InputGlyphs.get_action_glyph("interact")
+	if glyph != null:
+		prompt_glyph.texture = glyph
+		prompt_glyph.visible = true
 		prompt_label.text = translated
 	else:
 		var interact_key: String = ArabicFontSetup.get_action_key_label("interact")
@@ -285,15 +321,9 @@ func _update_boss_labels() -> void:
 	boss_hp_bar.max_value = float(maxi(1, _boss_max_hp))
 	boss_hp_bar.value = float(clampi(_boss_hp, 0, _boss_max_hp))
 
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = UITokens.EMBER if _boss_phase >= 2 else UITokens.DESERT_RED
-	fill.border_width_right = 2
-	fill.border_color = UITokens.PALE_GOLD
-	fill.corner_radius_top_left = 3
-	fill.corner_radius_top_right = 3
-	fill.corner_radius_bottom_right = 3
-	fill.corner_radius_bottom_left = 3
-	boss_hp_bar.add_theme_stylebox_override("fill", fill)
+	# Desert red fill; phase 2 warms toward ember. Drains toward the start edge.
+	boss_hp_bar.tint_progress = Color(1.0, 0.82, 0.7, 1.0) if _boss_phase >= 2 else Color.WHITE
+	boss_hp_bar.fill_mode = TextureProgressBar.FILL_RIGHT_TO_LEFT if is_layout_rtl() else TextureProgressBar.FILL_LEFT_TO_RIGHT
 
 
 func _play_area_banner(title_key: String) -> void:
@@ -303,10 +333,16 @@ func _play_area_banner(title_key: String) -> void:
 	if _area_tween != null and _area_tween.is_valid():
 		_area_tween.kill()
 	area_banner.modulate.a = 0.0
+	# Ink write-on (shaping-safe), then hold and fade (plan §6.2 / §7).
+	area_title_label.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	area_title_label.visible_ratio = 1.0 if SettingsManager.reduce_motion else 0.0
 	_area_tween = create_tween()
-	_area_tween.tween_property(area_banner, "modulate:a", 1.0, 0.45)
-	_area_tween.tween_interval(2.4)
-	_area_tween.tween_property(area_banner, "modulate:a", 0.0, 0.9)
+	_area_tween.tween_property(area_banner, "modulate:a", 1.0, UITokens.FADE_IN)
+	if not SettingsManager.reduce_motion:
+		_area_tween.parallel().tween_property(area_title_label, "visible_ratio", 1.0, UITokens.WRITE_ON_LONG) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_area_tween.tween_interval(UITokens.AREA_BANNER_HOLD)
+	_area_tween.tween_property(area_banner, "modulate:a", 0.0, UITokens.FADE_OUT)
 
 
 func _on_player_health_changed(current: int, maximum: int) -> void:
