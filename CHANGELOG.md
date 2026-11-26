@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Performance
+- **Hitch-free room transitions:** `RoomManager` now streams the current room's neighbors in the background (`ResourceLoader.load_threaded_request`) and keeps only the current room + neighbors resident. Measured headless on Godot 4.3: worst frame on first entry into a room dropped from **48–97 ms** to **9–16 ms**.
+- **Power saving:** frame rate is capped at `15 FPS` while the window is unfocused and `30 FPS` while the pause menu is open (physics stays at 60 Hz; vignettes are not capped).
+- **Ambient audio:** procedural wind/oud generator fills one `PackedVector2Array` per frame and calls `push_buffer()` once, instead of ~22,050 `push_frame()` calls per second.
+
+### Visual Review
+- Added tech review `VR-01..VR-11` to `docs/VISUAL_HANDOFF.md` (DROP-001 → `NEEDS_VISUAL_FIX`): parallax plate sizing vs. real `motion_scale`, foreground-veil overdraw, Farid sprite scale vs. 62 px capsule, Empty Riyadh platform contrast, shader uniforms for final painted art, texture budgets.
+
 ### Planned for M2
 - Active **Time Shift** (`2034` / `2054`) room-state puzzles across Diriyah / At-Turaif and Metro Tunnels.
 - **Grey Eye** seal vision (hidden paths, false Najdi walls, invisible Jinn detection) and initial Don't-Look Jinn encounters.

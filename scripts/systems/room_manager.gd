@@ -12,6 +12,11 @@ const FADE_IN_DURATION: float = 0.26
 const REDUCED_FADE_DURATION: float = 0.08
 const DEATH_RESPAWN_DELAY: float = 0.85
 
+# Power saving: frame-rate caps applied while the window is unfocused or the game is paused
+# (0 = uncapped / VSync-limited). Physics keeps ticking at 60 Hz, so gameplay timing is unchanged.
+const UNFOCUSED_MAX_FPS: int = 15
+const PAUSED_MAX_FPS: int = 30
+
 @onready var _room_container: Node2D = $WorldRoot/RoomContainer
 @onready var _player_container: Node2D = $WorldRoot/PlayerContainer
 @onready var _room_camera: RoomCamera = $WorldRoot/RoomCamera
@@ -24,6 +29,11 @@ var _player: Node2D = null
 var _ui_root: Node = null
 var _is_transitioning: bool = false
 var _hitstop_token: int = 0
+# Background-loaded neighbor rooms (scene_path -> PackedScene) so room transitions never hitch.
+var _room_scene_cache: Dictionary = {}
+var _pending_room_loads: Dictionary = {}
+var _window_focused: bool = true
+var _menu_paused: bool = false
 
 
 func _ready() -> void:
@@ -235,7 +245,7 @@ func _transition_to_room(target_room_id: String, target_spawn_id: String) -> voi
 		_is_transitioning = false
 		return
 
-	var room_scene: PackedScene = load(scene_path) as PackedScene
+	var room_scene: PackedScene = _take_room_scene(scene_path)
 	if room_scene == null:
 		await _tween_fade(0.0, fade_in_sec)
 		_set_player_controls(true)
@@ -280,10 +290,76 @@ func _transition_to_room(target_room_id: String, target_spawn_id: String) -> voi
 		_room_camera.set_bounds(bounds)
 
 	EventBus.room_loaded.emit(resolved_room_id, resolved_area_id, resolved_title_key)
+	_preload_neighbor_rooms(target_room_id, scene_path, room_scene)
 
 	await _tween_fade(0.0, fade_in_sec)
 	_set_player_controls(true)
 	_is_transitioning = false
+
+
+func _take_room_scene(scene_path: String) -> PackedScene:
+	if _room_scene_cache.has(scene_path):
+		return _room_scene_cache[scene_path] as PackedScene
+	if _pending_room_loads.has(scene_path):
+		_pending_room_loads.erase(scene_path)
+		var status: ResourceLoader.ThreadLoadStatus = ResourceLoader.load_threaded_get_status(scene_path)
+		if status == ResourceLoader.THREAD_LOAD_LOADED or status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			var threaded: PackedScene = ResourceLoader.load_threaded_get(scene_path) as PackedScene
+			if threaded != null:
+				return threaded
+	return load(scene_path) as PackedScene
+
+
+func _preload_neighbor_rooms(room_id: String, current_path: String, current_scene: PackedScene) -> void:
+	# Keep only the current room + its direct neighbors resident; stream neighbors in the background.
+	var keep: Dictionary = {}
+	if current_scene != null:
+		keep[current_path] = current_scene
+	var meta: Dictionary = _rooms_data.get(room_id, {}) as Dictionary
+	var neighbors: Array = meta.get("neighbors", []) as Array
+	for neighbor_id: Variant in neighbors:
+		var neighbor_meta: Dictionary = _rooms_data.get(str(neighbor_id), {}) as Dictionary
+		var path: String = str(neighbor_meta.get("scene_path", ""))
+		if path.is_empty() or keep.has(path):
+			continue
+		if _room_scene_cache.has(path):
+			keep[path] = _room_scene_cache[path]
+			continue
+		if _pending_room_loads.has(path):
+			_collect_finished_room_load(path, keep)
+			continue
+		if not ResourceLoader.exists(path):
+			continue
+		if ResourceLoader.load_threaded_request(path, "PackedScene") == OK:
+			_pending_room_loads[path] = true
+	_room_scene_cache = keep
+
+
+func _collect_finished_room_load(path: String, keep: Dictionary) -> void:
+	if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_LOADED:
+		return
+	_pending_room_loads.erase(path)
+	var packed: PackedScene = ResourceLoader.load_threaded_get(path) as PackedScene
+	if packed != null:
+		keep[path] = packed
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		_window_focused = false
+		_apply_frame_cap()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_window_focused = true
+		_apply_frame_cap()
+
+
+func _apply_frame_cap() -> void:
+	if not _window_focused:
+		Engine.max_fps = UNFOCUSED_MAX_FPS
+	elif _menu_paused:
+		Engine.max_fps = PAUSED_MAX_FPS
+	else:
+		Engine.max_fps = 0
 
 
 func _tween_fade(target_alpha: float, duration: float) -> void:
@@ -345,3 +421,12 @@ func _on_hitstop_requested(duration: float) -> void:
 func _on_pause_toggled(paused: bool) -> void:
 	if get_tree().paused != paused:
 		get_tree().paused = paused
+	_menu_paused = paused
+	_apply_frame_cap()
+
+
+func _process(_delta: float) -> void:
+	# Menus can unpause the tree directly (resume, quit to title) without a pause_toggled(false).
+	if _menu_paused and not get_tree().paused:
+		_menu_paused = false
+		_apply_frame_cap()
