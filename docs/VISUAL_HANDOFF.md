@@ -71,7 +71,101 @@ This is the living handoff queue between **Gemini (Visual Design Lead & Instruct
 
 | Drop ID | Title | Milestone | Status | Notes |
 | :--- | :--- | :---: | :---: | :--- |
+| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `DRAFT` *(brief from tech, Gemini to produce)* | Full direction in [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). Start with P0 style frames for Fred's approval. |
 | **`DROP-001`** | M1 Baseline Painterly Visual Kit & 1:1 Sprite Replacement Queue | M1 | `BASELINE_VERIFIED` *(Queue Open for Final PNGs)* | Shaders, `ShaalaPalette`, and procedural silhouettes verified live in Godot 4.3; awaiting Batch 1A–1E final PNG & OFL font drops from Gemini. |
+
+---
+
+## DROP-002 — UI Identity "Notebook & Ember" (دفتر وجمرة)
+
+- **Status:** `DRAFT` → **Next actor: Gemini**
+- **Date:** 2026-11-26
+- **Milestone:** M1 (P0–P3), M2 (P4: 2034 skin, Time Shift, Grey Eye)
+- **Visual Lead:** Gemini
+- **Technical Engineer:** Claude Opus
+- **Brief written by:** Claude Opus at Fred's request ("get the UI out of AI slop"). The full direction, audit and per-screen layouts are in [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md); read it first. Current UI screenshots: `docs/ui_audit/*.png`.
+- **Supersedes:** Batch 1E of DROP-001 (fonts & UI ornaments). Batch 1E sizes in `ART_SPEC.md` §10 should be replaced by this list.
+
+### 0. What Gemini owns in this Drop
+- Final say on the visual language inside the concept: exact colours for the new `paper_ash` / `paper_shadow` / `ink_brown` swatches, ornament drawing style, logotype.
+- Updating `docs/ART_SPEC.md` §10 ("UI & Typography Art Slots") to match this Drop.
+- If you disagree with a rule in `UI_DESIGN_PLAN.md`, write the change and reason under §6 below; tech will follow the art lead on visual matters as long as §5 (hard constraints) holds.
+
+### 1. Phase P0 — Style frames FIRST (for Fred's approval, before any production asset)
+Deliver 3 mock screens at `1920×1080` (PNG, mock text allowed here since they are references, not game assets):
+
+| File | Content |
+| :--- | :--- |
+| `docs/ui_style_frames/sf01_title_ar.png` | Title screen per §6.1: full painted scene, logotype, text-list menu with ember focus mark, `ع \| EN` toggle. |
+| `docs/ui_style_frames/sf02_hud_combat_ar.png` | Gameplay in `empty_highway_01` mid-combat: ember HP (3 of 5 lit), Sadu flame strip at tier 2, interaction prompt with input glyph, boss-free. |
+| `docs/ui_style_frames/sf03_pause_notebook_ar.png` | Pause notebook spread over the blurred world: ribbons, menu page, Journal with one pasted page and two torn stubs. |
+| `docs/ui_style_frames/sf04_vignette_ar.png` *(optional)* | Memory vignette full-screen with one Ruqaa line mid write-on. |
+
+Put a `.gdignore` file in `docs/ui_style_frames/`. Mark P0 done in §6 below; tech pings Fred for approval.
+
+### 2. Fonts (P2) — `assets/final/fonts/` (OFL only, include each `OFL.txt`)
+| File name (exact, lowercase) | Family | Role |
+| :--- | :--- | :--- |
+| `reem_kufi_variable.ttf` | Reem Kufi (variable wght 400–700) | `display` |
+| `aref_ruqaa_regular.ttf`, `aref_ruqaa_bold.ttf` | Aref Ruqaa | `hand` |
+| `readex_pro_variable.ttf` | Readex Pro (variable wght 160–700) | `body` (Arabic + Latin) |
+| `eb_garamond_italic_variable.ttf` | EB Garamond Italic | `hand` in English |
+| `ofl_reem_kufi.txt`, `ofl_aref_ruqaa.txt`, `ofl_readex_pro.txt`, `ofl_eb_garamond.txt` | licences | — |
+
+- Check Reem Kufi's Latin coverage; if it is missing or weak, write "EN display = Readex Pro SemiBold" in §6.
+- Test strings for zero tofu: `شعلة`, `ذكرى الخطوة الأولى`, `٠١٢٣٤٥٦٧٨٩`, `ـلـ`, `لا`, `ة`.
+
+### 3. UI Ornaments (P2/P3) — `assets/final/ui/` (PNG-32, straight alpha, sRGB, **zero lettering**)
+| File | Canvas (px) | Notes |
+| :--- | :---: | :--- |
+| `logo_shaala.png` | `1400×600` | **Only if Fred approves D2.** Hand-lettered `شعلة`, flame formed by the final letters; transparent bg; pale gold → ember. |
+| `hp_ember_full.png` / `hp_ember_ash.png` | `48×64` each | Ember teardrop vs. cold ash ember. **Different silhouettes**, not only colour (colour-blind safe). |
+| `flame_strip_frame.png` | `320×24` | Sadu woven strip frame, 9-slice safe (12 px caps). Furjat notches at 35% and 70%. |
+| `flame_strip_fill_t0.png`, `_t1.png`, `_t2.png` | `296×12` each, horizontally tileable | Sadu fill pattern; density/brightness rises per tier (mud-brick → ember → pale gold). |
+| `focus_ember.png` | `32×32` | Focus mark beside the focused menu item; tech animates the flicker. |
+| `furjat_divider.png` | `160×16` | Row of 3–5 carved triangles; centered. |
+| `furjat_toggle_on.png` / `_off.png` | `28×28` | ▲ filled / △ empty. |
+| `slider_sadu_track.png` + `slider_ember_knob.png` | `400×12` (9-slice) + `28×28` | Settings slider. |
+| `shurfat_cap.png` | `48×24` | Stepped crenellation end-cap for boss bar / banner (tech mirrors for the other side). |
+| `boss_bar_frame.png` + `boss_bar_fill.png` | `1200×28` (9-slice, 48 px caps) + `1152×16` tileable | Desert red fill. |
+| `notebook_spread.png` | `1536×928` | Open notebook, two pages, spine in middle, worn edges; content-free. Must survive being mirrored for LTR (spine centered). |
+| `notebook_ribbon.png` (+ `_active.png`) | `56×180` each | Sadu-woven bookmark ribbon hanging from top edge. |
+| `paper_scrap_a.png`, `_b.png`, `_c.png` | `≈560×640` | Pasted torn pages for the Journal (text is rendered on top by tech). Leave ≥ 48 px clean margin. |
+| `torn_stub.png` | `40×120` | Torn-out page stub along the spine. |
+| `paper_slip.png` | `640×320` (9-slice, 48 px) | Confirm dialog slip. |
+| `scrim_bottom.png` | `16×360` | Vertical gradient (transparent → ink 80%), tech stretches horizontally. |
+| `save_ember.png` | `48×48` | Saving indicator. |
+| `map_icon_player.png`, `_shrine.png`, `_boss.png`, `_gate_sealed.png`, `_page.png`, `_shortcut.png` | `32×32` each | Ink style matching the notebook map. |
+| `input_glyphs_kbm.png` / `input_glyphs_pad.png` | atlas `512×512` each, `64×64` cells | Key/button glyphs drawn in the same ink/ember style (generic shapes; no console brand logos). Include a cell index table in §6. |
+
+Packing: tech will pack small ornaments into `ui_atlas.png`; deliver as separate files. Import preset: `Lossless`, mipmaps off for ≤ 128 px icons, on for notebook/paper.
+
+### 4. Artistic Direction Notes
+- **Two materials only in 2054:** worn paper with ink, and ember light on darkness. No glass, no neon, no metal bevels.
+- **Najdi motifs have jobs:** furjat = dividers/toggles, shurfat = frame caps (max one per screen), Sadu = meters and ribbons. See plan §5.
+- **Forbidden:** rounded dark boxes with thin gold borders; onion domes; Aladdin lamps; generic arabesque/mashrabiya stickers; zellige; Persian/Ottoman tilework; crescent decoration; gold filigree; glassmorphism; neon sci-fi HUD; AI-generated calligraphy (malformed letters are worse than none).
+- **Paper:** warm ash paper, not parchment-yellow fantasy scrolls; real wear (folds, coffee ring, pencil smudge) but quiet.
+- **2034 skin (P4, M2 only, do not start yet):** original backlit city wayfinding (glass teal, white Kufi, cool light). Do not copy any real metro/transit branding.
+
+### 5. Hard Constraints (from `CLAUDE.md`, non-negotiable)
+- **Zero baked lettering** in every UI PNG (the only possible exception is `logo_shaala.png`, pending Fred's decision D2).
+- Exact lowercase file names, no spaces; PNG-32 straight alpha; sizes as listed (multiples of 4).
+- 9-slice margins stated for every stretchable asset; mirrored use in RTL/LTR must look correct.
+- Fonts OFL with licence files.
+
+### 6. Visual Lead Notes & Changes (Gemini writes here)
+- *(Pending: P0 style frames, swatch values, font coverage result, any disagreements with the plan.)*
+
+### 7. Integration Checklist for Claude Opus
+- [ ] P1 (no art needed): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
+- [ ] P2: fonts discovered per role in `ar` (RTL) and `en` (LTR), zero tofu; title, HUD, prompts, dialogue, vignette rebuilt per plan §6.1–6.4.
+- [ ] P3: notebook pause, journal, map, settings, confirm slip per plan §6.5–6.9.
+- [ ] Import presets applied (`Lossless`, 9-slice margins), atlas packed, UI draw calls within budget (plan §9).
+- [ ] `python3 tools/verify_m1.py --strict`, `godot --headless --path . --import --quit`, `godot --headless --path . --quit-after 3` all 0 errors.
+- [ ] Before/after screenshots added next to `docs/ui_audit/`; status → `VERIFIED`.
+
+### 8. Technical Sign-Off Notes (Claude Opus)
+- **2026-11-26:** Brief and plan written; current UI audited from live Godot 4.3 renders (`docs/ui_audit/`). No code changed yet.
 
 ---
 

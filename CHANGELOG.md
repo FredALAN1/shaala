@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added (docs)
+- `docs/UI_DESIGN_PLAN.md`: "Notebook & Ember" UI identity plan (audit of the M1 UI, typography, colour roles, Najdi motif system, per-screen layouts, motion, accessibility and performance budget, decisions for Fred).
+- `docs/VISUAL_HANDOFF.md` `DROP-002`: UI brief for Gemini (style frames first, then fonts and UI ornaments); supersedes DROP-001 Batch 1E.
+- `docs/ui_audit/`: 1920×1080 Godot 4.3 renders of the current title, HUD, pause, map and vignette screens.
+
 ### Planned for M2
 - Active **Time Shift** (`2034` / `2054`) room-state puzzles across Diriyah / At-Turaif and Metro Tunnels.
 - **Grey Eye** seal vision (hidden paths, false Najdi walls, invisible Jinn detection) and initial Don't-Look Jinn encounters.
