@@ -71,14 +71,14 @@ This is the living handoff queue between **Gemini (Visual Design Lead & Instruct
 
 | Drop ID | Title | Milestone | Status | Notes |
 | :--- | :--- | :---: | :---: | :--- |
-| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `DRAFT` *(brief from tech, Gemini to produce)* | Full direction in [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). Start with P0 style frames for Fred's approval. |
+| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `P0_AWAITING_APPROVAL` *(P0 style frames delivered by Gemini)* | Full direction in [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). Three 1920×1080 style frames ready in `docs/ui_style_frames/`; awaiting Fred's approval before P2/P3 final assets. |
 | **`DROP-001`** | M1 Baseline Painterly Visual Kit & 1:1 Sprite Replacement Queue | M1 | `BASELINE_VERIFIED` *(Queue Open for Final PNGs)* | Shaders, `ShaalaPalette`, and procedural silhouettes verified live in Godot 4.3; awaiting Batch 1A–1E final PNG & OFL font drops from Gemini. |
 
 ---
 
 ## DROP-002 — UI Identity "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `DRAFT` → **Next actor: Gemini**
+- **Status:** `P0_AWAITING_APPROVAL` → **Next actor: Fred (style frame & D1–D5 approval) / Claude Opus (P1 code prep)**
 - **Date:** 2026-11-26
 - **Milestone:** M1 (P0–P3), M2 (P4: 2034 skin, Time Shift, Grey Eye)
 - **Visual Lead:** Gemini
@@ -154,7 +154,49 @@ Packing: tech will pack small ornaments into `ui_atlas.png`; deliver as separate
 - Fonts OFL with licence files.
 
 ### 6. Visual Lead Notes & Changes (Gemini writes here)
-- *(Pending: P0 style frames, swatch values, font coverage result, any disagreements with the plan.)*
+
+#### 6.1 Phase P0 Status — Delivered & Awaiting Fred's Approval
+- **Date:** 2026-11-26
+- **Delivered Style Frames (`1920×1080` PNG + `.gdignore` in `docs/ui_style_frames/`):**
+  1. [`docs/ui_style_frames/sf01_title_ar.png`](ui_style_frames/sf01_title_ar.png) — Title screen: full painted desert-camp dusk (Bedouin `bayt al-sha'r`, lantern, resting camel Amira with crimson Sadu saddle blanket, distant shattered Riyadh towers), hand-lettered `شعلة` logotype with flame rising organically from the final `ة`, carved 5-triangle *furjat* divider, Aref Ruqaa subtitle, box-free plain-text menu with glowing ember cursor, and minimal `ع ▲ EN` bottom-end toggle.
+  2. [`docs/ui_style_frames/sf02_hud_combat_ar.png`](ui_style_frames/sf02_hud_combat_ar.png) — Combat HUD in `empty_highway_01`: 3 lit teardrop HP embers + 2 distinctly shaped cracked/hollow cold-ash embers (color-blind safe), right-to-left Sadu woven flame strip at Tier 2 (~78%) with carved *furjat* notches at 35% & 70% and transient Reem Kufi tier whisper (`نصل الشعلة`), plus a box-free world-space carved input glyph (`E`) + `اقرأ` floating above a glowing notebook page on a rusted sedan roof.
+  3. [`docs/ui_style_frames/sf03_pause_notebook_ar.png`](ui_style_frames/sf03_pause_notebook_ar.png) — Pause Notebook spread over blurred charcoal-indigo twilight: warm dusty ash-ivory cotton paper with stitched spine and faint lower-left coffee-ring stain, 4 Sadu-woven bookmark ribbons hanging from the top of the Content page in RTL order (`الدفتر` active & pulled down → `الخريطة` → `الإعدادات` → `التحكم`), clean non-redundant Start/Menu page (`توقّف`, `استئناف`, quiet memory/shrine notes, crimson destructive `حفظ والعودة للقائمة`), and Journal page with 1 tilted pasted torn scrap in Aref Ruqaa + 2 physical jagged torn-out stubs along the spine.
+- **Strict P0 Hold:** No production assets under `assets/final/fonts/` or `assets/final/ui/` have been added yet; P2/P3 production starts immediately once Fred approves P0 & D1–D5.
+
+#### 6.2 Finalized Paper & Ink Colour Swatches (for `UITokens` & `ShaalaPalette`)
+Desaturated slightly from the draft `#E9D8B4` parchment tone toward authentic sun-baked Riyadh cotton notebook paper, with dedicated high-contrast accents for **light paper** surfaces:
+
+| Token | Hex | Contrast vs `PAPER_ASH` | Exact Role |
+| :--- | :---: | :---: | :--- |
+| `PAPER_ASH` | `#E4D7C0` | — | Base notebook spread page surface (ash-ivory, never yellow scroll). |
+| `PAPER_SCRAP` | `#EBE0CA` | — | Pasted-in torn journal scraps & confirm slip (slight lift over base page). |
+| `PAPER_SHADOW` | `#C5B297` | — | Central stitched spine gutter, page fold shadow, underside of torn stubs. |
+| `PAPER_EDGE_BURN` | `#9E8366` | — | Aged/singed paper rim & subtle coffee-ring stain (`12–15%` opacity). |
+| `INK_BROWN` | `#241914` | **12.4:1 (AAA)** | Primary text & ink map outlines on paper (`8.6:1` even over `PAPER_SHADOW`). |
+| `INK_MUTED` | `#5C493E` | **6.0:1 (AA+)** | Secondary labels, location whispers, unexplored pencil rooms on map. |
+| `INK_RULE` | `#B5A186` | — | Faint hand-ruled horizontal paper lines (`32–38%` opacity). |
+| `INK_FOCUS_PAPER` | `#8C2D1E` | **7.1:1 (AAA)** | **NEW:** Focused text & ember-cursor ink outline **on light paper**. |
+| `INK_EMBER_ACCENT` | `#B84E24` | **4.8:1 (AA)** | **NEW:** Active *furjat* centre triangle, ink underline, ember detail **on paper**. |
+| `INK_DESTRUCTIVE_PAPER` | `#8F2E22` | **6.8:1 (AA+)** | **NEW:** Destructive actions (`حفظ والعودة للقائمة`) **on light paper**. |
+| `HP_ASH_FILL` / `HP_ASH_STROKE` | `#2B3144` / `#8B95A5` | — | Cold ash HP ember silhouette (paired with distinct hollow-cracked shape). |
+
+*(Dark-surface tokens remain unchanged from `ShaalaPalette`: scrim `#0D1021`/`#161B33`, warm sand `#E8C49A`, dark-surface focus `#F6E299`, ember `#E07A3C`, danger `#A84432`, mud-brick ochre `#C68B59`, 2034 glass `#4F6D7A`/`#4A90D9`.)*
+
+#### 6.3 Font Coverage Verification (Empirical TTF `cmap` Test)
+Verified against upstream Google Fonts SIL OFL builds:
+- **`Reem Kufi` (`ReemKufi[wght].ttf`, 667 glyphs):** **0 missing glyphs** on all Arabic test strings (`شعلة`, `ذكرى الخطوة الأولى`, `٠١٢٣٤٥٦٧٨٩`, `ـلـ`, `لا`, `ة`) AND **0 missing glyphs** on basic Latin (`A–Z`, `a–z`, `0–9`). However, optically Reem Kufi's Latin letterforms are noticeably wider/heavier than its Arabic at 64–96 px; therefore **`EN display = Readex Pro SemiBold` (+4% tracking)** is locked for English display headings so optical weight matches Arabic `Reem Kufi`.
+- **`Aref Ruqaa` (`Regular` & `Bold`, 343 glyphs each):** **0 missing glyphs** on all Arabic test strings; zero tofu; confirmed clean ligature shaping in `sf01` & `sf03`.
+- **`Readex Pro` (`ReadexPro[HEXP,wght].ttf`, 761 glyphs):** **0 missing glyphs** across Arabic + Latin; crisp legibility from 20 px captions to 36 px menus.
+
+#### 6.4 Art Lead Critiques & Requested Adjustments to `UI_DESIGN_PLAN.md`
+Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massive leap forward and aligns 100% with *Shaala*'s silent-grief Najdi identity. Five visual adjustments are requested for Claude Opus & Fred before P2/P3 implementation:
+
+1. **Dual-Surface Focus & Destructive Tokens (amends Plan §4):** Plan §4 assigns `#F6E299` (pale gold) to all focus states and `#A84432` to destructive actions. On light `#E4D7C0` paper, `#F6E299` fails contrast completely (~1.1:1) and `#A84432` sits marginally below AA (~4.3:1). **Change:** Split `UITokens` into dark-surface vs. paper-surface tokens — keep `#F6E299`/`#E07A3C`/`#A84432` on dark screens, and use `INK_FOCUS_PAPER` (`#8C2D1E`, 7.1:1) + ember core with dark ink rim + `INK_DESTRUCTIVE_PAPER` (`#8F2E22`, 6.8:1) on notebook paper.
+2. **Widen `notebook_ribbon.png` for Horizontal Arabic Labels (amends DROP-002 §3 & Plan §6.5):** The spec lists `notebook_ribbon.png` at `56×180` px. In Arabic, `الإعدادات` at readable 20–22 px requires ~100 px horizontally, and Arabic cursive must **never** be stacked vertically letter-by-letter. **Change:** Deliver `notebook_ribbon_active.png` at **`128×168` px** and `notebook_ribbon.png` at **`128×116` px** (multiples of 4), hanging from the top edge of the Content (end) page in RTL order (`الدفتر` closest to spine → `الخريطة` → `الإعدادات` → `التحكم`). Also keep navigation strictly on the ribbons (no duplicate section list on the Start page, leaving the Start page serene for `استئناف`, quiet memory/shrine notes, and `حفظ والعودة للقائمة`).
+3. **HUD Auto-Fade Safety Floor When Wounded (amends Plan §6.2):** Fading the HUD to `0%` after 4 seconds out of combat is atmospheric, but risks hiding low health when crossing into a new room. **Change:** Fade to `0%` only when `HP == max_hp` (or in safe zones like Desert Camp); when `HP < max_hp` in hostile areas, hold a quiet **`30%` ember-ghost floor** so low vitality remains legible without breaking silence.
+4. **Generous Line-Height & Accessibility Fallback for `Aref Ruqaa` (amends Plan §3.1 & §6.6):** Rendering `sf03` confirmed that `Aref Ruqaa`'s authentic diagonal baseline and tall ascenders (`المخيم`, `الهجوم`) require **`line-height = 1.95–2.0`** (vs. `1.8`) and at least `14 px` vertical clearance below `Readex Pro` captions. Additionally, when `text_scale >= 125%` (or if Fred wants a "Clear Notebook Script" accessibility toggle), fall back Journal body text to `Readex Pro` so long paragraphs never clip inside `paper_scrap_*.png`.
+5. **Explicit RTL Fill Direction on Sadu Flame Strip (clarifies Plan §6.2):** In `ar` (RTL), the Sadu flame strip fills **right-to-left** (anchored beneath the first HP ember on the start-edge, with the 35% and 70% *furjat* tier notches positioned at 35% and 70% from the right edge; mirrored left-to-right in `en`).
+6. **Art Lead Endorsement on Open Decisions D1–D5:** Strong **Yes** on **D1** (Notebook & Ember), **D2** (hand-lettered `شعلة` logotype — demonstrated in `sf01_title_ar.png`), **D3** (Arabic-Indic digits everywhere in `ar`), **D4** (HUD numbers hidden by default, paired with Adjustment #3 low-HP ghost floor), and **D5** (Reem Kufi + Aref Ruqaa + Readex Pro, with `EN display = Readex Pro SemiBold`).
 
 ### 7. Integration Checklist for Claude Opus
 - [ ] P1 (no art needed): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
