@@ -7,13 +7,6 @@ signal closed
 
 const ROOMS_JSON_PATH: String = "res://data/rooms.json"
 
-const COLOR_PALE_GOLD: Color = Color("#F6E299")
-const COLOR_DESERT_RED: Color = Color("#A84432")
-const COLOR_MUD_BRICK: Color = Color("#C68B59")
-const COLOR_GLASS_TEAL: Color = Color("#4F6D7A")
-const COLOR_NIGHT_INDIGO: Color = Color("#161B33")
-const COLOR_SUNSET_ORANGE: Color = Color("#E07A3C")
-const COLOR_WARM_SAND: Color = Color("#E8C49A")
 
 @onready var title_label: Label = $CenterContainer/MapPanel/VBox/HeaderRow/MapTitleLabel
 @onready var explored_label: Label = $CenterContainer/MapPanel/VBox/HeaderRow/ExploredLabel
@@ -145,7 +138,7 @@ func _on_map_canvas_draw() -> void:
 	# Subtle parchment-indigo architectural grid
 	map_canvas.draw_rect(Rect2(Vector2.ZERO, canvas_size), Color(0.0509804, 0.0627451, 0.129412, 0.85))
 	var grid_step: float = 48.0
-	var grid_col: Color = Color(COLOR_MUD_BRICK, 0.08)
+	var grid_col: Color = Color(UITokens.MUD_BRICK, 0.08)
 	var gx: float = grid_step
 	while gx < canvas_size.x:
 		map_canvas.draw_line(Vector2(gx, 0.0), Vector2(gx, canvas_size.y), grid_col, 1.0)
@@ -207,7 +200,7 @@ func _on_map_canvas_draw() -> void:
 			drawn_pairs[pair_key] = true
 			var center_b: Vector2 = (screen_rects[nid] as Rect2).get_center()
 			var both_explored: bool = nid in GameState.explored_rooms
-			var line_col: Color = Color(COLOR_PALE_GOLD, 0.72) if both_explored else Color(COLOR_MUD_BRICK, 0.25)
+			var line_col: Color = Color(UITokens.PALE_GOLD, 0.72) if both_explored else Color(UITokens.MUD_BRICK, 0.25)
 			map_canvas.draw_line(center_a, center_b, line_col, 4.0 if both_explored else 2.0, true)
 
 	# Pass 2: Draw room rectangles and icons
@@ -223,7 +216,7 @@ func _on_map_canvas_draw() -> void:
 		var fill_col: Color = _color_for_area(area_id)
 
 		map_canvas.draw_rect(sr, fill_col, true)
-		var border_col: Color = COLOR_PALE_GOLD if is_current else Color(COLOR_WARM_SAND, 0.75)
+		var border_col: Color = UITokens.PALE_GOLD if is_current else Color(UITokens.WARM_SAND, 0.75)
 		map_canvas.draw_rect(sr, border_col, false, 4.0 if is_current else 2.0)
 
 		# Shrine marker (pale gold diamond)
@@ -235,20 +228,20 @@ func _on_map_canvas_draw() -> void:
 				sp + Vector2(0.0, 9.0),
 				sp + Vector2(-9.0, 0.0),
 			])
-			map_canvas.draw_colored_polygon(diamond, COLOR_PALE_GOLD)
+			map_canvas.draw_colored_polygon(diamond, UITokens.PALE_GOLD)
 
 		# Boss marker (desert red / gold crown diamond)
 		if bool(rdata.get("has_boss", false)):
 			var bp: Vector2 = Vector2(sr.end.x - 20.0, sr.position.y + 20.0)
-			var boss_col: Color = COLOR_SUNSET_ORANGE if not GameState.is_boss_defeated("boss_spire_warden") else Color(COLOR_MUD_BRICK, 0.65)
+			var boss_col: Color = UITokens.EMBER if not GameState.is_boss_defeated("boss_spire_warden") else Color(UITokens.MUD_BRICK, 0.65)
 			map_canvas.draw_circle(bp, 9.0, boss_col)
-			map_canvas.draw_arc(bp, 11.0, 0.0, TAU, 16, COLOR_PALE_GOLD, 2.0, true)
+			map_canvas.draw_arc(bp, 11.0, 0.0, TAU, 16, UITokens.PALE_GOLD, 2.0, true)
 
 		# Current player pulse dot
 		if is_current:
 			var pulse_r: float = 8.0 + 3.0 * sin(_elapsed * 4.0)
-			map_canvas.draw_circle(sr.get_center(), pulse_r + 4.0, Color(COLOR_PALE_GOLD, 0.25))
-			map_canvas.draw_circle(sr.get_center(), 6.5, COLOR_PALE_GOLD)
+			map_canvas.draw_circle(sr.get_center(), pulse_r + 4.0, Color(UITokens.PALE_GOLD, 0.25))
+			map_canvas.draw_circle(sr.get_center(), 6.5, UITokens.PALE_GOLD)
 
 		# Room area title caption inside wide enough cells
 		var title_key: String = str(rdata.get("title_key", ""))
@@ -262,17 +255,17 @@ func _on_map_canvas_draw() -> void:
 				HORIZONTAL_ALIGNMENT_CENTER,
 				sr.size.x - 16.0,
 				15,
-				COLOR_WARM_SAND
+				UITokens.WARM_SAND
 			)
 
 
 func _color_for_area(area_id: String) -> Color:
 	match area_id:
 		"desert_camp":
-			return Color(COLOR_DESERT_RED, 0.55)
+			return Color(UITokens.DESERT_RED, 0.55)
 		"empty_highway":
-			return Color(COLOR_MUD_BRICK, 0.48)
+			return Color(UITokens.MUD_BRICK, 0.48)
 		"empty_riyadh":
-			return Color(COLOR_GLASS_TEAL, 0.55)
+			return Color(UITokens.GLASS_TEAL, 0.55)
 		_:
-			return Color(COLOR_NIGHT_INDIGO, 0.75)
+			return Color(UITokens.NIGHT_INDIGO, 0.75)

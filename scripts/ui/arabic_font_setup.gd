@@ -23,8 +23,34 @@ const RLI: String = "\u2067"
 const FSI: String = "\u2068"
 const PDI: String = "\u2069"
 
+## Font roles of the "Notebook & Ember" identity (docs/UI_DESIGN_PLAN.md §3).
+## Bundled OFL files in FINAL_FONTS_DIR are matched by lowercase file-name prefix.
+const ROLE_DISPLAY: String = "display"
+const ROLE_HAND: String = "hand"
+const ROLE_BODY: String = "body"
+const ROLE_FILE_PREFIXES_AR: Dictionary = {
+	"display": ["reem_kufi"],
+	"hand": ["aref_ruqaa_regular", "aref_ruqaa"],
+	"body": ["readex_pro"],
+}
+const ROLE_FILE_PREFIXES_EN: Dictionary = {
+	"display": ["readex_pro"],
+	"hand": ["eb_garamond_italic", "eb_garamond"],
+	"body": ["readex_pro"],
+}
+const ROLE_SYSTEM_FALLBACKS: Dictionary = {
+	"display": ["Reem Kufi", "Noto Kufi Arabic", "Geeza Pro", "Noto Sans Arabic", "Arial"],
+	"hand": ["Aref Ruqaa", "Noto Naskh Arabic", "Amiri", "Geeza Pro", "Noto Sans Arabic", "Arial"],
+	"body": ["Readex Pro", "Geeza Pro", "SF Arabic", "Damascus", "Noto Sans Arabic", "Cairo", "Arial"],
+}
+
+## Western -> Arabic-Indic digits (decision D3: Arabic-Indic everywhere in `ar`).
+const ARABIC_INDIC_DIGITS: String = "٠١٢٣٤٥٦٧٨٩"
+
 static var _cached_font: Font = null
 static var _cached_theme: Theme = null
+static var _role_fonts: Dictionary = {}
+static var _base_default_font_size: int = -1
 
 
 static func is_rtl_locale(locale: String = "") -> bool:
@@ -41,7 +67,9 @@ static func get_arabic_font() -> Font:
 	fallback_system_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_AUTO
 	fallback_system_font.multichannel_signed_distance_field = false
 
-	var bundled_font: Font = _try_load_bundled_font()
+	var bundled_font: Font = _find_bundled_font(ROLE_FILE_PREFIXES_AR.get(ROLE_BODY, []) as Array)
+	if bundled_font == null:
+		bundled_font = _try_load_bundled_font()
 	if bundled_font != null:
 		if bundled_font is FontFile:
 			var font_file := bundled_font as FontFile
@@ -53,6 +81,111 @@ static func get_arabic_font() -> Font:
 
 	_cached_font = fallback_system_font
 	return _cached_font
+
+
+## Returns the font for a UI role ("display", "hand", "body") in the given locale.
+## Uses a bundled OFL file when present (with the body font as glyph fallback),
+## otherwise a SystemFont chain so the game still renders before DROP-002 fonts land.
+static func get_role_font(role: String, locale: String = "") -> Font:
+	var rtl: bool = is_rtl_locale(locale)
+	var cache_key: String = "%s_%s" % [role, "ar" if rtl else "en"]
+	if _role_fonts.has(cache_key):
+		return _role_fonts[cache_key] as Font
+
+	var prefixes_map: Dictionary = ROLE_FILE_PREFIXES_AR if rtl else ROLE_FILE_PREFIXES_EN
+	var prefixes: Array = prefixes_map.get(role, []) as Array
+	var font: Font = _find_bundled_font(prefixes)
+
+	var system_font := SystemFont.new()
+	var fallback_names: Array = ROLE_SYSTEM_FALLBACKS.get(role, SYSTEM_ARABIC_FONTS) as Array
+	system_font.font_names = PackedStringArray(fallback_names)
+	system_font.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_AUTO
+
+	if font == null:
+		if role == ROLE_BODY:
+			font = get_arabic_font()
+		else:
+			var body_font: Font = get_arabic_font()
+			var chain: Array[Font] = []
+			chain.append(body_font)
+			system_font.fallbacks = chain
+			font = system_font
+	elif font is FontFile:
+		var chain_file: Array[Font] = []
+		if role != ROLE_BODY:
+			chain_file.append(get_arabic_font())
+		chain_file.append(system_font)
+		(font as FontFile).fallbacks = chain_file
+
+	_role_fonts[cache_key] = font
+	return font
+
+
+static func _find_bundled_font(prefixes: Array) -> Font:
+	if prefixes.is_empty() or not DirAccess.dir_exists_absolute(FINAL_FONTS_DIR):
+		return null
+	var dir := DirAccess.open(FINAL_FONTS_DIR)
+	if dir == null:
+		return null
+	var names: PackedStringArray = PackedStringArray()
+	dir.list_dir_begin()
+	var file_name: String = dir.get_next()
+	while not file_name.is_empty():
+		if not dir.current_is_dir():
+			var lower: String = file_name.to_lower()
+			if lower.ends_with(".ttf") or lower.ends_with(".otf") or lower.ends_with(".woff2"):
+				names.append(file_name)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	names.sort()
+	for prefix: Variant in prefixes:
+		var pre: String = str(prefix)
+		for candidate: String in names:
+			if candidate.to_lower().begins_with(pre):
+				var path: String = FINAL_FONTS_DIR.path_join(candidate)
+				if ResourceLoader.exists(path):
+					var loaded: Resource = ResourceLoader.load(path)
+					if loaded is Font:
+						return loaded as Font
+	return null
+
+
+## Converts Western digits (and %) to Arabic-Indic forms in Arabic locales (decision D3).
+## Use only on numeric/formatted values, never on key names like "F1".
+static func localize_digits(text: String, locale: String = "") -> String:
+	if not is_rtl_locale(locale):
+		return text
+	var out: String = ""
+	for i: int in range(text.length()):
+		var code: int = text.unicode_at(i)
+		if code >= 48 and code <= 57:
+			out += ARABIC_INDIC_DIGITS[code - 48]
+		elif code == 37:
+			out += "٪"
+		else:
+			out += text[i]
+	return out
+
+
+static func format_number(value: int, locale: String = "") -> String:
+	return localize_digits(str(value), locale)
+
+
+static func format_percent(ratio: float, locale: String = "") -> String:
+	var pct: String = localize_digits(str(int(round(ratio * 100.0))), locale)
+	if is_rtl_locale(locale):
+		return "%s٪" % pct
+	return "%s%%" % pct
+
+
+static func get_text_scale() -> float:
+	var settings: Node = null
+	var loop: MainLoop = Engine.get_main_loop()
+	if loop is SceneTree:
+		settings = (loop as SceneTree).root.get_node_or_null("SettingsManager")
+	if settings != null and "text_scale" in settings:
+		return clampf(float(settings.get("text_scale")), 1.0, 1.5)
+	return 1.0
 
 
 static func _try_load_bundled_font() -> Font:
@@ -96,6 +229,7 @@ static func get_shaala_theme() -> Theme:
 		theme_res = Theme.new()
 
 	theme_res.default_font = get_arabic_font()
+	_base_default_font_size = theme_res.default_font_size if theme_res.default_font_size > 0 else 28
 	_cached_theme = theme_res
 	return _cached_theme
 
@@ -104,14 +238,35 @@ static func apply_to_control(root: Control, locale: String = "") -> void:
 	if root == null:
 		return
 	var rtl: bool = is_rtl_locale(locale)
-	root.theme = get_shaala_theme()
+	var scale: float = get_text_scale()
+	var theme_res: Theme = get_shaala_theme()
+	theme_res.default_font_size = int(round(float(_base_default_font_size) * scale))
+	root.theme = theme_res
 	root.layout_direction = Control.LAYOUT_DIRECTION_RTL if rtl else Control.LAYOUT_DIRECTION_LTR
-	_apply_recursive(root, rtl)
+	_apply_recursive(root, rtl, scale)
 
 
-static func _apply_recursive(node: Node, rtl: bool) -> void:
+## Applies role font and text scale to one control. Controls opt into a role with
+## set_meta("font_role", "display" | "hand" | "body"); explicit font sizes are scaled
+## from the size first seen (stored in meta "base_font_size").
+static func _apply_typography(ctrl: Control, rtl: bool, scale: float) -> void:
+	var font_slot: String = "normal_font" if ctrl is RichTextLabel else "font"
+	var size_slot: String = "normal_font_size" if ctrl is RichTextLabel else "font_size"
+	if ctrl.has_meta("font_role"):
+		var role: String = str(ctrl.get_meta("font_role"))
+		ctrl.add_theme_font_override(font_slot, get_role_font(role, "ar" if rtl else "en"))
+	if ctrl.has_theme_font_size_override(size_slot) or ctrl.has_meta("base_font_size"):
+		if not ctrl.has_meta("base_font_size"):
+			ctrl.set_meta("base_font_size", ctrl.get_theme_font_size(size_slot))
+		var base: int = int(ctrl.get_meta("base_font_size"))
+		ctrl.add_theme_font_size_override(size_slot, int(round(float(base) * scale)))
+
+
+static func _apply_recursive(node: Node, rtl: bool, scale: float = 1.0) -> void:
 	if node is Control:
 		var ctrl := node as Control
+		if ctrl is Label or ctrl is RichTextLabel or ctrl is Button:
+			_apply_typography(ctrl, rtl, scale)
 		if ctrl.has_meta("keep_ltr") and bool(ctrl.get_meta("keep_ltr")):
 			ctrl.layout_direction = Control.LAYOUT_DIRECTION_LTR
 		elif ctrl.get_parent() is CanvasLayer or ctrl.get_parent() == null:
@@ -136,7 +291,7 @@ static func _apply_recursive(node: Node, rtl: bool) -> void:
 			edit.structured_text_bidi_override = TextServer.STRUCTURED_TEXT_DEFAULT
 
 	for child: Node in node.get_children():
-		_apply_recursive(child, rtl)
+		_apply_recursive(child, rtl, scale)
 
 
 static func isolate_ltr(value: String) -> String:
@@ -152,7 +307,7 @@ static func isolate_auto(value: String) -> String:
 
 
 static func format_bidi_pair(label_text: String, ltr_value: String, separator: String = ": ") -> String:
-	var isolated_val: String = isolate_ltr(ltr_value)
+	var isolated_val: String = isolate_ltr(localize_digits(ltr_value))
 	if is_rtl_locale():
 		return "%s%s%s" % [isolate_rtl(label_text), separator, isolated_val]
 	return "%s%s%s" % [isolate_ltr(label_text), separator, isolated_val]

@@ -207,7 +207,7 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 - Next for Gemini: P2 fonts (§2, with `OFL` files) and P2 ornaments (§3: HP embers, flame strip + fills, focus ember, furjat divider/toggles, prompt scrim, save ember, input glyph atlases, `logo_shaala.png`). Then P3 notebook assets.
 
 ### 7. Integration Checklist for Claude Opus
-- [ ] P1 (no art needed): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
+- [x] P1 (no art needed, done 2026-11-26): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
 - [ ] P2: fonts discovered per role in `ar` (RTL) and `en` (LTR), zero tofu; title, HUD, prompts, dialogue, vignette rebuilt per plan §6.1–6.4.
 - [ ] P3: notebook pause, journal, map, settings, confirm slip per plan §6.5–6.9.
 - [ ] Import presets applied (`Lossless`, 9-slice margins), atlas packed, UI draw calls within budget (plan §9).
@@ -215,6 +215,7 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 - [ ] Before/after screenshots added next to `docs/ui_audit/`; status → `VERIFIED`.
 
 ### 8. Technical Sign-Off Notes (Claude Opus)
+- **2026-11-26 (P1 code):** `UITokens`, font roles, Arabic-Indic digits, 4 new accessibility settings, HUD/title/vignette behaviour per plan §6.1–6.4, em-dash copy pass, capped ambient redraw. Gate: `verify_m1.py --strict` 24/24 PASS, Godot import and boot clean. Fonts from §2 will be picked up by role automatically when dropped in `assets/final/fonts/`.
 - **2026-11-26 (P0 review):** Style frames reviewed against the plan. All five Gemini adjustments in §6.4 accepted and folded into `UI_DESIGN_PLAN.md` (dual-surface tokens, 128 px ribbons, 30% wounded HUD floor, Ruqaa line-height 1.95–2.0 + Readex fallback, start-edge fill). Open notes for Fred: real-landmark-in-ruins depiction in `sf02`, and `sf02` world art style differs from the painterly direction (HUD layer only is approved as reference).
 - **2026-11-26:** Brief and plan written; current UI audited from live Godot 4.3 renders (`docs/ui_audit/`). No code changed yet.
 

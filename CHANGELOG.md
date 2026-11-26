@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added (UI, DROP-002 P1 "Notebook & Ember")
+- `scripts/ui/ui_tokens.gd` (`UITokens`): dark-surface and paper-surface colour tokens, type scale, motion timings, HUD fade constants; replaces per-script `COLOR_*` constants in all UI scripts.
+- `ArabicFontSetup`: font roles (`display` / `hand` / `body`) discovered by OFL file-name prefix with SystemFont fallbacks; `localize_digits()` / `format_number()` / `format_percent()` (Arabic-Indic digits in `ar`); text-scale support for theme and explicit font sizes.
+- Settings: `reduce_motion`, `hud_always_visible`, `show_numbers`, `text_scale` (100/125/150%), persisted and exposed in Accessibility with new `strings.csv` keys.
+- `verify_m1.py`: `UI_IDENTITY_P1` contract check (tokens, font roles, settings, no em-dash in UI copy, capped ambient redraw).
+
+### Changed (UI)
+- HUD: no boxed panels; HP as ember vs. smaller hollow ash shapes; numbers hidden unless Show Numbers; dagger tier name shown briefly on tier change; era mark hidden until Time Shift is unlocked; idle fade after 4 s (to 0% at full HP, 30% floor while wounded).
+- Title: Continue is hidden (not disabled) without a save; logo/subtitle use display/hand roles; ambient redraw capped at 20 Hz and frozen under Reduce Motion.
+- Vignette/dialogue: shaping-safe write-on reveal (`VC_CHARS_AFTER_SHAPING`), first press completes the line, counters removed, ambient redraw capped.
+- `strings.csv`: em-dash separators removed from UI copy, era and dagger-tier names split from their numbers, page titles without the "Torn Page" prefix.
+
 ### Added (docs)
 - `docs/UI_DESIGN_PLAN.md`: "Notebook & Ember" UI identity plan (audit of the M1 UI, typography, colour roles, Najdi motif system, per-screen layouts, motion, accessibility and performance budget, decisions for Fred).
 - `docs/VISUAL_HANDOFF.md` `DROP-002`: UI brief for Gemini (style frames first, then fonts and UI ornaments); supersedes DROP-001 Batch 1E.

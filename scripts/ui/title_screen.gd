@@ -8,13 +8,6 @@ signal continue_pressed
 signal settings_pressed
 signal quit_pressed
 
-const COLOR_DEEP_SHADOW: Color = Color("#0D1021")
-const COLOR_NIGHT_INDIGO: Color = Color("#161B33")
-const COLOR_DESERT_RED: Color = Color("#A84432")
-const COLOR_SUNSET_ORANGE: Color = Color("#E07A3C")
-const COLOR_MUD_BRICK: Color = Color("#C68B59")
-const COLOR_PALE_GOLD: Color = Color("#F6E299")
-const COLOR_WARM_SAND: Color = Color("#E8C49A")
 
 @onready var title_label: Label = $CenterContainer/MainCard/VBox/TitleLabel
 @onready var subtitle_label: Label = $CenterContainer/MainCard/VBox/SubtitleLabel
@@ -27,10 +20,15 @@ const COLOR_WARM_SAND: Color = Color("#E8C49A")
 @onready var lang_en_button: Button = $CenterContainer/MainCard/VBox/LanguageRow/LangEnButton
 @onready var quit_button: Button = $CenterContainer/MainCard/VBox/ButtonsBox/QuitButton
 
+const AMBIENT_REDRAW_HZ: float = 20.0
+
 var _elapsed: float = 0.0
+var _redraw_accum: float = 0.0
 
 
 func _ready() -> void:
+	title_label.set_meta("font_role", ArabicFontSetup.ROLE_DISPLAY)
+	subtitle_label.set_meta("font_role", ArabicFontSetup.ROLE_HAND)
 	new_game_button.pressed.connect(_on_new_game_pressed)
 	continue_button.pressed.connect(_on_continue_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
@@ -46,7 +44,13 @@ func _process(delta: float) -> void:
 	if not visible:
 		return
 	_elapsed += delta
-	queue_redraw()
+	# Capped ambient redraw (was every frame); frozen under Reduce Motion.
+	if SettingsManager.reduce_motion:
+		return
+	_redraw_accum += delta
+	if _redraw_accum >= 1.0 / AMBIENT_REDRAW_HZ:
+		_redraw_accum = 0.0
+		queue_redraw()
 
 
 func _draw() -> void:
@@ -56,12 +60,12 @@ func _draw() -> void:
 
 	# Painterly dusk sky gradient bands (night indigo -> desert red -> sunset ochre horizon)
 	var sky_bands: Array[Color] = [
-		COLOR_DEEP_SHADOW,
-		COLOR_NIGHT_INDIGO,
+		UITokens.NIGHT_DEEP,
+		UITokens.NIGHT_INDIGO,
 		Color("#2A223D"),
 		Color("#5C2D36"),
-		COLOR_DESERT_RED,
-		COLOR_SUNSET_ORANGE.darkened(0.22),
+		UITokens.DESERT_RED,
+		UITokens.EMBER.darkened(0.22),
 	]
 	var band_h: float = sz.y / float(sky_bands.size())
 	for i: int in range(sky_bands.size()):
@@ -70,10 +74,10 @@ func _draw() -> void:
 	# Floating pale-gold Memory Orb halo in upper sky
 	var orb_pulse: float = 1.0 + 0.06 * sin(_elapsed * 1.8)
 	var orb_pos: Vector2 = Vector2(sz.x * 0.5, sz.y * 0.17)
-	draw_circle(orb_pos, 150.0 * orb_pulse, Color(COLOR_PALE_GOLD, 0.05))
-	draw_circle(orb_pos, 96.0 * orb_pulse, Color(COLOR_PALE_GOLD, 0.11))
-	draw_circle(orb_pos, 52.0 * orb_pulse, Color(COLOR_PALE_GOLD, 0.22))
-	draw_circle(orb_pos, 22.0, Color(COLOR_PALE_GOLD, 0.85))
+	draw_circle(orb_pos, 150.0 * orb_pulse, Color(UITokens.PALE_GOLD, 0.05))
+	draw_circle(orb_pos, 96.0 * orb_pulse, Color(UITokens.PALE_GOLD, 0.11))
+	draw_circle(orb_pos, 52.0 * orb_pulse, Color(UITokens.PALE_GOLD, 0.22))
+	draw_circle(orb_pos, 22.0, Color(UITokens.PALE_GOLD, 0.85))
 
 	# Drifting desert memory motes
 	for m: int in range(18):
@@ -81,11 +85,11 @@ func _draw() -> void:
 		var mx: float = fmod(float(m) * (sz.x / 18.0) + _elapsed * (12.0 + float(m % 4) * 5.0), sz.x)
 		var my: float = sz.y * (0.25 + 0.55 * (0.5 + 0.5 * sin(phase + _elapsed * 0.45)))
 		var alpha: float = 0.18 + 0.16 * sin(_elapsed * 1.4 + phase)
-		draw_circle(Vector2(mx, my), 2.5 + float(m % 3), Color(COLOR_PALE_GOLD, alpha))
+		draw_circle(Vector2(mx, my), 2.5 + float(m % 3), Color(UITokens.PALE_GOLD, alpha))
 
 	# Distant ruined Riyadh glass towers silhouette (abstract respectful skyline on horizon)
 	var horizon_y: float = sz.y * 0.72
-	var tower_color: Color = Color(COLOR_NIGHT_INDIGO, 0.72)
+	var tower_color: Color = Color(UITokens.NIGHT_INDIGO, 0.72)
 	var towers: Array[Rect2] = [
 		Rect2(sz.x * 0.12, horizon_y - 190.0, 44.0, 210.0),
 		Rect2(sz.x * 0.16, horizon_y - 260.0, 56.0, 280.0),
@@ -118,7 +122,7 @@ func _draw() -> void:
 		Vector2(sz.x, sz.y * 0.81),
 		Vector2(sz.x, sz.y),
 	])
-	draw_colored_polygon(fore_dune, COLOR_DEEP_SHADOW)
+	draw_colored_polygon(fore_dune, UITokens.NIGHT_DEEP)
 
 	# Bedouin tent (bayt al-sha'r) silhouette on lower left
 	var tent := PackedVector2Array([
@@ -128,12 +132,14 @@ func _draw() -> void:
 		Vector2(sz.x * 0.27, sz.y * 0.85),
 	])
 	draw_colored_polygon(tent, Color("#090B17"))
-	draw_circle(Vector2(sz.x * 0.175, sz.y * 0.835), 9.0, Color(COLOR_SUNSET_ORANGE, 0.55 + 0.2 * sin(_elapsed * 3.1)))
+	draw_circle(Vector2(sz.x * 0.175, sz.y * 0.835), 9.0, Color(UITokens.EMBER, 0.55 + 0.2 * sin(_elapsed * 3.1)))
 
 
 func refresh_state() -> void:
 	var has_save_file: bool = SaveManager.has_save()
 	continue_button.disabled = not has_save_file
+	# No disabled items in the title list (plan §6.1): Continue exists only when a save exists.
+	continue_button.visible = has_save_file
 	_update_language_button_highlights()
 	if visible:
 		if has_save_file:
@@ -158,8 +164,8 @@ func refresh_texts() -> void:
 
 func _update_language_button_highlights() -> void:
 	var is_ar: bool = ArabicFontSetup.is_rtl_locale()
-	lang_ar_button.modulate = COLOR_PALE_GOLD if is_ar else COLOR_WARM_SAND
-	lang_en_button.modulate = COLOR_PALE_GOLD if not is_ar else COLOR_WARM_SAND
+	lang_ar_button.modulate = UITokens.PALE_GOLD if is_ar else UITokens.WARM_SAND
+	lang_en_button.modulate = UITokens.PALE_GOLD if not is_ar else UITokens.WARM_SAND
 
 
 func _on_new_game_pressed() -> void:

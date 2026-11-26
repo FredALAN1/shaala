@@ -8,9 +8,6 @@ signal map_requested
 signal save_and_quit_requested
 signal closed_from_title
 
-const COLOR_PALE_GOLD: Color = Color("#F6E299")
-const COLOR_WARM_SAND: Color = Color("#E8C49A")
-const COLOR_MUD_BRICK: Color = Color("#C68B59")
 
 const NOTEBOOK_CATALOG: Array = [
 	{
@@ -97,15 +94,60 @@ var _syncing_controls: bool = false
 var _rebind_row_labels: Dictionary = {}
 var _rebind_row_buttons: Dictionary = {}
 
+# "Notebook & Ember" accessibility rows built at runtime from the existing row templates.
+var motion_label: Label = null
+var motion_check: CheckButton = null
+var hud_label: Label = null
+var hud_check: CheckButton = null
+var numbers_label: Label = null
+var numbers_check: CheckButton = null
+var text_scale_label: Label = null
+var text_scale_slider: HSlider = null
+var text_scale_value: Label = null
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 
+	_build_accessibility_rows()
 	_connect_ui_signals()
 	_build_rebind_rows()
 	_sync_from_settings()
 	refresh_texts()
+
+
+func _build_accessibility_rows() -> void:
+	var flash_row: HBoxContainer = flash_check.get_parent() as HBoxContainer
+	var assist_row: HBoxContainer = assist_slider.get_parent() as HBoxContainer
+
+	var motion_row := flash_row.duplicate() as HBoxContainer
+	motion_row.name = "MotionRow"
+	accessibility_section.add_child(motion_row)
+	motion_label = motion_row.get_node("Label") as Label
+	motion_check = motion_row.get_node("CheckButton") as CheckButton
+
+	var hud_row := flash_row.duplicate() as HBoxContainer
+	hud_row.name = "HudAlwaysRow"
+	accessibility_section.add_child(hud_row)
+	hud_label = hud_row.get_node("Label") as Label
+	hud_check = hud_row.get_node("CheckButton") as CheckButton
+
+	var numbers_row := flash_row.duplicate() as HBoxContainer
+	numbers_row.name = "ShowNumbersRow"
+	accessibility_section.add_child(numbers_row)
+	numbers_label = numbers_row.get_node("Label") as Label
+	numbers_check = numbers_row.get_node("CheckButton") as CheckButton
+
+	var scale_row := assist_row.duplicate() as HBoxContainer
+	scale_row.name = "TextScaleRow"
+	accessibility_section.add_child(scale_row)
+	text_scale_label = scale_row.get_node("Label") as Label
+	text_scale_slider = scale_row.get_node("Slider") as HSlider
+	text_scale_value = scale_row.get_node("ValueLabel") as Label
+	text_scale_slider.min_value = 1.0
+	text_scale_slider.max_value = 1.5
+	text_scale_slider.step = 0.25
 
 
 func _connect_ui_signals() -> void:
@@ -129,6 +171,10 @@ func _connect_ui_signals() -> void:
 	flash_check.toggled.connect(_on_flash_toggled)
 	assist_slider.value_changed.connect(_on_assist_changed)
 	deadzone_slider.value_changed.connect(_on_deadzone_changed)
+	motion_check.toggled.connect(_on_motion_toggled)
+	hud_check.toggled.connect(_on_hud_always_toggled)
+	numbers_check.toggled.connect(_on_show_numbers_toggled)
+	text_scale_slider.value_changed.connect(_on_text_scale_changed)
 
 
 func _input(event: InputEvent) -> void:
@@ -213,6 +259,13 @@ func refresh_texts() -> void:
 	flash_check.text = tr("UI_ON") if flash_check.button_pressed else tr("UI_OFF")
 	assist_label.text = tr("UI_ASSIST_SPEED")
 	deadzone_label.text = tr("UI_GAMEPAD_DEADZONE")
+	motion_label.text = tr("UI_REDUCE_MOTION")
+	motion_check.text = tr("UI_ON") if motion_check.button_pressed else tr("UI_OFF")
+	hud_label.text = tr("UI_HUD_ALWAYS_VISIBLE")
+	hud_check.text = tr("UI_ON") if hud_check.button_pressed else tr("UI_OFF")
+	numbers_label.text = tr("UI_SHOW_NUMBERS")
+	numbers_check.text = tr("UI_ON") if numbers_check.button_pressed else tr("UI_OFF")
+	text_scale_label.text = tr("UI_TEXT_SCALE")
 
 	controls_header_label.text = tr("UI_CONTROLS")
 	rebind_status_label.text = tr("UI_REBIND_PROMPT") if not _rebinding_action.is_empty() else ""
@@ -239,7 +292,7 @@ func refresh_notebook() -> void:
 		empty_lbl.text = tr("UI_NO_PAGES_YET")
 		empty_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty_lbl.set_meta("align_reading_edge", true)
-		empty_lbl.add_theme_color_override("font_color", Color(COLOR_WARM_SAND, 0.72))
+		empty_lbl.add_theme_color_override("font_color", Color(UITokens.WARM_SAND, 0.72))
 		notebook_list.add_child(empty_lbl)
 		ArabicFontSetup.apply_to_control(notebook_section, TranslationServer.get_locale())
 		return
@@ -257,14 +310,14 @@ func refresh_notebook() -> void:
 		badge.text = tr("UI_TORN_PAGE")
 		badge.set_meta("align_reading_edge", true)
 		badge.add_theme_font_size_override("font_size", 16)
-		badge.add_theme_color_override("font_color", COLOR_MUD_BRICK)
+		badge.add_theme_color_override("font_color", UITokens.MUD_BRICK)
 		box.add_child(badge)
 
 		var title := Label.new()
 		title.text = tr(str(page_entry["title_key"]))
 		title.set_meta("align_reading_edge", true)
 		title.add_theme_font_size_override("font_size", 24)
-		title.add_theme_color_override("font_color", COLOR_PALE_GOLD)
+		title.add_theme_color_override("font_color", UITokens.PALE_GOLD)
 		box.add_child(title)
 
 		var body := RichTextLabel.new()
@@ -316,7 +369,7 @@ func _refresh_rebind_rows() -> void:
 			var btn := _rebind_row_buttons[action_name] as Button
 			if _rebinding_action == action_name:
 				btn.text = ArabicFontSetup.isolate_ltr("...")
-				btn.modulate = COLOR_PALE_GOLD
+				btn.modulate = UITokens.PALE_GOLD
 			else:
 				var key_str: String = ArabicFontSetup.get_action_key_label(action_name)
 				btn.text = ArabicFontSetup.isolate_ltr("[%s]" % key_str) if key_str != "?" else tr("UI_KEY_UNBOUND")
@@ -330,10 +383,10 @@ func _show_section(section_name: String) -> void:
 	accessibility_section.visible = section_name == "accessibility"
 	controls_section.visible = section_name == "controls"
 
-	notebook_tab_button.modulate = COLOR_PALE_GOLD if section_name == "notebook" else Color.WHITE
-	audio_tab_button.modulate = COLOR_PALE_GOLD if section_name == "audio" else Color.WHITE
-	accessibility_tab_button.modulate = COLOR_PALE_GOLD if section_name == "accessibility" else Color.WHITE
-	controls_tab_button.modulate = COLOR_PALE_GOLD if section_name == "controls" else Color.WHITE
+	notebook_tab_button.modulate = UITokens.PALE_GOLD if section_name == "notebook" else Color.WHITE
+	audio_tab_button.modulate = UITokens.PALE_GOLD if section_name == "audio" else Color.WHITE
+	accessibility_tab_button.modulate = UITokens.PALE_GOLD if section_name == "accessibility" else Color.WHITE
+	controls_tab_button.modulate = UITokens.PALE_GOLD if section_name == "controls" else Color.WHITE
 
 	if section_name == "notebook":
 		refresh_notebook()
@@ -350,23 +403,29 @@ func _sync_from_settings() -> void:
 	flash_check.button_pressed = SettingsManager.reduce_flash
 	assist_slider.value = clampf(SettingsManager.assist_game_speed, 0.7, 1.0)
 	deadzone_slider.value = clampf(SettingsManager.gamepad_deadzone, 0.1, 0.5)
+	motion_check.button_pressed = SettingsManager.reduce_motion
+	hud_check.button_pressed = SettingsManager.hud_always_visible
+	numbers_check.button_pressed = SettingsManager.show_numbers
+	text_scale_slider.value = clampf(SettingsManager.text_scale, 1.0, 1.5)
 	_syncing_controls = false
 	_update_value_labels()
 
 
 func _update_value_labels() -> void:
-	master_vol_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(master_vol_slider.value * 100.0)))
-	music_vol_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(music_vol_slider.value * 100.0)))
-	sfx_vol_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(sfx_vol_slider.value * 100.0)))
-	shake_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(shake_slider.value * 100.0)))
-	assist_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(assist_slider.value * 100.0)))
-	deadzone_value.text = ArabicFontSetup.isolate_ltr("%d%%" % int(round(deadzone_slider.value * 100.0)))
+	master_vol_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(master_vol_slider.value))
+	music_vol_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(music_vol_slider.value))
+	sfx_vol_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(sfx_vol_slider.value))
+	shake_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(shake_slider.value))
+	assist_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(assist_slider.value))
+	deadzone_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(deadzone_slider.value))
+	if text_scale_value != null:
+		text_scale_value.text = ArabicFontSetup.isolate_ltr(ArabicFontSetup.format_percent(text_scale_slider.value))
 
 
 func _update_language_highlights() -> void:
 	var is_ar: bool = ArabicFontSetup.is_rtl_locale()
-	lang_ar_button.modulate = COLOR_PALE_GOLD if is_ar else COLOR_WARM_SAND
-	lang_en_button.modulate = COLOR_PALE_GOLD if not is_ar else COLOR_WARM_SAND
+	lang_ar_button.modulate = UITokens.PALE_GOLD if is_ar else UITokens.WARM_SAND
+	lang_en_button.modulate = UITokens.PALE_GOLD if not is_ar else UITokens.WARM_SAND
 
 
 func _on_select_section(section_name: String) -> void:
@@ -451,6 +510,35 @@ func _on_deadzone_changed(val: float) -> void:
 	if _syncing_controls:
 		return
 	SettingsManager.set_gamepad_deadzone(val)
+
+
+func _on_motion_toggled(pressed: bool) -> void:
+	motion_check.text = tr("UI_ON") if pressed else tr("UI_OFF")
+	if _syncing_controls:
+		return
+	SettingsManager.set_reduce_motion(pressed)
+
+
+func _on_hud_always_toggled(pressed: bool) -> void:
+	hud_check.text = tr("UI_ON") if pressed else tr("UI_OFF")
+	if _syncing_controls:
+		return
+	SettingsManager.set_hud_always_visible(pressed)
+
+
+func _on_show_numbers_toggled(pressed: bool) -> void:
+	numbers_check.text = tr("UI_ON") if pressed else tr("UI_OFF")
+	if _syncing_controls:
+		return
+	SettingsManager.set_show_numbers(pressed)
+
+
+func _on_text_scale_changed(val: float) -> void:
+	_update_value_labels()
+	if _syncing_controls:
+		return
+	# Only 3 steps (100/125/150%), so re-laying out the UI on each change is cheap.
+	SettingsManager.set_text_scale(val)
 
 
 func _on_start_rebind(action_name: String) -> void:

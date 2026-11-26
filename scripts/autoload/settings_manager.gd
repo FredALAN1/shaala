@@ -23,6 +23,11 @@ var gamepad_deadzone: float = 0.2
 var master_volume: float = 0.85
 var music_volume: float = 0.75
 var sfx_volume: float = 0.85
+## "Notebook & Ember" accessibility options (docs/UI_DESIGN_PLAN.md §7, §9).
+var reduce_motion: bool = false
+var hud_always_visible: bool = false
+var show_numbers: bool = false
+var text_scale: float = 1.0
 var keybindings: Dictionary = {}
 
 var _default_keybindings: Dictionary = {}
@@ -119,6 +124,10 @@ func load_settings() -> bool:
 	master_volume = clampf(float(data.get("master_volume", 0.85)), 0.0, 1.0)
 	music_volume = clampf(float(data.get("music_volume", 0.75)), 0.0, 1.0)
 	sfx_volume = clampf(float(data.get("sfx_volume", 0.85)), 0.0, 1.0)
+	reduce_motion = bool(data.get("reduce_motion", false))
+	hud_always_visible = bool(data.get("hud_always_visible", false))
+	show_numbers = bool(data.get("show_numbers", false))
+	text_scale = _snap_text_scale(float(data.get("text_scale", 1.0)))
 
 	keybindings.clear()
 	var saved_keys: Variant = data.get("keybindings", {})
@@ -142,6 +151,10 @@ func save_settings() -> bool:
 		"master_volume": master_volume,
 		"music_volume": music_volume,
 		"sfx_volume": sfx_volume,
+		"reduce_motion": reduce_motion,
+		"hud_always_visible": hud_always_visible,
+		"show_numbers": show_numbers,
+		"text_scale": text_scale,
 		"keybindings": keybindings.duplicate(true),
 	}
 	var file: FileAccess = FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
@@ -223,6 +236,39 @@ func set_sfx_volume(value: float) -> void:
 	apply_audio_volumes()
 	save_settings()
 	EventBus.settings_changed.emit()
+
+
+func set_reduce_motion(enabled: bool) -> void:
+	reduce_motion = enabled
+	save_settings()
+	EventBus.settings_changed.emit()
+
+
+func set_hud_always_visible(enabled: bool) -> void:
+	hud_always_visible = enabled
+	save_settings()
+	EventBus.settings_changed.emit()
+
+
+func set_show_numbers(enabled: bool) -> void:
+	show_numbers = enabled
+	save_settings()
+	EventBus.settings_changed.emit()
+
+
+## Text scale steps: 100% / 125% / 150%. Re-applies typography to the UI via locale_changed.
+func set_text_scale(value: float) -> void:
+	var snapped_value: float = _snap_text_scale(value)
+	if is_equal_approx(snapped_value, text_scale):
+		return
+	text_scale = snapped_value
+	save_settings()
+	EventBus.locale_changed.emit(locale)
+	EventBus.settings_changed.emit()
+
+
+func _snap_text_scale(value: float) -> float:
+	return clampf(snappedf(value, 0.25), 1.0, 1.5)
 
 
 func rebind_action_key(action_name: String, keycode: int) -> void:

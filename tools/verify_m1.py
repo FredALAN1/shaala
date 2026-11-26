@@ -2638,6 +2638,65 @@ class M1Verifier:
     # SECTION E: Deliverables, Docs & Content Rules Audit
     # -----------------------------------------------------------------------
 
+    def check_ui_identity(self) -> None:
+        """DROP-002 "Notebook & Ember" P1 contracts (docs/UI_DESIGN_PLAN.md §8)."""
+        sec = "C"
+        problems = 0
+        tokens_rp = "scripts/ui/ui_tokens.gd"
+        tokens_p = self.root / tokens_rp
+        if not tokens_p.exists():
+            self.add(sec, "HIGH", "UI_TOKENS_MISSING", "UITokens script missing", tokens_rp)
+            problems += 1
+        else:
+            ttxt = tokens_p.read_text(encoding="utf-8")
+            for tok in ("PALE_GOLD", "EMBER", "DESERT_RED", "PAPER_ASH", "INK_BROWN", "INK_FOCUS_PAPER",
+                        "INK_DESTRUCTIVE_PAPER", "HUD_WOUNDED_FLOOR_ALPHA"):
+                if f"const {tok}" not in ttxt:
+                    self.add(sec, "HIGH", "UI_TOKEN_MISSING", f"UITokens missing {tok}", tokens_rp)
+                    problems += 1
+        afs_rp = "scripts/ui/arabic_font_setup.gd"
+        afs_p = self.root / afs_rp
+        if afs_p.exists():
+            atxt = afs_p.read_text(encoding="utf-8")
+            for fn in ("func get_role_font(", "func localize_digits(", "func get_text_scale("):
+                if fn not in atxt:
+                    self.add(sec, "HIGH", "UI_FONT_ROLES", f"ArabicFontSetup missing {fn}", afs_rp)
+                    problems += 1
+        sm_rp = "scripts/autoload/settings_manager.gd"
+        sm_p = self.root / sm_rp
+        if sm_p.exists():
+            stxt = sm_p.read_text(encoding="utf-8")
+            for key in ("reduce_motion", "hud_always_visible", "show_numbers", "text_scale"):
+                if f'"{key}"' not in stxt or f"func set_{key}(" not in stxt:
+                    self.add(sec, "HIGH", "UI_SETTING_MISSING", f"SettingsManager must persist and set '{key}'", sm_rp)
+                    problems += 1
+        ui_dir = self.root / "scripts/ui"
+        if ui_dir.exists():
+            for gd in sorted(ui_dir.glob("*.gd")):
+                txt = gd.read_text(encoding="utf-8")
+                rp = gd.relative_to(self.root).as_posix()
+                if re.search(r"^const COLOR_[A-Z_]+\s*:", txt, re.M):
+                    self.add(sec, "MEDIUM", "UI_LOCAL_COLOR_CONST", "Use UITokens instead of local COLOR_* constants", rp)
+                    problems += 1
+        for rp in ("scripts/ui/title_screen.gd", "scripts/ui/vignette_player.gd"):
+            p_ = self.root / rp
+            if p_.exists() and "AMBIENT_REDRAW_HZ" not in p_.read_text(encoding="utf-8"):
+                self.add(sec, "MEDIUM", "UI_PER_FRAME_REDRAW", "Ambient _draw must be rate-capped (AMBIENT_REDRAW_HZ)", rp)
+                problems += 1
+        csv_p = self.root / "localization/strings.csv"
+        if csv_p.exists():
+            with csv_p.open("r", encoding="utf-8-sig", newline="") as fh:
+                for line_no, row in enumerate(csv.reader(fh), start=1):
+                    if not row:
+                        continue
+                    key = row[0].strip()
+                    if key.startswith(("UI_", "PROMPT_", "AREA_")) or (key.startswith("PAGE_") and key.endswith("_TITLE")):
+                        if any("\u2014" in cell for cell in row[1:]):
+                            self.add(sec, "MEDIUM", "UI_EM_DASH", f"Em-dash separator in UI copy '{key}' (use hierarchy, not punctuation)", "localization/strings.csv", line_no)
+                            problems += 1
+        if problems == 0:
+            self.add(sec, "PASS", "UI_IDENTITY_P1", "Notebook & Ember P1 contracts hold (tokens, font roles, digits, settings, no em-dash UI copy, capped redraw).")
+
     def check_section_e(self) -> None:
         sec = "E"
         # 1. GDD.md
@@ -2805,6 +2864,7 @@ class M1Verifier:
             self.check_section_b()
         if s in ("all", "c"):
             self.check_section_c()
+            self.check_ui_identity()
         if s in ("all", "d"):
             self.check_section_d()
         if s in ("all", "e"):
