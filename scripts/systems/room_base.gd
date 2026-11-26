@@ -38,6 +38,17 @@ func get_camera_bounds() -> Rect2:
 	return camera_bounds
 
 
+func get_or_create_custom_layer() -> Node2D:
+	var existing: Node = get_node_or_null("DevCustomLayer")
+	if existing is Node2D:
+		return existing as Node2D
+	var layer: Node2D = Node2D.new()
+	layer.name = "DevCustomLayer"
+	layer.z_index = 2
+	add_child(layer)
+	return layer
+
+
 func apply_era(era: String) -> void:
 	var era_2034: Node = get_node_or_null("Era2034")
 	var era_2054: Node = get_node_or_null("Era2054")

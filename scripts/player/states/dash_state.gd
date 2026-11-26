@@ -26,16 +26,17 @@ func enter(_prev_state: StringName, data: Dictionary = {}) -> void:
 	_dash_timer = Player.DASH_DURATION
 	_ghost_timer = 0.0
 	player.velocity = Vector2(float(_dash_dir) * Player.DASH_SPEED, 0.0)
-	player.squash_stretch(Vector2(1.28, 0.78))
+	player.squash_stretch(Vector2(1.30, 0.76))
+	player.trigger_dash_streak(_dash_dir)
 	player.spawn_afterimage()
-	player.spawn_dust(Vector2(float(-_dash_dir) * 12.0, 22.0), 5, 70.0)
+	player.spawn_dust(Vector2(float(-_dash_dir) * 12.0, 22.0), 6, 80.0)
 	AudioManager.play_sfx("dash")
 
 
 func physics_update(delta: float) -> void:
 	_dash_timer -= delta
 	_ghost_timer += delta
-	if _ghost_timer >= 0.045:
+	if _ghost_timer >= 0.055:
 		_ghost_timer = 0.0
 		player.spawn_afterimage()
 

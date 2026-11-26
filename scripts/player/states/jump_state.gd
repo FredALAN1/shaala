@@ -31,11 +31,11 @@ func enter(_prev_state: StringName, data: Dictionary = {}) -> void:
 		player.velocity.y = Player.DOUBLE_JUMP_VELOCITY
 		AudioManager.play_sfx("jump")
 	else:
-		player.velocity.y = Player.JUMP_VELOCITY
+		player.velocity.y = Player.JUMP_VELOCITY * player.get_surface_jump_multiplier()
 		AudioManager.play_sfx("jump")
 
-	player.squash_stretch(Vector2(0.82, 1.22))
-	player.spawn_dust(Vector2(0.0, 28.0), 5, 85.0)
+	player.squash_stretch(Vector2(0.80, 1.24))
+	player.spawn_dust(Vector2(0.0, 28.0), 6 if player.is_in_deep_sand() else 5, 95.0)
 
 
 func physics_update(delta: float) -> void:

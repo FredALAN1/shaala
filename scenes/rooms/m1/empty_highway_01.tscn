@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
 [ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
@@ -6,42 +6,15 @@
 [ext_resource type="PackedScene" path="res://scenes/interactables/notebook_page.tscn" id="4_page"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/sand_stalker.tscn" id="5_stalker"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/shard_husk.tscn" id="6_husk"]
+[ext_resource type="PackedScene" path="res://scenes/world/playable_block.tscn" id="7_block"]
+[ext_resource type="PackedScene" path="res://scenes/world/deep_sand_zone.tscn" id="8_sand"]
+[ext_resource type="PackedScene" path="res://scenes/world/wind_zone.tscn" id="9_wind"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(3200, 40)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_side_wall"]
 size = Vector2(40, 640)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_deck"]
-size = Vector2(1120, 240)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sinkhole_floor"]
-size = Vector2(210, 150)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mid_east_deck"]
-size = Vector2(1910, 240)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_car"]
-size = Vector2(160, 70)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_motaib_overpass"]
-size = Vector2(420, 50)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bus"]
-size = Vector2(300, 95)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bus_top"]
-size = Vector2(110, 80)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_page_overpass"]
-size = Vector2(290, 50)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_160"]
-size = Vector2(160, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_220"]
-size = Vector2(220, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
 size = Vector2(70, 180)
@@ -78,9 +51,9 @@ polygon = PackedVector2Array(-200, 620, 3400, 620, 3400, 1160, -200, 1160)
 [node name="FarLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.18, 0.1)
 
-[node name="RiyadhApproachingSkyline" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+[node name="ApproachingRuinedSkyline" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
 color = Color(0.105882, 0.129412, 0.231373, 0.92)
-polygon = PackedVector2Array(1320, 1080, 1320, 650, 1460, 650, 1475, 495, 1525, 515, 1545, 610, 1650, 610, 1675, 420, 1735, 385, 1775, 435, 1800, 585, 1920, 585, 1945, 340, 1995, 290, 2045, 345, 2070, 560, 2220, 560, 2255, 435, 2335, 465, 2365, 610, 2600, 610, 2645, 480, 2720, 510, 2765, 650, 3300, 650, 3300, 1080)
+polygon = PackedVector2Array(1320, 1080, 1320, 650, 1460, 650, 1475, 495, 1525, 515, 1545, 610, 1650, 610, 1675, 420, 1735, 395, 1775, 435, 1800, 585, 1920, 585, 1945, 355, 2035, 355, 2070, 560, 2220, 560, 2255, 435, 2335, 465, 2365, 610, 2600, 610, 2645, 480, 2720, 510, 2765, 650, 3300, 650, 3300, 1080)
 
 [node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.45, 0.25)
@@ -170,162 +143,115 @@ shape = SubResource("RectangleShape2D_side_wall")
 color = Color(0.0862745, 0.105882, 0.2, 1)
 polygon = PackedVector2Array(-20, -320, 20, -320, 20, 320, -20, 320)
 
-[node name="HighwayWestDeck" type="StaticBody2D" parent="Geometry"]
+[node name="HighwayWestDeck" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(560, 960)
-collision_layer = 1
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(1120, 240)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwayWestDeck"]
-shape = SubResource("RectangleShape2D_west_deck")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwayWestDeck"]
-color = Color(0.0862745, 0.105882, 0.2, 1)
-polygon = PackedVector2Array(-560, -120, 560, -120, 560, 120, -560, 120)
-
-[node name="AsphaltRim" type="Polygon2D" parent="Geometry/HighwayWestDeck"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-560, -120, 560, -120, 560, -104, -560, -104)
-
-[node name="HighwaySinkholeFloor" type="StaticBody2D" parent="Geometry"]
+[node name="HighwaySinkholeFloor" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1205, 1005)
-collision_layer = 1
-collision_mask = 0
+block_style = "sand_dune_ground"
+block_size = Vector2(210, 150)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwaySinkholeFloor"]
-shape = SubResource("RectangleShape2D_sinkhole_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwaySinkholeFloor"]
-color = Color(0.321569, 0.160784, 0.160784, 1)
-polygon = PackedVector2Array(-105, -75, 105, -75, 105, 75, -105, 75)
-
-[node name="HighwayMidEastDeck" type="StaticBody2D" parent="Geometry"]
+[node name="HighwayMidEastDeck" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(2245, 960)
-collision_layer = 1
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(1910, 240)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwayMidEastDeck"]
-shape = SubResource("RectangleShape2D_mid_east_deck")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwayMidEastDeck"]
-color = Color(0.0862745, 0.105882, 0.2, 1)
-polygon = PackedVector2Array(-955, -120, 955, -120, 955, 120, -955, 120)
-
-[node name="AsphaltRim" type="Polygon2D" parent="Geometry/HighwayMidEastDeck"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-955, -120, 955, -120, 955, -104, -955, -104)
-
-[node name="AbandonedCar1" type="StaticBody2D" parent="Geometry"]
+[node name="AbandonedCar1" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(500, 805)
-collision_layer = 1
-collision_mask = 0
+block_style = "abandoned_car_platform"
+block_size = Vector2(160, 70)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AbandonedCar1"]
-shape = SubResource("RectangleShape2D_car")
+[node name="AbandonedCar2" parent="Geometry" instance=ExtResource("7_block")]
+position = Vector2(2440, 805)
+block_style = "abandoned_car_platform"
+block_size = Vector2(170, 70)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/AbandonedCar1"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-80, 35, -76, -5, -42, -35, 36, -35, 68, -6, 80, 35)
-
-[node name="MotaibOverpassDeck" type="StaticBody2D" parent="Geometry"]
+[node name="MotaibOverpassDeck" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1030, 665)
-collision_layer = 1
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(420, 50)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MotaibOverpassDeck"]
-shape = SubResource("RectangleShape2D_motaib_overpass")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/MotaibOverpassDeck"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-210, -25, 210, -25, 210, 25, -210, 25)
-
-[node name="ConcreteCap" type="Polygon2D" parent="Geometry/MotaibOverpassDeck"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-210, -25, 210, -25, 210, -14, -210, -14)
-
-[node name="AbandonedBusRoof" type="StaticBody2D" parent="Geometry"]
+[node name="AbandonedBusRoof" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1570, 792)
-collision_layer = 1
-collision_mask = 0
+block_style = "abandoned_car_platform"
+block_size = Vector2(300, 96)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AbandonedBusRoof"]
-shape = SubResource("RectangleShape2D_bus")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/AbandonedBusRoof"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-150, -47, 150, -47, 150, 48, -150, 48)
-
-[node name="BusStripe" type="Polygon2D" parent="Geometry/AbandonedBusRoof"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-148, -8, 148, -8, 148, 8, -148, 8)
-
-[node name="BusRoofUpperSign" type="StaticBody2D" parent="Geometry"]
+[node name="BusRoofUpperSign" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1665, 705)
-collision_layer = 1
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(110, 80)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BusRoofUpperSign"]
-shape = SubResource("RectangleShape2D_bus_top")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/BusRoofUpperSign"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-55, -40, 55, -40, 55, 40, -55, 40)
-
-[node name="BrokenOverpassPageDeck" type="StaticBody2D" parent="Geometry"]
+[node name="BrokenOverpassPageDeck" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(2215, 675)
-collision_layer = 1
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BrokenOverpassPageDeck"]
-shape = SubResource("RectangleShape2D_page_overpass")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/BrokenOverpassPageDeck"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-145, -25, 145, -25, 145, 25, -145, 25)
-
-[node name="ConcreteCap" type="Polygon2D" parent="Geometry/BrokenOverpassPageDeck"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-145, -25, 145, -25, 145, -14, -145, -14)
+block_style = "collapsed_building"
+block_size = Vector2(290, 50)
+one_way = false
+tilt_degrees = 0.0
 
 [node name="OneWayPlatforms" type="Node2D" parent="."]
 
-[node name="OverpassRamp1" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="OverpassRamp1" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(760, 752)
-collision_layer = 2
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(160, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/OverpassRamp1"]
-shape = SubResource("RectangleShape2D_plat_160")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/OverpassRamp1"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-80, -12, 80, -12, 80, 12, -80, 12)
-
-[node name="OverpassRamp2" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="OverpassRamp2" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(840, 660)
-collision_layer = 2
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(160, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/OverpassRamp2"]
-shape = SubResource("RectangleShape2D_plat_160")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/OverpassRamp2"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-80, -12, 80, -12, 80, 12, -80, 12)
-
-[node name="EastGantryPlat" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="EastGantryPlat" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(2620, 758)
-collision_layer = 2
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(220, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EastGantryPlat"]
-shape = SubResource("RectangleShape2D_plat_220")
-one_way_collision = true
+[node name="CollapsedBuildingOverhang" parent="OneWayPlatforms" instance=ExtResource("7_block")]
+position = Vector2(2820, 625)
+block_style = "collapsed_building"
+block_size = Vector2(300, 50)
+one_way = true
+tilt_degrees = -10.0
 
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EastGantryPlat"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-110, -12, 110, -12, 110, 12, -110, 12)
+[node name="EnvironmentalZones" type="Node2D" parent="."]
+
+[node name="HighwaySandSpillWest" parent="EnvironmentalZones" instance=ExtResource("8_sand")]
+position = Vector2(830, 824)
+zone_size = Vector2(220, 36)
+slow_factor = 0.62
+
+[node name="HighwaySandSpillEast" parent="EnvironmentalZones" instance=ExtResource("8_sand")]
+position = Vector2(2100, 824)
+zone_size = Vector2(240, 36)
+slow_factor = 0.62
+
+[node name="HighwayOverpassGust" parent="EnvironmentalZones" instance=ExtResource("9_wind")]
+position = Vector2(1890, 590)
+zone_size = Vector2(340, 180)
+wind_force = Vector2(140, -25)
 
 [node name="Spawns" type="Node2D" parent="."]
 

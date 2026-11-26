@@ -66,7 +66,7 @@ def infer_owner(rel_path: str) -> str:
     if p in ("docs/QA_NOTES.md", "docs/KNOWN_ISSUES.md", "tools/verify_m1.py"):
         return "@qa-verifier"
     if p in ("project.godot", "data/abilities.json", "data/rooms.json", "scenes/main.tscn") or p.startswith(
-        ("scripts/autoload/", "scripts/systems/")
+        ("scripts/autoload/", "scripts/systems/", "scripts/dev/", "scenes/dev/")
     ):
         return "@core-systems"
     if p.startswith(("scripts/combat/", "scripts/player/", "scenes/player/")):
@@ -74,7 +74,7 @@ def infer_owner(rel_path: str) -> str:
     if p == "data/enemies.json" or p.startswith(("scripts/enemies/", "scripts/boss/", "scenes/enemies/", "scenes/boss/")):
         return "@enemies-boss"
     if p in ("docs/ART_SPEC.md", "assets/final/README.md", "assets/placeholder/palettes.gd") or p.startswith(
-        ("assets/placeholder/shaders/", "scripts/interactables/", "scenes/interactables/")
+        ("assets/placeholder/shaders/", "scripts/interactables/", "scenes/interactables/", "scripts/world/", "scenes/world/")
     ):
         return "@art-shaders"
     if p.startswith(("scripts/rooms/", "scenes/rooms/")):
@@ -1582,6 +1582,11 @@ class M1Verifier:
                 self.add(sec, "CRITICAL", "GD_GODOT3_MOVE_AND_SLIDE", "Godot 3 move_and_slide(vel, ...) — in Godot 4 CharacterBody2D.move_and_slide() takes 0 args!", rp, idx)
             if re.search(r"\binstance\s*\(\s*\)", code):
                 self.add(sec, "HIGH", "GD_GODOT3_INSTANCE", "Possible Godot 3 PackedScene.instance() — in Godot 4 use instantiate()", rp, idx)
+            # Godot 4.3 non-constant typed Array / Packed*Array const expression check
+            if re.match(r"^\s*const\s+[A-Za-z_][A-Za-z0-9_]*\s*:\s*Array\[", code):
+                self.add(sec, "CRITICAL", "GD43_TYPED_CONST_ARRAY", "Godot 4.3 disallows 'const X: Array[T] = [...]' — use untyped 'const X: Array = [...]'", rp, idx)
+            if re.match(r"^\s*const\s+[A-Za-z_][A-Za-z0-9_]*\s*(?::\s*Packed[A-Za-z0-9_]*Array\s*)?=\s*Packed[A-Za-z0-9_]*Array\s*\(", code):
+                self.add(sec, "CRITICAL", "GD43_PACKED_CONST_ARRAY", "Godot 4.3 disallows 'const X = Packed*Array(...)' — use untyped 'const X: Array = [...]'", rp, idx)
 
             # Check res:// path literals
             for m in re.finditer(r'"(res://[^"]+)"', raw):
@@ -2026,7 +2031,7 @@ class M1Verifier:
         # 3. Hardcoded user-facing text check in UI .tscn and .gd
         hardcoded_count = 0
         for rp, scene in sorted(self.parsed_scenes.items()):
-            if not rp.startswith("scenes/ui/"):
+            if not rp.startswith(("scenes/ui/", "scenes/dev/")):
                 continue
             for n in scene.nodes:
                 for prop in ("text", "title", "placeholder_text"):
@@ -2048,7 +2053,7 @@ class M1Verifier:
 
         ui_text_assign_re = re.compile(r'\.(?:text|title|placeholder_text)\s*=\s*"([^"]+)"')
         for rp, gd in sorted(self.parsed_gds.items()):
-            if not rp.startswith("scripts/ui/"):
+            if not rp.startswith(("scripts/ui/", "scripts/dev/")):
                 continue
             for idx, line in enumerate(gd.lines, start=1):
                 nc = line.split("#")[0]
@@ -2227,11 +2232,46 @@ class M1Verifier:
                         elif clayer & 1:
                             solids.append((r, n.full_path, n.line, has_visual))
 
-                # TransitionGate / ShortcutGate
+                # TransitionGate / ShortcutGate / Instanced World Kit (PlayableBlock, CrumblingLedge)
                 sc_ref = n.props.get("script", "")
                 sc_m = EXT_REF_RE.search(sc_ref)
                 script_res = scene.ext_resources[sc_m.group(1)].path if (sc_m and sc_m.group(1) in scene.ext_resources) else ""
                 inst_res = scene.ext_resources[n.instance_id].path if (n.instance_id and n.instance_id in scene.ext_resources) else ""
+
+                if "playable_block.tscn" in inst_res or "crumbling_ledge.tscn" in inst_res:
+                    is_crumble = "crumbling_ledge.tscn" in inst_res
+                    default_sz = (160.0, 36.0) if is_crumble else (256.0, 64.0)
+                    bw, bh = parse_vec2(n.props.get("block_size"), default_sz)
+                    is_ow = parse_bool_prop(n.props.get("one_way"), False) if not is_crumble else False
+                    tilt_deg = 0.0
+                    if "tilt_degrees" in n.props:
+                        try:
+                            tilt_deg = float(n.props["tilt_degrees"].strip())
+                        except ValueError:
+                            tilt_deg = 0.0
+                    elif "rotation_degrees" in n.props:
+                        try:
+                            tilt_deg = float(n.props["rotation_degrees"].strip())
+                        except ValueError:
+                            tilt_deg = 0.0
+                    elif "rotation" in n.props:
+                        try:
+                            tilt_deg = math.degrees(float(n.props["rotation"].strip()))
+                        except ValueError:
+                            tilt_deg = 0.0
+                    wx, wy = pos_map[n.full_path]
+                    if abs(tilt_deg) > 0.1:
+                        rad = math.radians(tilt_deg)
+                        c, s_ang = abs(math.cos(rad)), abs(math.sin(rad))
+                        aw = bw * c + bh * s_ang
+                        ah = bw * s_ang + bh * c
+                        brect = Rect(wx - aw * 0.5, wy - ah * 0.5, aw, ah)
+                    else:
+                        brect = Rect(wx - bw * 0.5, wy - bh * 0.5, bw, bh)
+                    if is_ow:
+                        one_ways.append((brect, n.full_path, n.line))
+                    else:
+                        solids.append((brect, n.full_path, n.line, True))
 
                 if "transition_gate.gd" in script_res:
                     clayer = parse_int_prop(n.props.get("collision_layer"), 1)

@@ -14,11 +14,17 @@ func enter(_prev_state: StringName, data: Dictionary = {}) -> void:
 	if _wall_normal == 0:
 		_wall_normal = -player.facing_dir
 	_detach_timer = 0.0
-	_slide_dust_timer = 0.12
+	_slide_dust_timer = 0.10
+	player.active_wall_normal = _wall_normal
 	player.reset_air_mobility()
 	player.set_facing(_wall_normal)
 	player.velocity.x = 0.0
 	player.velocity.y = minf(player.velocity.y, Player.WALL_SLIDE_SPEED)
+	player.spawn_wall_sparks(_wall_normal, 3)
+
+
+func exit() -> void:
+	player.active_wall_normal = 0
 
 
 func physics_update(delta: float) -> void:
@@ -78,5 +84,6 @@ func physics_update(delta: float) -> void:
 
 	_slide_dust_timer -= delta
 	if _slide_dust_timer <= 0.0:
-		_slide_dust_timer = 0.16
+		_slide_dust_timer = 0.14
 		player.spawn_dust(Vector2(float(-_wall_normal) * 14.0, -4.0), 2, 24.0)
+		player.spawn_wall_sparks(_wall_normal, 2)

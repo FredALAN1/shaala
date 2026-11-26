@@ -17,6 +17,7 @@ const DEATH_RESPAWN_DELAY: float = 0.85
 @onready var _room_camera: RoomCamera = $WorldRoot/RoomCamera
 @onready var _ui_layer: CanvasLayer = $UILayer
 @onready var _fade_rect: ColorRect = $TransitionLayer/FadeRect
+@onready var _dev_mode: Node = get_node_or_null("DevModeOverlay")
 
 var _rooms_data: Dictionary = {}
 var _current_room: RoomBase = null
@@ -89,6 +90,8 @@ func continue_game() -> void:
 func quit_to_title() -> void:
 	if _is_transitioning:
 		return
+	if _dev_mode != null and _dev_mode.has_method("close_dev_mode"):
+		_dev_mode.call("close_dev_mode")
 	get_tree().paused = false
 	Engine.time_scale = SettingsManager.assist_game_speed
 	GameState.is_gameplay_active = false
@@ -97,6 +100,18 @@ func quit_to_title() -> void:
 	AudioManager.set_music_mood("title")
 	if _ui_root != null and _ui_root.has_method("show_title_screen"):
 		_ui_root.call("show_title_screen")
+
+
+func get_current_room() -> RoomBase:
+	return _current_room
+
+
+func get_player() -> Node2D:
+	return _player
+
+
+func get_camera() -> RoomCamera:
+	return _room_camera
 
 
 func get_room_metadata(room_id: String) -> Dictionary:
@@ -260,6 +275,8 @@ func _transition_to_room(target_room_id: String, target_spawn_id: String) -> voi
 		if not _current_room.room_title_key.is_empty():
 			resolved_title_key = _current_room.room_title_key
 		_current_room.apply_era(GameState.current_era)
+		if _dev_mode != null and _dev_mode.has_method("load_custom_room_items"):
+			_dev_mode.call("load_custom_room_items", _current_room)
 		spawn_pos = _current_room.get_spawn_position(target_spawn_id)
 		bounds = _current_room.get_camera_bounds()
 
