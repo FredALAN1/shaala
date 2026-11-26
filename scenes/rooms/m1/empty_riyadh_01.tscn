@@ -1,0 +1,471 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
+[ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
+[ext_resource type="Script" path="res://scripts/rooms/shortcut_gate.gd" id="3_shortcut"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/sand_stalker.tscn" id="4_stalker"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/shard_husk.tscn" id="5_husk"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/relic_sentinel.tscn" id="6_sentinel"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(3400, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_top"]
+size = Vector2(40, 480)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_mid"]
+size = Vector2(40, 220)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_east_upper"]
+size = Vector2(40, 780)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_entry"]
+size = Vector2(700, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shortcut_floor"]
+size = Vector2(1120, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_atrium_floor"]
+size = Vector2(1140, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mall_approach"]
+size = Vector2(1140, 320)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_walkway_west"]
+size = Vector2(320, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_glass_pillar_l"]
+size = Vector2(70, 360)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_glass_pillar_r"]
+size = Vector2(70, 320)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_walkway_upper"]
+size = Vector2(330, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mall_overhang"]
+size = Vector2(300, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_180"]
+size = Vector2(180, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_240"]
+size = Vector2(240, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(70, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shortcut_barrier"]
+size = Vector2(32, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shortcut_area"]
+size = Vector2(140, 180)
+
+[node name="EmptyRiyadh01" type="Node2D"]
+script = ExtResource("1_room_ctrl")
+room_id = "empty_riyadh_01"
+area_id = "empty_riyadh"
+room_title_key = "AREA_EMPTY_RIYADH"
+camera_bounds = Rect2(0, 0, 3400, 1280)
+supports_time_shift = true
+music_mood = "riyadh"
+atmosphere_tint = Color(0.309804, 0.427451, 0.478431, 1)
+shadow_tint = Color(0.0509804, 0.0627451, 0.129412, 1)
+sand_wind_density = 0.12
+sand_wind_speed = 0.25
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0.05)
+
+[node name="SkyNightTop" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-200, -100, 3600, -100, 3600, 560, -200, 560)
+
+[node name="SkyIndigoHaze" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-200, 480, 3600, 480, 3600, 1380, -200, 1380)
+
+[node name="BeamMemoryGlow" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.964706, 0.886275, 0.6, 0.09)
+polygon = PackedVector2Array(1540, -100, 1880, -100, 1980, 1320, 1440, 1320)
+
+[node name="FarLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.16, 0.1)
+
+[node name="ShatteredSkyscrapersFar" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+color = Color(0.117647, 0.14902, 0.262745, 0.92)
+polygon = PackedVector2Array(-100, 1280, -100, 540, 140, 540, 170, 260, 265, 295, 290, 520, 560, 520, 600, 175, 690, 120, 745, 195, 790, 480, 1180, 480, 1230, 150, 1315, 210, 1365, 135, 1435, 495, 1840, 495, 1890, 190, 1995, 110, 2065, 220, 2110, 510, 2520, 510, 2560, 250, 2690, 290, 2740, 525, 3120, 525, 3165, 310, 3290, 350, 3360, 540, 3520, 540, 3520, 1280)
+
+[node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.42, 0.25)
+
+[node name="GlassTowersMid" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.196078, 0.278431, 0.345098, 0.85)
+polygon = PackedVector2Array(-100, 1280, -100, 720, 380, 720, 420, 380, 590, 430, 620, 720, 1380, 720, 1420, 360, 1620, 330, 1660, 720, 2360, 720, 2410, 390, 2650, 350, 2700, 720, 3500, 720, 3500, 1280)
+
+[node name="NearLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.75, 0.45)
+
+[node name="AtriumRuinsFg" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.0705882, 0.0862745, 0.168627, 0.82)
+polygon = PackedVector2Array(-100, 1280, -100, 1080, 880, 1040, 1780, 1090, 2760, 1020, 3500, 1060, 3500, 1280)
+
+[node name="WindLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.9, 0.9)
+
+[node name="SandWindOverlay" type="ColorRect" parent="ParallaxBackground/WindLayer"]
+offset_left = -200.0
+offset_top = 0.0
+offset_right = 3600.0
+offset_bottom = 1280.0
+mouse_filter = 2
+color = Color(0.309804, 0.427451, 0.478431, 0.08)
+
+[node name="Era2054" type="Node2D" parent="."]
+
+[node name="DeadMallGrandArchway" type="Polygon2D" parent="Era2054"]
+color = Color(0.180392, 0.258824, 0.321569, 0.95)
+polygon = PackedVector2Array(3060, 960, 3060, 660, 3230, 575, 3360, 650, 3360, 960, 3310, 960, 3310, 710, 3230, 655, 3115, 710, 3115, 960)
+
+[node name="NajdiFacadeTrim" type="Polygon2D" parent="Era2054"]
+color = Color(0.776471, 0.545098, 0.34902, 0.88)
+polygon = PackedVector2Array(3060, 660, 3100, 628, 3140, 660, 3180, 628, 3220, 660, 3260, 628, 3300, 660, 3340, 628, 3360, 650, 3360, 672, 3060, 672)
+
+[node name="ShatteredEscalatorBeam" type="Polygon2D" parent="Era2054"]
+color = Color(0.309804, 0.427451, 0.478431, 0.82)
+polygon = PackedVector2Array(700, 700, 970, 1060, 945, 1080, 675, 720)
+
+[node name="Era2034" type="Node2D" parent="."]
+visible = false
+
+[node name="IntactMallLights" type="Polygon2D" parent="Era2034"]
+color = Color(0.964706, 0.886275, 0.6, 0.5)
+polygon = PackedVector2Array(3185, 675, 3275, 675, 3275, 695, 3185, 695)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="CeilingBarrier" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1700, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CeilingBarrier"]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/CeilingBarrier"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-1700, -20, 1700, -20, 1700, 20, -1700, 20)
+
+[node name="WestTopWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 240)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestTopWall"]
+shape = SubResource("RectangleShape2D_west_top")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestTopWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -240, 20, -240, 20, 240, -20, 240)
+
+[node name="WestMidWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 810)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestMidWall"]
+shape = SubResource("RectangleShape2D_west_mid")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestMidWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -110, 20, -110, 20, 110, -20, 110)
+
+[node name="EastUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3380, 390)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastUpperWall"]
+shape = SubResource("RectangleShape2D_east_upper")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -390, 20, -390, 20, 390, -20, 390)
+
+[node name="WestEntryDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(350, 700)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestEntryDeck"]
+shape = SubResource("RectangleShape2D_west_entry")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestEntryDeck"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-350, -40, 350, -40, 350, 40, -350, 40)
+
+[node name="OchreCap" type="Polygon2D" parent="Geometry/WestEntryDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-350, -40, 350, -40, 350, -26, -350, -26)
+
+[node name="ShortcutCorridorFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(560, 1190)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ShortcutCorridorFloor"]
+shape = SubResource("RectangleShape2D_shortcut_floor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/ShortcutCorridorFloor"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-560, -90, 560, -90, 560, 90, -560, 90)
+
+[node name="OchreFloorRim" type="Polygon2D" parent="Geometry/ShortcutCorridorFloor"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-560, -90, 560, -90, 560, -76, -560, -76)
+
+[node name="AtriumFloorCenter" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1690, 1160)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumFloorCenter"]
+shape = SubResource("RectangleShape2D_atrium_floor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumFloorCenter"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-570, -120, 570, -120, 570, 120, -570, 120)
+
+[node name="GlassTileCap" type="Polygon2D" parent="Geometry/AtriumFloorCenter"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-570, -120, 570, -120, 570, -104, -570, -104)
+
+[node name="MallApproachFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2830, 1120)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MallApproachFloor"]
+shape = SubResource("RectangleShape2D_mall_approach")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/MallApproachFloor"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-570, -160, 570, -160, 570, 160, -570, 160)
+
+[node name="OchreMallCap" type="Polygon2D" parent="Geometry/MallApproachFloor"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-570, -160, 570, -160, 570, -144, -570, -144)
+
+[node name="AtriumWalkwayWest" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1300, 780)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumWalkwayWest"]
+shape = SubResource("RectangleShape2D_walkway_west")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumWalkwayWest"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-160, -20, 160, -20, 160, 20, -160, 20)
+
+[node name="GlassPillarShaftLeft" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1615, 720)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/GlassPillarShaftLeft"]
+shape = SubResource("RectangleShape2D_glass_pillar_l")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/GlassPillarShaftLeft"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-35, -180, 35, -180, 35, 180, -35, 180)
+
+[node name="GlassPillarShaftRight" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1895, 740)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/GlassPillarShaftRight"]
+shape = SubResource("RectangleShape2D_glass_pillar_r")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/GlassPillarShaftRight"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-35, -160, 35, -160, 35, 160, -35, 160)
+
+[node name="AtriumWalkwayUpper" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2095, 680)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumWalkwayUpper"]
+shape = SubResource("RectangleShape2D_walkway_upper")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumWalkwayUpper"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-165, -20, 165, -20, 165, 20, -165, 20)
+
+[node name="MallUpperOverhang" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2770, 720)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MallUpperOverhang"]
+shape = SubResource("RectangleShape2D_mall_overhang")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/MallUpperOverhang"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-150, -20, 150, -20, 150, 20, -150, 20)
+
+[node name="OneWayPlatforms" type="Node2D" parent="."]
+
+[node name="EscalatorStep1" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(850, 1015)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep1"]
+shape = SubResource("RectangleShape2D_plat_180")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep1"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
+
+[node name="EscalatorStep2" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(790, 922)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep2"]
+shape = SubResource("RectangleShape2D_plat_180")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep2"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
+
+[node name="EscalatorStep3" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(870, 829)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep3"]
+shape = SubResource("RectangleShape2D_plat_180")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep3"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
+
+[node name="EscalatorStep4" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(790, 736)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep4"]
+shape = SubResource("RectangleShape2D_plat_180")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep4"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
+
+[node name="MallBalconyOneWay" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(2620, 876)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/MallBalconyOneWay"]
+shape = SubResource("RectangleShape2D_plat_240")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/MallBalconyOneWay"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-120, -12, 120, -12, 120, 12, -120, 12)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_highway_02" type="Marker2D" parent="Spawns"]
+position = Vector2(210, 626)
+
+[node name="from_camp_shortcut" type="Marker2D" parent="Spawns"]
+position = Vector2(300, 1066)
+
+[node name="from_boss" type="Marker2D" parent="Spawns"]
+position = Vector2(3180, 926)
+
+[node name="Transitions" type="Node2D" parent="."]
+
+[node name="ExitWestToHighway02" type="Area2D" parent="Transitions"]
+position = Vector2(35, 570)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_highway_02"
+target_spawn_id = "from_riyadh_01"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitWestToHighway02"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="ShortcutGateToCamp" type="Area2D" parent="Transitions"]
+position = Vector2(55, 1010)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "desert_camp_01"
+target_spawn_id = "from_riyadh_shortcut"
+shortcut_id = "shortcut_riyadh_to_camp"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ShortcutGateToCamp"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="ExitEastToBoss" type="Area2D" parent="Transitions"]
+position = Vector2(3365, 870)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_riyadh_boss"
+target_spawn_id = "from_riyadh_01"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitEastToBoss"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="ShortcutGateRiyadh" type="Area2D" parent="Interactables"]
+position = Vector2(155, 1010)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("3_shortcut")
+shortcut_id = "shortcut_riyadh_to_camp"
+prompt_key = "PROMPT_OPEN_SHORTCUT"
+unlockable_from_this_side = true
+linked_transition_gate = NodePath("../../Transitions/ShortcutGateToCamp")
+
+[node name="InteractShape" type="CollisionShape2D" parent="Interactables/ShortcutGateRiyadh"]
+position = Vector2(28, 0)
+shape = SubResource("RectangleShape2D_shortcut_area")
+
+[node name="BarrierBody" type="StaticBody2D" parent="Interactables/ShortcutGateRiyadh"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="BarrierCollision" type="CollisionShape2D" parent="Interactables/ShortcutGateRiyadh/BarrierBody"]
+shape = SubResource("RectangleShape2D_shortcut_barrier")
+
+[node name="GateVisual" type="Polygon2D" parent="Interactables/ShortcutGateRiyadh/BarrierBody"]
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-16, -90, 16, -90, 16, 90, -16, 90)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="SandStalker1" parent="Enemies" instance=ExtResource("4_stalker")]
+position = Vector2(1420, 1040)
+
+[node name="ShardHusk1" parent="Enemies" instance=ExtResource("5_husk")]
+position = Vector2(2095, 580)
+
+[node name="RelicSentinel1" parent="Enemies" instance=ExtResource("6_sentinel")]
+position = Vector2(2820, 960)

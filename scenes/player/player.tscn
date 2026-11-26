@@ -1,0 +1,164 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="2_hurtbox"]
+[ext_resource type="Script" path="res://scripts/combat/flame_dagger.gd" id="3_dagger"]
+[ext_resource type="Script" path="res://scripts/player/player_state_machine.gd" id="4_fsm"]
+[ext_resource type="Script" path="res://scripts/player/states/idle_state.gd" id="5_idle"]
+[ext_resource type="Script" path="res://scripts/player/states/run_state.gd" id="6_run"]
+[ext_resource type="Script" path="res://scripts/player/states/jump_state.gd" id="7_jump"]
+[ext_resource type="Script" path="res://scripts/player/states/fall_state.gd" id="8_fall"]
+[ext_resource type="Script" path="res://scripts/player/states/wall_cling_state.gd" id="9_wall"]
+[ext_resource type="Script" path="res://scripts/player/states/dash_state.gd" id="10_dash"]
+[ext_resource type="Script" path="res://scripts/player/states/ground_pound_state.gd" id="11_gp"]
+[ext_resource type="Script" path="res://scripts/player/states/glide_state.gd" id="12_glide"]
+[ext_resource type="Script" path="res://scripts/player/states/attack_state.gd" id="13_attack"]
+[ext_resource type="Script" path="res://scripts/player/states/cast_spell_state.gd" id="14_spell"]
+[ext_resource type="Script" path="res://scripts/player/states/parry_state.gd" id="15_parry"]
+[ext_resource type="Script" path="res://scripts/player/states/hurt_state.gd" id="16_hurt"]
+[ext_resource type="Script" path="res://scripts/player/states/dead_state.gd" id="17_dead"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 14.0
+height = 62.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 12.0
+height = 54.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dagger"]
+size = Vector2(72, 52)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 48.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 4
+collision_mask = 3
+floor_snap_length = 6.0
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="VisualRoot" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="CloakPolygon" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.086, 0.106, 0.2, 1)
+polygon = PackedVector2Array(-10, -14, 11, -13, 14, 2, 12, 26, -5, 30, -18, 28)
+
+[node name="BodyPolygon" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.051, 0.063, 0.129, 1)
+polygon = PackedVector2Array(-8, -11, 8, -11, 10, 12, 7, 30, -7, 30, -10, 12)
+
+[node name="TrimPolygon" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.659, 0.267, 0.196, 1)
+polygon = PackedVector2Array(-11, -9, 11, -8, 12, -2, -12, -1)
+
+[node name="ScarfPolygon" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.149, 0.173, 0.29, 1)
+polygon = PackedVector2Array(-7, -15, 5, -14, -16, 2, -22, -6)
+
+[node name="HeadPolygon" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.118, 0.141, 0.251, 1)
+polygon = PackedVector2Array(-9, -27, -2, -31, 8, -29, 11, -21, 9, -14, -9, -14, -11, -21)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("2_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="FlameDagger" type="Area2D" parent="."]
+z_index = 2
+collision_layer = 16
+collision_mask = 8
+monitoring = false
+monitorable = false
+script = ExtResource("3_dagger")
+damage = 10
+knockback = Vector2(240, -140)
+parryable = false
+damage_type = "melee"
+active = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlameDagger"]
+position = Vector2(46, -2)
+shape = SubResource("RectangleShape2D_dagger")
+
+[node name="InteractSensor" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 64
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractSensor"]
+shape = SubResource("CircleShape2D_interact")
+
+[node name="HazardSensor" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 128
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardSensor"]
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="SpellMuzzle" type="Marker2D" parent="."]
+position = Vector2(28, -4)
+
+[node name="WallRayLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-19, 0)
+collision_mask = 1
+
+[node name="WallRayRight" type="RayCast2D" parent="."]
+target_position = Vector2(19, 0)
+collision_mask = 1
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_fsm")
+initial_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("5_idle")
+
+[node name="RunState" type="Node" parent="StateMachine"]
+script = ExtResource("6_run")
+
+[node name="JumpState" type="Node" parent="StateMachine"]
+script = ExtResource("7_jump")
+
+[node name="FallState" type="Node" parent="StateMachine"]
+script = ExtResource("8_fall")
+
+[node name="WallClingState" type="Node" parent="StateMachine"]
+script = ExtResource("9_wall")
+
+[node name="DashState" type="Node" parent="StateMachine"]
+script = ExtResource("10_dash")
+
+[node name="GroundPoundState" type="Node" parent="StateMachine"]
+script = ExtResource("11_gp")
+
+[node name="GlideState" type="Node" parent="StateMachine"]
+script = ExtResource("12_glide")
+
+[node name="AttackState" type="Node" parent="StateMachine"]
+script = ExtResource("13_attack")
+
+[node name="CastSpellState" type="Node" parent="StateMachine"]
+script = ExtResource("14_spell")
+
+[node name="ParryState" type="Node" parent="StateMachine"]
+script = ExtResource("15_parry")
+
+[node name="HurtState" type="Node" parent="StateMachine"]
+script = ExtResource("16_hurt")
+
+[node name="DeadState" type="Node" parent="StateMachine"]
+script = ExtResource("17_dead")

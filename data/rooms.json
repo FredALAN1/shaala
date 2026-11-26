@@ -1,0 +1,70 @@
+{
+  "rooms": {
+    "desert_camp_01": {
+      "id": "desert_camp_01",
+      "scene_path": "res://scenes/rooms/m1/desert_camp_01.tscn",
+      "area_id": "desert_camp",
+      "title_key": "AREA_DESERT_CAMP",
+      "map_pos": [0, 2],
+      "map_size": [2, 1],
+      "neighbors": ["desert_camp_02", "empty_riyadh_01"],
+      "has_shrine": true,
+      "has_boss": false
+    },
+    "desert_camp_02": {
+      "id": "desert_camp_02",
+      "scene_path": "res://scenes/rooms/m1/desert_camp_02.tscn",
+      "area_id": "desert_camp",
+      "title_key": "AREA_DESERT_CAMP",
+      "map_pos": [2, 2],
+      "map_size": [2, 1],
+      "neighbors": ["desert_camp_01", "empty_highway_01"],
+      "has_shrine": false,
+      "has_boss": false
+    },
+    "empty_highway_01": {
+      "id": "empty_highway_01",
+      "scene_path": "res://scenes/rooms/m1/empty_highway_01.tscn",
+      "area_id": "empty_highway",
+      "title_key": "AREA_EMPTY_HIGHWAY",
+      "map_pos": [4, 2],
+      "map_size": [2, 1],
+      "neighbors": ["desert_camp_02", "empty_highway_02"],
+      "has_shrine": false,
+      "has_boss": false
+    },
+    "empty_highway_02": {
+      "id": "empty_highway_02",
+      "scene_path": "res://scenes/rooms/m1/empty_highway_02.tscn",
+      "area_id": "empty_highway",
+      "title_key": "AREA_EMPTY_HIGHWAY",
+      "map_pos": [6, 1],
+      "map_size": [1, 2],
+      "neighbors": ["empty_highway_01", "empty_riyadh_01"],
+      "has_shrine": false,
+      "has_boss": false
+    },
+    "empty_riyadh_01": {
+      "id": "empty_riyadh_01",
+      "scene_path": "res://scenes/rooms/m1/empty_riyadh_01.tscn",
+      "area_id": "empty_riyadh",
+      "title_key": "AREA_EMPTY_RIYADH",
+      "map_pos": [7, 1],
+      "map_size": [2, 1],
+      "neighbors": ["empty_highway_02", "empty_riyadh_boss", "desert_camp_01"],
+      "has_shrine": false,
+      "has_boss": false
+    },
+    "empty_riyadh_boss": {
+      "id": "empty_riyadh_boss",
+      "scene_path": "res://scenes/rooms/m1/empty_riyadh_boss.tscn",
+      "area_id": "empty_riyadh",
+      "title_key": "AREA_EMPTY_RIYADH_MALL",
+      "map_pos": [9, 1],
+      "map_size": [2, 1],
+      "neighbors": ["empty_riyadh_01"],
+      "has_shrine": false,
+      "has_boss": true
+    }
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "stagger_defaults": {
+    "enemy_stagger_duration": 1.2,
+    "boss_stagger_duration": 1.4,
+    "stagger_damage_multiplier": 1.35
+  },
+  "enemies": {
+    "sand_stalker": {
+      "id": "sand_stalker",
+      "name_en": "Sand Stalker",
+      "name_ar": "متربص الرمال",
+      "category": "enemy",
+      "scene_path": "res://scenes/enemies/sand_stalker.tscn",
+      "max_hp": 35,
+      "contact_damage": 1,
+      "attack_damage": 1,
+      "patrol_speed": 115.0,
+      "lunge_speed": 490.0,
+      "detection_range": 420.0,
+      "attack_range": 270.0,
+      "telegraph_duration": 0.45,
+      "attack_duration": 0.32,
+      "recover_duration": 0.65,
+      "stagger_duration": 1.2,
+      "stagger_damage_multiplier": 1.35,
+      "resource_drop": 16.0,
+      "parryable": true,
+      "parryable_attacks": [
+        "lunge_dash"
+      ],
+      "blocks_frontal_low_tier_melee": false,
+      "areas": [
+        "desert_camp_02",
+        "empty_highway_01",
+        "empty_riyadh_01"
+      ],
+      "m2_flags": {
+        "supports_dont_look_rule": false,
+        "grey_eye_reveal_only": false,
+        "jinn_entity": false
+      },
+      "palette": {
+        "primary": "#A84432",
+        "secondary": "#C68B59",
+        "shadow": "#161B33",
+        "telegraph": "#E07A3C"
+      }
+    },
+    "shard_husk": {
+      "id": "shard_husk",
+      "name_en": "Shard Husk",
+      "name_ar": "طيف الشظايا",
+      "category": "enemy",
+      "scene_path": "res://scenes/enemies/shard_husk.tscn",
+      "max_hp": 45,
+      "contact_damage": 1,
+      "attack_damage": 1,
+      "hover_speed": 85.0,
+      "projectile_speed": 370.0,
+      "detection_range": 560.0,
+      "attack_range": 500.0,
+      "preferred_distance": 280.0,
+      "telegraph_duration": 0.65,
+      "attack_duration": 0.25,
+      "recover_duration": 1.15,
+      "stagger_duration": 1.2,
+      "stagger_damage_multiplier": 1.35,
+      "resource_drop": 20.0,
+      "parryable": true,
+      "parryable_attacks": [
+        "glass_shard_projectile"
+      ],
+      "blocks_frontal_low_tier_melee": false,
+      "areas": [
+        "empty_highway_01",
+        "empty_highway_02",
+        "empty_riyadh_01"
+      ],
+      "m2_flags": {
+        "supports_dont_look_rule": false,
+        "grey_eye_reveal_only": false,
+        "jinn_entity": false
+      },
+      "palette": {
+        "primary": "#161B33",
+        "secondary": "#4F6D7A",
+        "shadow": "#0D1021",
+        "telegraph": "#F6E299"
+      }
+    },
+    "relic_sentinel": {
+      "id": "relic_sentinel",
+      "name_en": "Relic Sentinel",
+      "name_ar": "حارس الأثر",
+      "category": "enemy",
+      "scene_path": "res://scenes/enemies/relic_sentinel.tscn",
+      "max_hp": 75,
+      "contact_damage": 1,
+      "attack_damage": 2,
+      "patrol_speed": 65.0,
+      "advance_speed": 85.0,
+      "detection_range": 440.0,
+      "attack_range": 135.0,
+      "telegraph_duration": 0.60,
+      "attack_duration": 0.28,
+      "recover_duration": 0.90,
+      "stagger_duration": 1.2,
+      "stagger_damage_multiplier": 1.35,
+      "resource_drop": 30.0,
+      "parryable": true,
+      "parryable_attacks": [
+        "overhead_cleave"
+      ],
+      "blocks_frontal_low_tier_melee": true,
+      "shield_bypass_conditions": [
+        "staggered_by_parry",
+        "flame_spell",
+        "flank_from_behind",
+        "dagger_tier_2"
+      ],
+      "areas": [
+        "empty_highway_02",
+        "empty_riyadh_01"
+      ],
+      "m2_flags": {
+        "supports_dont_look_rule": false,
+        "grey_eye_reveal_only": false,
+        "jinn_entity": false
+      },
+      "palette": {
+        "primary": "#C68B59",
+        "secondary": "#3D342E",
+        "shadow": "#161B33",
+        "telegraph": "#F6E299"
+      }
+    },
+    "boss_spire_warden": {
+      "id": "boss_spire_warden",
+      "name_key": "BOSS_SPIRE_WARDEN_NAME",
+      "subtitle_key": "BOSS_SPIRE_WARDEN_SUBTITLE",
+      "name_en": "The Fractured Spire Warden",
+      "name_ar": "حارس البرج المتصدع",
+      "category": "boss",
+      "scene_path": "res://scenes/boss/boss_spire_warden.tscn",
+      "max_hp": 280,
+      "contact_damage": 1,
+      "attack_damage": 1,
+      "heavy_attack_damage": 2,
+      "move_speed": 175.0,
+      "lunge_speed": 640.0,
+      "phase_count": 2,
+      "phase_thresholds": [
+        0.5
+      ],
+      "telegraph_duration_min": 0.55,
+      "telegraph_duration_max": 0.75,
+      "stagger_duration": 1.4,
+      "stagger_damage_multiplier": 1.35,
+      "resource_drop": 100.0,
+      "parryable": true,
+      "parryable_attacks": [
+        "sweeping_glass_halberd",
+        "orbiting_shard_projectile"
+      ],
+      "phase_1_attacks": [
+        "sweeping_glass_halberd",
+        "falling_spire_shards",
+        "vaulting_slam"
+      ],
+      "phase_2_attacks": [
+        "sweeping_glass_halberd",
+        "falling_spire_shards",
+        "twin_beam_sweep",
+        "orbiting_shards_vault_slam"
+      ],
+      "areas": [
+        "empty_riyadh_boss"
+      ],
+      "m2_flags": {
+        "supports_dont_look_rule": false,
+        "grey_eye_reveal_only": false,
+        "jinn_entity": false
+      },
+      "palette": {
+        "primary": "#161B33",
+        "secondary": "#C68B59",
+        "accent": "#F6E299",
+        "glass": "#4F6D7A",
+        "shadow": "#0D1021"
+      }
+    }
+  }
+}

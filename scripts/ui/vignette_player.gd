@@ -1,0 +1,248 @@
+class_name VignettePlayer
+extends Control
+## Plays both Memory Orb Vignettes (dimmed pale-gold orb canvas + poetic lines + Ability Unlocked banner)
+## and NPC / Torn Notebook Dialogue boxes. Locks player controls cleanly while open.
+
+signal finished
+
+enum Mode {
+	NONE,
+	VIGNETTE,
+	DIALOGUE,
+}
+
+const COLOR_PALE_GOLD: Color = Color("#F6E299")
+const COLOR_MUD_BRICK: Color = Color("#C68B59")
+const INPUT_DEBOUNCE_SEC: float = 0.24
+
+@onready var backdrop: ColorRect = $Backdrop
+@onready var vignette_container: CenterContainer = $VignetteContainer
+@onready var vig_badge_label: Label = $VignetteContainer/VignetteCard/VBox/BadgeLabel
+@onready var vig_title_label: Label = $VignetteContainer/VignetteCard/VBox/TitleLabel
+@onready var vig_line_label: RichTextLabel = $VignetteContainer/VignetteCard/VBox/LineLabel
+@onready var ability_banner: PanelContainer = $VignetteContainer/VignetteCard/VBox/AbilityBanner
+@onready var ability_header_label: Label = $VignetteContainer/VignetteCard/VBox/AbilityBanner/VBox/AbilityHeaderLabel
+@onready var ability_name_label: Label = $VignetteContainer/VignetteCard/VBox/AbilityBanner/VBox/AbilityNameLabel
+@onready var ability_desc_label: Label = $VignetteContainer/VignetteCard/VBox/AbilityBanner/VBox/AbilityDescLabel
+@onready var vig_continue_label: Label = $VignetteContainer/VignetteCard/VBox/FooterRow/ContinueHintLabel
+@onready var vig_progress_label: Label = $VignetteContainer/VignetteCard/VBox/FooterRow/ProgressLabel
+
+@onready var dialogue_panel: PanelContainer = $DialogueMargin/DialoguePanel
+@onready var dlg_speaker_label: Label = $DialogueMargin/DialoguePanel/VBox/HeaderRow/SpeakerLabel
+@onready var dlg_progress_label: Label = $DialogueMargin/DialoguePanel/VBox/HeaderRow/ProgressLabel
+@onready var dlg_body_label: RichTextLabel = $DialogueMargin/DialoguePanel/VBox/BodyLabel
+@onready var dlg_continue_label: Label = $DialogueMargin/DialoguePanel/VBox/ContinueHintLabel
+
+var _mode: Mode = Mode.NONE
+var _vignette_title_key: String = ""
+var _vignette_lines: Array[String] = []
+var _vignette_ability_id: String = ""
+var _dialogue_entries: Array[Dictionary] = []
+var _current_index: int = 0
+var _debounce_timer: float = 0.0
+var _elapsed: float = 0.0
+var _line_tween: Tween = null
+
+
+func _ready() -> void:
+	visible = false
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	dlg_speaker_label.set_meta("align_reading_edge", true)
+	dlg_continue_label.set_meta("align_reading_edge", true)
+	ability_desc_label.set_meta("align_reading_edge", true)
+
+
+func _process(delta: float) -> void:
+	if not visible:
+		return
+	_elapsed += delta
+	if _debounce_timer > 0.0:
+		_debounce_timer = maxf(0.0, _debounce_timer - delta)
+	if _mode == Mode.VIGNETTE:
+		queue_redraw()
+
+
+func _draw() -> void:
+	if _mode != Mode.VIGNETTE:
+		return
+	var orb_center: Vector2 = Vector2(size.x * 0.5, size.y * 0.24)
+	var pulse: float = 1.0 + 0.07 * sin(_elapsed * 2.1)
+	draw_circle(orb_center, 155.0 * pulse, Color(COLOR_PALE_GOLD, 0.05))
+	draw_circle(orb_center, 102.0 * pulse, Color(COLOR_PALE_GOLD, 0.11))
+	draw_circle(orb_center, 58.0 * pulse, Color(COLOR_PALE_GOLD, 0.24))
+	draw_circle(orb_center, 24.0, Color(COLOR_PALE_GOLD, 0.9))
+
+	for i: int in range(12):
+		var angle: float = _elapsed * 0.55 + float(i) * (TAU / 12.0)
+		var radius: float = 72.0 + 26.0 * sin(_elapsed * 1.1 + float(i))
+		var pos: Vector2 = orb_center + Vector2(cos(angle), sin(angle) * 0.65) * radius
+		draw_circle(pos, 2.5, Color(COLOR_PALE_GOLD, 0.42))
+
+
+func _input(event: InputEvent) -> void:
+	if not visible or _mode == Mode.NONE:
+		return
+	if _debounce_timer > 0.0:
+		if event.is_action_pressed("interact") or event.is_action_pressed("jump") or event.is_action_pressed("ui_accept"):
+			get_viewport().set_input_as_handled()
+		return
+
+	var should_advance: bool = (
+		event.is_action_pressed("interact")
+		or event.is_action_pressed("jump")
+		or event.is_action_pressed("ui_accept")
+	)
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			should_advance = true
+
+	if should_advance:
+		get_viewport().set_input_as_handled()
+		_advance()
+
+
+func is_playing() -> bool:
+	return _mode != Mode.NONE and visible
+
+
+func play_vignette(title_key: String, lines: Array, ability_id: String = "") -> void:
+	_mode = Mode.VIGNETTE
+	_vignette_title_key = title_key
+	_vignette_lines.clear()
+	for item: Variant in lines:
+		_vignette_lines.append(str(item))
+	_vignette_ability_id = ability_id
+	_current_index = 0
+	_debounce_timer = INPUT_DEBOUNCE_SEC
+
+	backdrop.color = Color(0.0392157, 0.0470588, 0.105882, 0.88)
+	vignette_container.visible = true
+	dialogue_panel.get_parent().visible = false
+	visible = true
+	_set_player_controls(false)
+	AudioManager.play_sfx("orb_collect")
+	refresh_texts()
+	_animate_current_line(vig_line_label)
+
+
+func play_dialogue(lines: Array) -> void:
+	if lines.is_empty():
+		return
+	_mode = Mode.DIALOGUE
+	_dialogue_entries.clear()
+	for item: Variant in lines:
+		if item is Dictionary:
+			var d := item as Dictionary
+			_dialogue_entries.append({
+				"speaker_key": str(d.get("speaker_key", "")),
+				"text_key": str(d.get("text_key", d.get("line_key", ""))),
+			})
+		else:
+			_dialogue_entries.append({
+				"speaker_key": "",
+				"text_key": str(item),
+			})
+	_current_index = 0
+	_debounce_timer = INPUT_DEBOUNCE_SEC
+
+	backdrop.color = Color(0.0392157, 0.0470588, 0.105882, 0.38)
+	vignette_container.visible = false
+	dialogue_panel.get_parent().visible = true
+	visible = true
+	_set_player_controls(false)
+	AudioManager.play_sfx("ui_talk")
+	refresh_texts()
+	_animate_current_line(dlg_body_label)
+
+
+func force_close() -> void:
+	if _mode != Mode.NONE:
+		_set_player_controls(true)
+	_mode = Mode.NONE
+	visible = false
+
+
+func refresh_texts() -> void:
+	if _mode == Mode.VIGNETTE:
+		_render_vignette()
+	elif _mode == Mode.DIALOGUE:
+		_render_dialogue()
+
+
+func _render_vignette() -> void:
+	vig_badge_label.text = tr("UI_MEMORY_ECHO")
+	vig_title_label.text = tr(_vignette_title_key)
+
+	var total: int = maxi(1, _vignette_lines.size())
+	var line_key: String = _vignette_lines[_current_index] if _current_index < _vignette_lines.size() else ""
+	vig_line_label.text = tr(line_key) if not line_key.is_empty() else ""
+	vig_progress_label.text = ArabicFontSetup.isolate_ltr("%d / %d" % [_current_index + 1, total])
+
+	var show_ability: bool = not _vignette_ability_id.is_empty() and _current_index >= _vignette_lines.size() - 1
+	ability_banner.visible = show_ability
+	if show_ability:
+		var upper_id: String = _vignette_ability_id.to_upper()
+		ability_header_label.text = tr("UI_ABILITY_UNLOCKED")
+		ability_name_label.text = tr("ABILITY_%s_NAME" % upper_id)
+		ability_desc_label.text = tr("ABILITY_%s_DESC" % upper_id)
+
+	var key_str: String = ArabicFontSetup.get_action_key_label("interact")
+	vig_continue_label.text = ArabicFontSetup.format_key_prompt(key_str, tr("UI_PRESS_CONTINUE"))
+
+
+func _render_dialogue() -> void:
+	if _current_index >= _dialogue_entries.size():
+		return
+	var entry: Dictionary = _dialogue_entries[_current_index]
+	var speaker_key: String = str(entry.get("speaker_key", ""))
+	var text_key: String = str(entry.get("text_key", ""))
+
+	dlg_speaker_label.text = tr(speaker_key) if not speaker_key.is_empty() else ""
+	dlg_speaker_label.visible = not speaker_key.is_empty()
+	dlg_body_label.text = tr(text_key) if not text_key.is_empty() else ""
+	dlg_progress_label.text = ArabicFontSetup.isolate_ltr("%d / %d" % [_current_index + 1, _dialogue_entries.size()])
+
+	var key_str: String = ArabicFontSetup.get_action_key_label("interact")
+	dlg_continue_label.text = ArabicFontSetup.format_key_prompt(key_str, tr("UI_PRESS_CONTINUE"))
+
+
+func _advance() -> void:
+	_debounce_timer = INPUT_DEBOUNCE_SEC
+	AudioManager.play_sfx("ui_talk")
+	if _mode == Mode.VIGNETTE:
+		if _current_index + 1 < _vignette_lines.size():
+			_current_index += 1
+			_render_vignette()
+			_animate_current_line(vig_line_label)
+		else:
+			_close()
+	elif _mode == Mode.DIALOGUE:
+		if _current_index + 1 < _dialogue_entries.size():
+			_current_index += 1
+			_render_dialogue()
+			_animate_current_line(dlg_body_label)
+		else:
+			_close()
+
+
+func _animate_current_line(target: Control) -> void:
+	if _line_tween != null and _line_tween.is_valid():
+		_line_tween.kill()
+	target.modulate.a = 0.0
+	_line_tween = create_tween()
+	_line_tween.tween_property(target, "modulate:a", 1.0, 0.28)
+
+
+func _close() -> void:
+	_mode = Mode.NONE
+	visible = false
+	_set_player_controls(true)
+	finished.emit()
+
+
+func _set_player_controls(enabled: bool) -> void:
+	var players: Array[Node] = get_tree().get_nodes_in_group("player")
+	for node: Node in players:
+		if node.has_method("set_controls_enabled"):
+			node.call("set_controls_enabled", enabled)

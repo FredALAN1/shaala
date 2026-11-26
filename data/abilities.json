@@ -1,0 +1,68 @@
+{
+  "abilities": [
+    {
+      "id": "flame_spell",
+      "name_key": "ABILITY_FLAME_SPELL_NAME",
+      "desc_key": "ABILITY_FLAME_SPELL_DESC",
+      "milestone": "M1",
+      "orb_id": "starting",
+      "unlocked_by_default": true
+    },
+    {
+      "id": "dash",
+      "name_key": "ABILITY_DASH_NAME",
+      "desc_key": "ABILITY_DASH_DESC",
+      "milestone": "M1",
+      "orb_id": "orb_desert_dash",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "wall_cling",
+      "name_key": "ABILITY_WALL_CLING_NAME",
+      "desc_key": "ABILITY_WALL_CLING_DESC",
+      "milestone": "M1",
+      "orb_id": "orb_highway_wall_cling",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "double_jump",
+      "name_key": "ABILITY_DOUBLE_JUMP_NAME",
+      "desc_key": "ABILITY_DOUBLE_JUMP_DESC",
+      "milestone": "M2",
+      "orb_id": "orb_metro_double_jump",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "ground_pound",
+      "name_key": "ABILITY_GROUND_POUND_NAME",
+      "desc_key": "ABILITY_GROUND_POUND_DESC",
+      "milestone": "M2",
+      "orb_id": "orb_diriyah_ground_pound",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "glide",
+      "name_key": "ABILITY_GLIDE_NAME",
+      "desc_key": "ABILITY_GLIDE_DESC",
+      "milestone": "M3",
+      "orb_id": "orb_tuwaiq_glide",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "time_shift",
+      "name_key": "ABILITY_TIME_SHIFT_NAME",
+      "desc_key": "ABILITY_TIME_SHIFT_DESC",
+      "milestone": "M2",
+      "orb_id": "orb_diriyah_time_shift",
+      "unlocked_by_default": false
+    },
+    {
+      "id": "grey_eye",
+      "name_key": "ABILITY_GREY_EYE_NAME",
+      "desc_key": "ABILITY_GREY_EYE_DESC",
+      "milestone": "M2",
+      "orb_id": "orb_metro_grey_eye",
+      "unlocked_by_default": false
+    }
+  ]
+}

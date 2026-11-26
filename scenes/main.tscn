@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/room_manager.gd" id="1_room_manager"]
+[ext_resource type="Script" path="res://scripts/systems/room_camera.gd" id="2_room_camera"]
+
+[node name="Main" type="Node"]
+process_mode = 3
+script = ExtResource("1_room_manager")
+
+[node name="WorldRoot" type="Node2D" parent="."]
+process_mode = 1
+
+[node name="RoomContainer" type="Node2D" parent="WorldRoot"]
+
+[node name="PlayerContainer" type="Node2D" parent="WorldRoot"]
+
+[node name="RoomCamera" type="Camera2D" parent="WorldRoot"]
+script = ExtResource("2_room_camera")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 20
+
+[node name="TransitionLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 90
+
+[node name="FadeRect" type="ColorRect" parent="TransitionLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0509804, 0.0627451, 0.129412, 0)

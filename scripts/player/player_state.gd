@@ -1,0 +1,26 @@
+class_name PlayerState
+extends Node
+## Base state for Farid's PlayerStateMachine.
+
+var player: Player = null
+var state_machine: PlayerStateMachine = null
+
+
+func enter(_prev_state: StringName, _data: Dictionary = {}) -> void:
+	pass
+
+
+func exit() -> void:
+	pass
+
+
+func handle_input(_event: InputEvent) -> void:
+	pass
+
+
+func update(_delta: float) -> void:
+	pass
+
+
+func physics_update(_delta: float) -> void:
+	pass

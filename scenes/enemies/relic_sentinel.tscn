@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/relic_sentinel.gd" id="1_sentinel"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="2_hurtbox"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="3_hitbox"]
+
+[sub_resource type="RectangleShape2D" id="SubResource_body"]
+size = Vector2(52, 82)
+
+[sub_resource type="RectangleShape2D" id="SubResource_hurtbox"]
+size = Vector2(58, 86)
+
+[sub_resource type="RectangleShape2D" id="SubResource_attack"]
+size = Vector2(86, 68)
+
+[sub_resource type="RectangleShape2D" id="SubResource_contact"]
+size = Vector2(46, 74)
+
+[node name="RelicSentinel" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_sentinel")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -41)
+shape = SubResource("SubResource_body")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("2_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -43)
+shape = SubResource("SubResource_hurtbox")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+position = Vector2(-66, -34)
+collision_layer = 32
+collision_mask = 4
+monitoring = false
+monitorable = false
+script = ExtResource("3_hitbox")
+damage = 2
+knockback = Vector2(360, -200)
+parryable = true
+damage_type = "melee"
+active = false
+one_shot_per_target = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("SubResource_attack")
+
+[node name="ContactHitbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 4
+monitoring = false
+monitorable = false
+script = ExtResource("3_hitbox")
+damage = 1
+knockback = Vector2(220, -150)
+parryable = false
+damage_type = "contact"
+active = false
+one_shot_per_target = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactHitbox"]
+position = Vector2(0, -39)
+shape = SubResource("SubResource_contact")
+
+[node name="LedgeRayLeft" type="RayCast2D" parent="."]
+position = Vector2(-32, -4)
+target_position = Vector2(0, 28)
+collision_mask = 3
+
+[node name="LedgeRayRight" type="RayCast2D" parent="."]
+position = Vector2(32, -4)
+target_position = Vector2(0, 28)
+collision_mask = 3
+
+[node name="WallRayLeft" type="RayCast2D" parent="."]
+position = Vector2(-24, -40)
+target_position = Vector2(-18, 0)
+collision_mask = 1
+
+[node name="WallRayRight" type="RayCast2D" parent="."]
+position = Vector2(24, -40)
+target_position = Vector2(18, 0)
+collision_mask = 1

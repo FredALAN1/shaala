@@ -1,0 +1,114 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/interactables/npc_interactable.gd" id="1_npc_script"]
+[ext_resource type="Shader" path="res://assets/placeholder/shaders/painterly_silhouette.gdshader" id="2_sil_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_npc"]
+shader = ExtResource("2_sil_shader")
+shader_parameter/rim_color = Color(0.878431, 0.478431, 0.235294, 1)
+shader_parameter/rim_strength = 0.48
+shader_parameter/rim_width = 2.0
+shader_parameter/light_direction = Vector2(0.75, -0.65)
+shader_parameter/ink_wobble_px = 0.6
+shader_parameter/ink_wobble_speed = 1.3
+shader_parameter/shadow_depth = 0.2
+shader_parameter/paper_grain = 0.03
+shader_parameter/flash_amount = 0.0
+shader_parameter/flash_color = Color(0.964706, 0.886275, 0.6, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_npc"]
+size = Vector2(120, 128)
+
+[node name="NpcBoy" type="Area2D"]
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("1_npc_script")
+
+[node name="VisualRoot" type="Node2D" parent="."]
+material = SubResource("ShaderMaterial_npc")
+
+[node name="BoyVisual" type="Node2D" parent="VisualRoot"]
+use_parent_material = true
+
+[node name="GroundShadow" type="Polygon2D" parent="VisualRoot/BoyVisual"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.45)
+polygon = PackedVector2Array(-20, 2, -12, -3, 12, -3, 20, 2, 12, 5, -12, 5)
+
+[node name="ThobeBody" type="Polygon2D" parent="VisualRoot/BoyVisual"]
+use_parent_material = true
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-14, 0, -10, -34, -7, -42, 7, -42, 11, -34, 15, 0)
+
+[node name="OchreScarf" type="Polygon2D" parent="VisualRoot/BoyVisual"]
+use_parent_material = true
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-11, -36, -6, -44, 8, -44, 12, -35, 3, -31, -8, -28)
+
+[node name="HeadAndGhutra" type="Polygon2D" parent="VisualRoot/BoyVisual"]
+use_parent_material = true
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-9, -43, -10, -56, -4, -62, 5, -62, 10, -56, 9, -44)
+
+[node name="Headband" type="Polygon2D" parent="VisualRoot/BoyVisual"]
+use_parent_material = true
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-9, -55, 9, -55, 9, -52, -9, -52)
+
+[node name="WoodenStick" type="Node2D" parent="VisualRoot/BoyVisual"]
+use_parent_material = true
+position = Vector2(9, -27)
+
+[node name="StickShaft" type="Polygon2D" parent="VisualRoot/BoyVisual/WoodenStick"]
+use_parent_material = true
+color = Color(0.431373, 0.286275, 0.188235, 1)
+polygon = PackedVector2Array(-2, 26, 1, 26, 16, -24, 13, -25)
+
+[node name="MotaibVisual" type="Node2D" parent="VisualRoot"]
+visible = false
+use_parent_material = true
+
+[node name="GroundShadow" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.55)
+polygon = PackedVector2Array(-32, 2, -18, -4, 18, -4, 32, 2, 18, 6, -18, 6)
+
+[node name="GreatswordLeft" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-32, -114, -22, -118, 20, -24, 13, -21)
+
+[node name="GreatswordRight" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(22, -118, 32, -114, -13, -21, -20, -24)
+
+[node name="SwordGlint" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+color = Color(0.964706, 0.886275, 0.6, 0.75)
+polygon = PackedVector2Array(-27, -113, -24, -114, -11, -86, -14, -85)
+
+[node name="CloakHem" type="Node2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+position = Vector2(0, -78)
+
+[node name="CloakShape" type="Polygon2D" parent="VisualRoot/MotaibVisual/CloakHem"]
+use_parent_material = true
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-18, 0, -28, 72, -10, 76, 12, 76, 26, 70, 18, 0)
+
+[node name="ArmorTorso" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+color = Color(0.121569, 0.14902, 0.25098, 1)
+polygon = PackedVector2Array(-18, 0, -16, -46, -22, -82, 22, -82, 16, -46, 18, 0)
+
+[node name="NajdiPauldrons" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+color = Color(0.709804, 0.501961, 0.290196, 1)
+polygon = PackedVector2Array(-28, -74, -22, -88, -8, -84, 8, -84, 22, -88, 28, -74, 18, -68, -18, -68)
+
+[node name="HeadAndHelm" type="Polygon2D" parent="VisualRoot/MotaibVisual"]
+use_parent_material = true
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-11, -83, -12, -102, 0, -108, 12, -102, 11, -83)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -64)
+shape = SubResource("RectangleShape2D_npc")

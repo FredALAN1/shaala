@@ -1,0 +1,313 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/boss_arena_controller.gd" id="1_boss_ctrl"]
+[ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
+[ext_resource type="Script" path="res://scripts/rooms/tutorial_sign.gd" id="3_tut"]
+[ext_resource type="PackedScene" path="res://scenes/boss/boss_spire_warden.tscn" id="4_boss"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/notebook_page.tscn" id="5_page"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(2200, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_outer"]
+size = Vector2(40, 660)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_east_outer"]
+size = Vector2(40, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_floor"]
+size = Vector2(2200, 220)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_upper_wall"]
+size = Vector2(40, 620)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_seal_door"]
+size = Vector2(40, 200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_balcony"]
+size = Vector2(280, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(100, 280)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(70, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_metro_sign"]
+size = Vector2(130, 140)
+
+[node name="EmptyRiyadhBoss" type="Node2D"]
+script = ExtResource("1_boss_ctrl")
+room_id = "empty_riyadh_boss"
+area_id = "empty_riyadh"
+room_title_key = "AREA_EMPTY_RIYADH_MALL"
+camera_bounds = Rect2(0, 0, 2200, 1080)
+supports_time_shift = true
+boss_id = "boss_spire_warden"
+boss_node_path = NodePath("Enemies/BossSpireWarden")
+trigger_zone_path = NodePath("BossTriggerZone")
+west_seal_door_path = NodePath("Geometry/WestSealDoor")
+east_seal_door_path = NodePath("Geometry/EastSealDoor")
+reward_page_path = NodePath("Interactables/RewardNotebookPage")
+metro_gate_sign_path = NodePath("Interactables/MetroSealedSign")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0.05)
+
+[node name="SkyVaultIndigo" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-200, -100, 2400, -100, 2400, 1180, -200, 1180)
+
+[node name="SkylightMoonbeam" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.964706, 0.886275, 0.6, 0.12)
+polygon = PackedVector2Array(720, -60, 1340, -60, 1620, 880, 440, 880)
+
+[node name="FarLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.15, 0.1)
+
+[node name="ToweringGlassRuinsFar" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+color = Color(0.101961, 0.133333, 0.243137, 0.92)
+polygon = PackedVector2Array(-100, 1080, -100, 420, 240, 420, 290, 120, 440, 175, 490, 460, 760, 460, 820, 90, 1020, 40, 1190, 110, 1260, 460, 1580, 460, 1640, 155, 1820, 210, 1880, 420, 2300, 420, 2300, 1080)
+
+[node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.35, 0.2)
+
+[node name="CrackedSkylightRibs" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.172549, 0.25098, 0.317647, 0.85)
+polygon = PackedVector2Array(220, 40, 260, 40, 520, 860, 480, 860)
+
+[node name="CrackedSkylightRibsRight" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.172549, 0.25098, 0.317647, 0.85)
+polygon = PackedVector2Array(1760, 40, 1800, 40, 1540, 860, 1500, 860)
+
+[node name="MallCourtyardArchBg" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.121569, 0.14902, 0.25098, 0.9)
+polygon = PackedVector2Array(620, 860, 620, 320, 1020, 180, 1420, 320, 1420, 860, 1360, 860, 1360, 360, 1020, 240, 680, 360, 680, 860)
+
+[node name="NearLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.65, 0.35)
+
+[node name="ShatteredGlassDebrisFg" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.0705882, 0.0862745, 0.168627, 0.85)
+polygon = PackedVector2Array(-100, 1080, -100, 880, 620, 855, 1380, 885, 2300, 860, 2300, 1080)
+
+[node name="Era2054" type="Node2D" parent="."]
+
+[node name="BrokenFountainPlinth" type="Polygon2D" parent="Era2054"]
+color = Color(0.309804, 0.427451, 0.478431, 0.72)
+polygon = PackedVector2Array(910, 860, 945, 818, 1105, 818, 1140, 860)
+
+[node name="CrackedGlassSpireBg" type="Polygon2D" parent="Era2054"]
+color = Color(0.309804, 0.427451, 0.478431, 0.55)
+polygon = PackedVector2Array(995, 818, 1018, 520, 1038, 570, 1058, 818)
+
+[node name="Era2034" type="Node2D" parent="."]
+visible = false
+
+[node name="IntactCourtyardGlow" type="Polygon2D" parent="Era2034"]
+color = Color(0.964706, 0.886275, 0.6, 0.4)
+polygon = PackedVector2Array(940, 818, 1110, 818, 1080, 740, 970, 740)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="CeilingBarrier" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1100, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CeilingBarrier"]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/CeilingBarrier"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-1100, -20, 1100, -20, 1100, 20, -1100, 20)
+
+[node name="WestOuterUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 330)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestOuterUpperWall"]
+shape = SubResource("RectangleShape2D_west_outer")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestOuterUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -330, 20, -330, 20, 330, -20, 330)
+
+[node name="EastOuterWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2180, 540)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastOuterWall"]
+shape = SubResource("RectangleShape2D_east_outer")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastOuterWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -540, 20, -540, 20, 540, -20, 540)
+
+[node name="ArenaMainFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1100, 970)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaMainFloor"]
+shape = SubResource("RectangleShape2D_arena_floor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/ArenaMainFloor"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-1100, -110, 1100, -110, 1100, 110, -1100, 110)
+
+[node name="CourtyardMarbleTrim" type="Polygon2D" parent="Geometry/ArenaMainFloor"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-1100, -110, 1100, -110, 1100, -94, -1100, -94)
+
+[node name="WestArenaUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(120, 350)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestArenaUpperWall"]
+shape = SubResource("RectangleShape2D_arena_upper_wall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestArenaUpperWall"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-20, -310, 20, -310, 20, 310, -20, 310)
+
+[node name="WestSealDoor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(120, 760)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestSealDoor"]
+shape = SubResource("RectangleShape2D_seal_door")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestSealDoor"]
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-20, -100, 20, -100, 20, 100, -20, 100)
+
+[node name="SealGlow" type="Polygon2D" parent="Geometry/WestSealDoor"]
+color = Color(0.964706, 0.886275, 0.6, 0.85)
+polygon = PackedVector2Array(-5, -80, 5, -80, 5, 80, -5, 80)
+
+[node name="EastArenaUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1920, 350)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastArenaUpperWall"]
+shape = SubResource("RectangleShape2D_arena_upper_wall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastArenaUpperWall"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-20, -310, 20, -310, 20, 310, -20, 310)
+
+[node name="EastSealDoor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1920, 760)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastSealDoor"]
+shape = SubResource("RectangleShape2D_seal_door")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastSealDoor"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-20, -100, 20, -100, 20, 100, -20, 100)
+
+[node name="SealGlow" type="Polygon2D" parent="Geometry/EastSealDoor"]
+color = Color(0.964706, 0.886275, 0.6, 0.85)
+polygon = PackedVector2Array(-5, -80, 5, -80, 5, 80, -5, 80)
+
+[node name="OneWayPlatforms" type="Node2D" parent="."]
+
+[node name="GlassBalconyWest" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(420, 672)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/GlassBalconyWest"]
+shape = SubResource("RectangleShape2D_balcony")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/GlassBalconyWest"]
+color = Color(0.309804, 0.427451, 0.478431, 0.95)
+polygon = PackedVector2Array(-140, -12, 140, -12, 140, 12, -140, 12)
+
+[node name="GoldEdge" type="Polygon2D" parent="OneWayPlatforms/GlassBalconyWest"]
+color = Color(0.964706, 0.886275, 0.6, 0.75)
+polygon = PackedVector2Array(-140, -12, 140, -12, 140, -8, -140, -8)
+
+[node name="GlassBalconyEast" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(1620, 672)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/GlassBalconyEast"]
+shape = SubResource("RectangleShape2D_balcony")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/GlassBalconyEast"]
+color = Color(0.309804, 0.427451, 0.478431, 0.95)
+polygon = PackedVector2Array(-140, -12, 140, -12, 140, 12, -140, 12)
+
+[node name="GoldEdge" type="Polygon2D" parent="OneWayPlatforms/GlassBalconyEast"]
+color = Color(0.964706, 0.886275, 0.6, 0.75)
+polygon = PackedVector2Array(-140, -12, 140, -12, 140, -8, -140, -8)
+
+[node name="BossTriggerZone" type="Area2D" parent="."]
+position = Vector2(470, 720)
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTriggerZone"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_riyadh_01" type="Marker2D" parent="Spawns"]
+position = Vector2(210, 826)
+
+[node name="Transitions" type="Node2D" parent="."]
+
+[node name="ExitWestToRiyadh01" type="Area2D" parent="Transitions"]
+position = Vector2(35, 770)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_riyadh_01"
+target_spawn_id = "from_boss"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitWestToRiyadh01"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="RewardNotebookPage" parent="Interactables" instance=ExtResource("5_page")]
+visible = false
+position = Vector2(1120, 860)
+page_id = "page_02_mall"
+title_key = "PAGE_MALL_TITLE"
+body_key = "PAGE_MALL_BODY"
+
+[node name="MetroSealedSign" type="Area2D" parent="Interactables"]
+position = Vector2(2060, 816)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("3_tut")
+tutorial_key = "PROMPT_SEALED_M2"
+speaker_key = "SPEAKER_FARID"
+dialogue_line_keys = Array[String](["DLG_METRO_SEALED_01"])
+glyph_style = "metro_seal"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactables/MetroSealedSign"]
+shape = SubResource("RectangleShape2D_metro_sign")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="BossSpireWarden" parent="Enemies" instance=ExtResource("4_boss")]
+position = Vector2(1420, 860)
+arena_left_x = 180.0
+arena_right_x = 1860.0
+arena_floor_y = 860.0

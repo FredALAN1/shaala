@@ -1,0 +1,130 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/minimap_overlay.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/placeholder/theme/shaala_theme.tres" id="2_theme"]
+
+[node name="MinimapOverlay" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0392157, 0.0470588, 0.105882, 0.78)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MapPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(1280, 760)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/MapPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderRow" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MapTitleLabel" type="Label" parent="CenterContainer/MapPanel/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 34
+
+[node name="ExploredLabel" type="Label" parent="CenterContainer/MapPanel/VBox/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
+theme_override_font_sizes/font_size = 22
+
+[node name="CloseButton" type="Button" parent="CenterContainer/MapPanel/VBox/HeaderRow"]
+custom_minimum_size = Vector2(140, 46)
+layout_mode = 2
+
+[node name="MapCanvasFrame" type="PanelContainer" parent="CenterContainer/MapPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MapCanvas" type="Control" parent="CenterContainer/MapPanel/VBox/MapCanvasFrame"]
+custom_minimum_size = Vector2(1180, 560)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LegendRow" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 28
+alignment = 1
+
+[node name="CurrentItem" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox/LegendRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Swatch" type="ColorRect" parent="CenterContainer/MapPanel/VBox/LegendRow/CurrentItem"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.964706, 0.886275, 0.6, 1)
+
+[node name="Label" type="Label" parent="CenterContainer/MapPanel/VBox/LegendRow/CurrentItem"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="ShrineItem" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox/LegendRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Swatch" type="ColorRect" parent="CenterContainer/MapPanel/VBox/LegendRow/ShrineItem"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.909804, 0.768627, 0.603922, 1)
+
+[node name="Label" type="Label" parent="CenterContainer/MapPanel/VBox/LegendRow/ShrineItem"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="BossItem" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox/LegendRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Swatch" type="ColorRect" parent="CenterContainer/MapPanel/VBox/LegendRow/BossItem"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.878431, 0.478431, 0.235294, 1)
+
+[node name="Label" type="Label" parent="CenterContainer/MapPanel/VBox/LegendRow/BossItem"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="ExploredItem" type="HBoxContainer" parent="CenterContainer/MapPanel/VBox/LegendRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Swatch" type="ColorRect" parent="CenterContainer/MapPanel/VBox/LegendRow/ExploredItem"]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.309804, 0.427451, 0.478431, 1)
+
+[node name="Label" type="Label" parent="CenterContainer/MapPanel/VBox/LegendRow/ExploredItem"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18

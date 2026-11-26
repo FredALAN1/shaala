@@ -1,0 +1,39 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_root.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/placeholder/theme/shaala_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/title_screen.tscn" id="4_title"]
+[ext_resource type="PackedScene" path="res://scenes/ui/minimap_overlay.tscn" id="5_minimap"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_settings_menu.tscn" id="6_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/vignette_player.tscn" id="7_vignette"]
+
+[node name="UIRoot" type="CanvasLayer"]
+process_mode = 3
+layer = 10
+script = ExtResource("1_script")
+
+[node name="RootControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="HUD" parent="RootControl" instance=ExtResource("3_hud")]
+layout_mode = 1
+
+[node name="TitleScreen" parent="RootControl" instance=ExtResource("4_title")]
+layout_mode = 1
+
+[node name="MinimapOverlay" parent="RootControl" instance=ExtResource("5_minimap")]
+layout_mode = 1
+
+[node name="PauseSettingsMenu" parent="RootControl" instance=ExtResource("6_pause")]
+layout_mode = 1
+
+[node name="VignettePlayer" parent="RootControl" instance=ExtResource("7_vignette")]
+layout_mode = 1

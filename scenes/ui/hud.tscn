@@ -1,0 +1,191 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/placeholder/theme/shaala_theme.tres" id="2_theme"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="TopRow" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 28.0
+offset_right = -36.0
+offset_bottom = 200.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="StatusPanel" type="PanelContainer" parent="TopRow"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="TopRow/StatusPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="HpHeaderLabel" type="Label" parent="TopRow/StatusPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="HealthPipsBox" type="HBoxContainer" parent="TopRow/StatusPanel/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="FlameHeaderLabel" type="Label" parent="TopRow/StatusPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="FlameBar" type="ProgressBar" parent="TopRow/StatusPanel/VBox"]
+custom_minimum_size = Vector2(300, 18)
+layout_mode = 2
+mouse_filter = 2
+max_value = 100.0
+show_percentage = false
+
+[node name="DaggerTierLabel" type="Label" parent="TopRow/StatusPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="TopSpacer" type="Control" parent="TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="EraBadge" type="PanelContainer" parent="TopRow"]
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="EraLabel" type="Label" parent="TopRow/EraBadge"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="AreaBanner" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -380.0
+offset_top = 42.0
+offset_right = 380.0
+offset_bottom = 136.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="AreaTitleLabel" type="Label" parent="AreaBanner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+
+[node name="AreaRule" type="HSeparator" parent="AreaBanner"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ToastPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -380.0
+offset_top = 148.0
+offset_right = 380.0
+offset_bottom = 212.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="ToastLabel" type="Label" parent="ToastPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PromptPill" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -340.0
+offset_top = -236.0
+offset_right = 340.0
+offset_bottom = -170.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="PromptLabel" type="Label" parent="PromptPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BossPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = -152.0
+offset_right = 450.0
+offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="BossPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderRow" type="HBoxContainer" parent="BossPanel/VBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BossNameLabel" type="Label" parent="BossPanel/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 28
+
+[node name="BossHpNumbersLabel" type="Label" parent="BossPanel/VBox/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="BossSubtitleLabel" type="Label" parent="BossPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.776471, 0.545098, 0.34902, 1)
+theme_override_font_sizes/font_size = 18
+
+[node name="BossHpBar" type="ProgressBar" parent="BossPanel/VBox"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+max_value = 280.0
+value = 280.0
+show_percentage = false

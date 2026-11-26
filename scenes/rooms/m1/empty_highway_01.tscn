@@ -1,0 +1,386 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
+[ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/npc_boy.tscn" id="3_npc"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/notebook_page.tscn" id="4_page"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/sand_stalker.tscn" id="5_stalker"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/shard_husk.tscn" id="6_husk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(3200, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_side_wall"]
+size = Vector2(40, 640)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_deck"]
+size = Vector2(1120, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sinkhole_floor"]
+size = Vector2(210, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mid_east_deck"]
+size = Vector2(1910, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_car"]
+size = Vector2(160, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_motaib_overpass"]
+size = Vector2(420, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bus"]
+size = Vector2(300, 95)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bus_top"]
+size = Vector2(110, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_page_overpass"]
+size = Vector2(290, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_160"]
+size = Vector2(160, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_220"]
+size = Vector2(220, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(70, 180)
+
+[node name="EmptyHighway01" type="Node2D"]
+script = ExtResource("1_room_ctrl")
+room_id = "empty_highway_01"
+area_id = "empty_highway"
+room_title_key = "AREA_EMPTY_HIGHWAY"
+camera_bounds = Rect2(0, 0, 3200, 1080)
+supports_time_shift = true
+music_mood = "highway"
+atmosphere_tint = Color(0.658824, 0.266667, 0.196078, 1)
+shadow_tint = Color(0.0862745, 0.105882, 0.2, 1)
+sand_wind_density = 0.2
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0.05)
+
+[node name="SkyNightIndigo" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-200, -100, 3400, -100, 3400, 440, -200, 440)
+
+[node name="SkyDuskTransition" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.415686, 0.207843, 0.227451, 1)
+polygon = PackedVector2Array(-200, 360, 3400, 360, 3400, 720, -200, 720)
+
+[node name="SkyWarmHorizon" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.752941, 0.372549, 0.219608, 1)
+polygon = PackedVector2Array(-200, 620, 3400, 620, 3400, 1160, -200, 1160)
+
+[node name="FarLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.18, 0.1)
+
+[node name="RiyadhApproachingSkyline" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+color = Color(0.105882, 0.129412, 0.231373, 0.92)
+polygon = PackedVector2Array(1320, 1080, 1320, 650, 1460, 650, 1475, 495, 1525, 515, 1545, 610, 1650, 610, 1675, 420, 1735, 385, 1775, 435, 1800, 585, 1920, 585, 1945, 340, 1995, 290, 2045, 345, 2070, 560, 2220, 560, 2255, 435, 2335, 465, 2365, 610, 2600, 610, 2645, 480, 2720, 510, 2765, 650, 3300, 650, 3300, 1080)
+
+[node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.45, 0.25)
+
+[node name="DistantViaductArches" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.172549, 0.188235, 0.294118, 0.88)
+polygon = PackedVector2Array(-100, 1080, -100, 670, 3300, 635, 3300, 685, 2940, 688, 2940, 1080, 2860, 1080, 2860, 690, 2140, 696, 2140, 1080, 2060, 1080, 2060, 698, 1260, 706, 1260, 1080, 1180, 1080, 1180, 708, 420, 716, 420, 1080)
+
+[node name="NearLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.75, 0.45)
+
+[node name="RoadsideBarrierDunes" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.117647, 0.133333, 0.215686, 0.85)
+polygon = PackedVector2Array(-100, 1080, -100, 860, 920, 825, 1920, 865, 3300, 825, 3300, 1080)
+
+[node name="WindLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.9, 0.9)
+
+[node name="SandWindOverlay" type="ColorRect" parent="ParallaxBackground/WindLayer"]
+offset_left = -200.0
+offset_top = 0.0
+offset_right = 3400.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0.909804, 0.768627, 0.603922, 0.11)
+
+[node name="Era2054" type="Node2D" parent="."]
+
+[node name="TiltedHighwayGantry" type="Polygon2D" parent="Era2054"]
+color = Color(0.309804, 0.427451, 0.478431, 0.92)
+polygon = PackedVector2Array(2440, 840, 2454, 480, 2480, 480, 2466, 840)
+
+[node name="TiltedGantrySignBoard" type="Polygon2D" parent="Era2054"]
+color = Color(0.152941, 0.278431, 0.305882, 0.96)
+polygon = PackedVector2Array(2360, 495, 2720, 450, 2732, 545, 2372, 590)
+
+[node name="OverpassSupportColumn" type="Polygon2D" parent="Era2054"]
+color = Color(0.121569, 0.145098, 0.239216, 0.92)
+polygon = PackedVector2Array(1000, 690, 1060, 690, 1060, 840, 1000, 840)
+
+[node name="BrokenPagePillar" type="Polygon2D" parent="Era2054"]
+color = Color(0.121569, 0.145098, 0.239216, 0.92)
+polygon = PackedVector2Array(2185, 700, 2245, 700, 2245, 840, 2185, 840)
+
+[node name="Era2034" type="Node2D" parent="."]
+visible = false
+
+[node name="IntactHighwayLamps" type="Polygon2D" parent="Era2034"]
+color = Color(0.964706, 0.886275, 0.6, 0.5)
+polygon = PackedVector2Array(620, 520, 648, 520, 648, 536, 620, 536)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="CeilingBarrier" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1600, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CeilingBarrier"]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/CeilingBarrier"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-1600, -20, 1600, -20, 1600, 20, -1600, 20)
+
+[node name="WestUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestUpperWall"]
+shape = SubResource("RectangleShape2D_side_wall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -320, 20, -320, 20, 320, -20, 320)
+
+[node name="EastUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3180, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastUpperWall"]
+shape = SubResource("RectangleShape2D_side_wall")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -320, 20, -320, 20, 320, -20, 320)
+
+[node name="HighwayWestDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(560, 960)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwayWestDeck"]
+shape = SubResource("RectangleShape2D_west_deck")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwayWestDeck"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-560, -120, 560, -120, 560, 120, -560, 120)
+
+[node name="AsphaltRim" type="Polygon2D" parent="Geometry/HighwayWestDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-560, -120, 560, -120, 560, -104, -560, -104)
+
+[node name="HighwaySinkholeFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1205, 1005)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwaySinkholeFloor"]
+shape = SubResource("RectangleShape2D_sinkhole_floor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwaySinkholeFloor"]
+color = Color(0.321569, 0.160784, 0.160784, 1)
+polygon = PackedVector2Array(-105, -75, 105, -75, 105, 75, -105, 75)
+
+[node name="HighwayMidEastDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2245, 960)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/HighwayMidEastDeck"]
+shape = SubResource("RectangleShape2D_mid_east_deck")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/HighwayMidEastDeck"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-955, -120, 955, -120, 955, 120, -955, 120)
+
+[node name="AsphaltRim" type="Polygon2D" parent="Geometry/HighwayMidEastDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-955, -120, 955, -120, 955, -104, -955, -104)
+
+[node name="AbandonedCar1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(500, 805)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AbandonedCar1"]
+shape = SubResource("RectangleShape2D_car")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/AbandonedCar1"]
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-80, 35, -76, -5, -42, -35, 36, -35, 68, -6, 80, 35)
+
+[node name="MotaibOverpassDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1030, 665)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MotaibOverpassDeck"]
+shape = SubResource("RectangleShape2D_motaib_overpass")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/MotaibOverpassDeck"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-210, -25, 210, -25, 210, 25, -210, 25)
+
+[node name="ConcreteCap" type="Polygon2D" parent="Geometry/MotaibOverpassDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-210, -25, 210, -25, 210, -14, -210, -14)
+
+[node name="AbandonedBusRoof" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1570, 792)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AbandonedBusRoof"]
+shape = SubResource("RectangleShape2D_bus")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/AbandonedBusRoof"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-150, -47, 150, -47, 150, 48, -150, 48)
+
+[node name="BusStripe" type="Polygon2D" parent="Geometry/AbandonedBusRoof"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-148, -8, 148, -8, 148, 8, -148, 8)
+
+[node name="BusRoofUpperSign" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1665, 705)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BusRoofUpperSign"]
+shape = SubResource("RectangleShape2D_bus_top")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/BusRoofUpperSign"]
+color = Color(0.658824, 0.266667, 0.196078, 1)
+polygon = PackedVector2Array(-55, -40, 55, -40, 55, 40, -55, 40)
+
+[node name="BrokenOverpassPageDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2215, 675)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BrokenOverpassPageDeck"]
+shape = SubResource("RectangleShape2D_page_overpass")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/BrokenOverpassPageDeck"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-145, -25, 145, -25, 145, 25, -145, 25)
+
+[node name="ConcreteCap" type="Polygon2D" parent="Geometry/BrokenOverpassPageDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-145, -25, 145, -25, 145, -14, -145, -14)
+
+[node name="OneWayPlatforms" type="Node2D" parent="."]
+
+[node name="OverpassRamp1" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(760, 752)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/OverpassRamp1"]
+shape = SubResource("RectangleShape2D_plat_160")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/OverpassRamp1"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-80, -12, 80, -12, 80, 12, -80, 12)
+
+[node name="OverpassRamp2" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(840, 660)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/OverpassRamp2"]
+shape = SubResource("RectangleShape2D_plat_160")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/OverpassRamp2"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-80, -12, 80, -12, 80, 12, -80, 12)
+
+[node name="EastGantryPlat" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(2620, 758)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EastGantryPlat"]
+shape = SubResource("RectangleShape2D_plat_220")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EastGantryPlat"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-110, -12, 110, -12, 110, 12, -110, 12)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_camp_02" type="Marker2D" parent="Spawns"]
+position = Vector2(210, 806)
+
+[node name="from_highway_02" type="Marker2D" parent="Spawns"]
+position = Vector2(2980, 806)
+
+[node name="Transitions" type="Node2D" parent="."]
+
+[node name="ExitWestToCamp02" type="Area2D" parent="Transitions"]
+position = Vector2(35, 750)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "desert_camp_02"
+target_spawn_id = "from_highway_01"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitWestToCamp02"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="ExitEastToHighway02" type="Area2D" parent="Transitions"]
+position = Vector2(3165, 750)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_highway_02"
+target_spawn_id = "from_highway_01"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitEastToHighway02"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="NpcMotaibCameo" parent="Interactables" instance=ExtResource("3_npc")]
+position = Vector2(1060, 640)
+npc_id = "motaib_highway"
+speaker_key = "SPEAKER_MOTAIB"
+line_keys = Array[String](["DLG_MOTAIB_HWY_01", "DLG_MOTAIB_HWY_02"])
+silhouette_style = "motaib"
+
+[node name="NotebookPageHighway" parent="Interactables" instance=ExtResource("4_page")]
+position = Vector2(2215, 650)
+page_id = "page_01_highway"
+title_key = "PAGE_HIGHWAY_TITLE"
+body_key = "PAGE_HIGHWAY_BODY"
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="SandStalker1" parent="Enemies" instance=ExtResource("5_stalker")]
+position = Vector2(660, 840)
+
+[node name="SandStalker2" parent="Enemies" instance=ExtResource("5_stalker")]
+position = Vector2(1960, 840)
+
+[node name="ShardHusk1" parent="Enemies" instance=ExtResource("6_husk")]
+position = Vector2(2620, 660)

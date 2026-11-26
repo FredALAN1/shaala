@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/interactables/notebook_page.gd" id="1_page_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_page"]
+radius = 48.0
+
+[node name="NotebookPage" type="Area2D"]
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("1_page_script")
+
+[node name="SandDebris" type="Polygon2D" parent="."]
+color = Color(0.431373, 0.286275, 0.188235, 1)
+polygon = PackedVector2Array(-26, 0, -14, -7, 4, -5, 18, -9, 28, 0)
+
+[node name="PageVisual" type="Node2D" parent="."]
+position = Vector2(0, -12)
+rotation = -0.139626
+
+[node name="PageShadow" type="Polygon2D" parent="PageVisual"]
+position = Vector2(2, 3)
+color = Color(0.0509804, 0.0627451, 0.129412, 0.45)
+polygon = PackedVector2Array(-14, 12, -16, -14, 12, -16, 15, -6, 11, 2, 16, 11)
+
+[node name="ParchmentSheet" type="Polygon2D" parent="PageVisual"]
+color = Color(0.937255, 0.878431, 0.745098, 1)
+polygon = PackedVector2Array(-14, 12, -16, -14, 12, -16, 15, -6, 11, 2, 16, 11)
+
+[node name="TornFold" type="Polygon2D" parent="PageVisual"]
+color = Color(0.85098, 0.658824, 0.486275, 1)
+polygon = PackedVector2Array(4, -15, 12, -16, 13, -8)
+
+[node name="InkLine1" type="Polygon2D" parent="PageVisual"]
+color = Color(0.164706, 0.133333, 0.2, 0.75)
+polygon = PackedVector2Array(-8, -8, 7, -9, 7, -7, -8, -6)
+
+[node name="InkLine2" type="Polygon2D" parent="PageVisual"]
+color = Color(0.164706, 0.133333, 0.2, 0.75)
+polygon = PackedVector2Array(-10, -2, 8, -3, 8, -1, -10, 0)
+
+[node name="InkLine3" type="Polygon2D" parent="PageVisual"]
+color = Color(0.164706, 0.133333, 0.2, 0.7)
+polygon = PackedVector2Array(-4, 4, 9, 3, 9, 5, -4, 6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -16)
+shape = SubResource("CircleShape2D_page")

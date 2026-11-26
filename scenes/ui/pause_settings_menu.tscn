@@ -1,0 +1,344 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/pause_settings_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/placeholder/theme/shaala_theme.tres" id="2_theme"]
+
+[node name="PauseSettingsMenu" type="Control"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0392157, 0.0470588, 0.105882, 0.8)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(1280, 780)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Sidebar" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderTitleLabel" type="Label" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 34
+horizontal_alignment = 1
+
+[node name="SidebarDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+layout_mode = 2
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="MapButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="NotebookTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="AudioTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="AccessibilityTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="ControlsTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="SidebarSpacer" type="Control" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveQuitButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
+visible = false
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="VerticalDivider" type="VSeparator" parent="CenterContainer/MainPanel/HBox"]
+layout_mode = 2
+
+[node name="ContentArea" type="MarginContainer" parent="CenterContainer/MainPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="NotebookSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HeaderRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+layout_mode = 2
+
+[node name="NotebookHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 30
+
+[node name="NotebookCountLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.776471, 0.545098, 0.34902, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="Divider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NotebookList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="AudioSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LanguageRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LanguageLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+
+[node name="LangArButton" type="Button" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+custom_minimum_size = Vector2(150, 46)
+layout_mode = 2
+
+[node name="LangEnButton" type="Button" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+custom_minimum_size = Vector2(150, 46)
+layout_mode = 2
+
+[node name="LangDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+
+[node name="AudioHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 30
+
+[node name="MasterVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.85
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="MusicVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.75
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="SfxVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.85
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="AccessibilitySection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="AccessHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 30
+
+[node name="AccessDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+
+[node name="ShakeRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="FlashRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/FlashRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CheckButton" type="CheckButton" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/FlashRow"]
+layout_mode = 2
+
+[node name="AssistRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 0.7
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="DeadzoneRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 0.1
+max_value = 0.5
+step = 0.02
+value = 0.2
+
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="ControlsSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ControlsHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 30
+
+[node name="RebindStatusLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="ControlsDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RebindList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10

@@ -1,0 +1,97 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/interactables/orb_shrine.gd" id="1_shrine_script"]
+[ext_resource type="Shader" path="res://assets/placeholder/shaders/painterly_silhouette.gdshader" id="2_sil_shader"]
+[ext_resource type="Shader" path="res://assets/placeholder/shaders/orb_glow.gdshader" id="3_orb_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_stele"]
+shader = ExtResource("2_sil_shader")
+shader_parameter/rim_color = Color(0.878431, 0.478431, 0.235294, 1)
+shader_parameter/rim_strength = 0.45
+shader_parameter/rim_width = 2.0
+shader_parameter/light_direction = Vector2(0.75, -0.65)
+shader_parameter/ink_wobble_px = 0.55
+shader_parameter/ink_wobble_speed = 1.1
+shader_parameter/shadow_depth = 0.18
+shader_parameter/paper_grain = 0.04
+shader_parameter/flash_amount = 0.0
+shader_parameter/flash_color = Color(0.964706, 0.886275, 0.6, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lantern"]
+shader = ExtResource("3_orb_shader")
+shader_parameter/core_color = Color(1, 0.972549, 0.862745, 1)
+shader_parameter/halo_color = Color(0.964706, 0.886275, 0.6, 1)
+shader_parameter/outer_tint = Color(0.878431, 0.478431, 0.235294, 1)
+shader_parameter/pulse_speed = 2.0
+shader_parameter/pulse_amount = 0.12
+shader_parameter/core_radius = 0.15
+shader_parameter/halo_softness = 0.5
+shader_parameter/mote_intensity = 0.75
+shader_parameter/glow_intensity = 1.25
+shader_parameter/burst_amount = 0.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shrine"]
+size = Vector2(132, 160)
+
+[node name="OrbShrine" type="Area2D"]
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("1_shrine_script")
+
+[node name="SteleVisual" type="Node2D" parent="."]
+material = SubResource("ShaderMaterial_stele")
+
+[node name="PlinthBase" type="Polygon2D" parent="SteleVisual"]
+use_parent_material = true
+color = Color(0.431373, 0.286275, 0.188235, 1)
+polygon = PackedVector2Array(-54, 0, -48, -14, 48, -14, 54, 0)
+
+[node name="SteleBody" type="Polygon2D" parent="SteleVisual"]
+use_parent_material = true
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-40, -14, -34, -142, 34, -142, 40, -14)
+
+[node name="SteleHighlight" type="Polygon2D" parent="SteleVisual"]
+use_parent_material = true
+color = Color(0.85098, 0.658824, 0.486275, 1)
+polygon = PackedVector2Array(18, -14, 24, -142, 34, -142, 40, -14)
+
+[node name="NajdiShurfat" type="Polygon2D" parent="SteleVisual"]
+use_parent_material = true
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-36, -138, -36, -142, -26, -158, -16, -142, -10, -142, 0, -162, 10, -142, 16, -142, 26, -158, 36, -142, 36, -138)
+
+[node name="ArchedNiche" type="Polygon2D" parent="SteleVisual"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-20, -24, -20, -96, -12, -114, 0, -126, 12, -114, 20, -96, 20, -24)
+
+[node name="FurjaLeftTop" type="Polygon2D" parent="SteleVisual"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-31, -116, -26, -126, -22, -116)
+
+[node name="FurjaLeftMid" type="Polygon2D" parent="SteleVisual"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-32, -88, -27, -98, -23, -88)
+
+[node name="FurjaRightTop" type="Polygon2D" parent="SteleVisual"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(22, -116, 26, -126, 31, -116)
+
+[node name="FurjaRightMid" type="Polygon2D" parent="SteleVisual"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(23, -88, 27, -98, 32, -88)
+
+[node name="OrbGlow" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_lantern")
+offset_left = -52.0
+offset_top = -130.0
+offset_right = 52.0
+offset_bottom = -26.0
+mouse_filter = 2
+color = Color(0.964706, 0.886275, 0.6, 1)
+
+[node name="FxOverlay" type="Node2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -80)
+shape = SubResource("RectangleShape2D_shrine")

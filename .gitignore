@@ -1,0 +1,31 @@
+# Godot 4.3+ cache and local editor state
+.godot/
+.import/
+export_presets.cfg
+override.cfg
+
+# Build & export outputs
+builds/
+android/
+
+# macOS & Windows OS metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Python caches & temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# IDE & C#/Mono artifacts (if ever enabled)
+.vscode/
+.idea/
+.mono/
+data_*/
+mono_crash.*.json

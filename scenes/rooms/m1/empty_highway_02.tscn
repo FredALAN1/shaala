@@ -1,0 +1,342 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
+[ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
+[ext_resource type="Script" path="res://scripts/rooms/tutorial_sign.gd" id="3_tut"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/memory_orb.tscn" id="4_orb"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/relic_sentinel.tscn" id="5_sentinel"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/shard_husk.tscn" id="6_husk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(2600, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_upper"]
+size = Vector2(40, 980)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_east_upper"]
+size = Vector2(40, 460)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_east_lower"]
+size = Vector2(40, 520)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_roof_blocker"]
+size = Vector2(1020, 580)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_floor"]
+size = Vector2(2600, 220)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_deck"]
+size = Vector2(1280, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chimney_left"]
+size = Vector2(80, 480)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chimney_right"]
+size = Vector2(80, 420)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_200"]
+size = Vector2(200, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_240"]
+size = Vector2(240, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(70, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tut"]
+size = Vector2(110, 110)
+
+[node name="EmptyHighway02" type="Node2D"]
+script = ExtResource("1_room_ctrl")
+room_id = "empty_highway_02"
+area_id = "empty_highway"
+room_title_key = "AREA_EMPTY_HIGHWAY"
+camera_bounds = Rect2(0, 0, 2600, 1400)
+supports_time_shift = true
+music_mood = "highway"
+atmosphere_tint = Color(0.309804, 0.427451, 0.478431, 1)
+shadow_tint = Color(0.0862745, 0.105882, 0.2, 1)
+sand_wind_density = 0.18
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0.05)
+
+[node name="SkyDeepIndigo" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-200, -100, 2800, -100, 2800, 580, -200, 580)
+
+[node name="SkyNightViolet" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.117647, 0.145098, 0.258824, 1)
+polygon = PackedVector2Array(-200, 480, 2800, 480, 2800, 960, -200, 960)
+
+[node name="SkyDuskGlowLow" type="Polygon2D" parent="ParallaxBackground/SkyLayer"]
+color = Color(0.454902, 0.227451, 0.219608, 1)
+polygon = PackedVector2Array(-200, 860, 2800, 860, 2800, 1500, -200, 1500)
+
+[node name="FarLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.18, 0.12)
+
+[node name="RingRoadTowersFar" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+color = Color(0.0862745, 0.105882, 0.2, 0.92)
+polygon = PackedVector2Array(-100, 1400, -100, 740, 220, 740, 250, 480, 340, 510, 380, 700, 720, 700, 760, 360, 845, 310, 900, 380, 940, 680, 1340, 680, 1390, 280, 1480, 220, 1545, 290, 1595, 650, 1980, 650, 2030, 390, 2140, 430, 2190, 720, 2700, 720, 2700, 1400)
+
+[node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.45, 0.28)
+
+[node name="InterchangeConcretePylons" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.152941, 0.180392, 0.286275, 0.88)
+polygon = PackedVector2Array(-100, 708, -100, 640, 2700, 590, 2700, 660, 2260, 668, 2260, 1400, 2150, 1400, 2150, 670, 1460, 682, 1460, 1400, 1350, 1400, 1350, 684, 620, 696, 620, 1400, 510, 1400, 510, 698)
+
+[node name="NearLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.75, 0.5)
+
+[node name="CollapsedTollBoothSilhouettes" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.0862745, 0.105882, 0.2, 0.8)
+polygon = PackedVector2Array(-100, 1400, -100, 1180, 420, 1120, 920, 1190, 1780, 1140, 2700, 1180, 2700, 1400)
+
+[node name="WindLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.9, 0.9)
+
+[node name="SandWindOverlay" type="ColorRect" parent="ParallaxBackground/WindLayer"]
+offset_left = -200.0
+offset_top = 0.0
+offset_right = 2800.0
+offset_bottom = 1400.0
+mouse_filter = 2
+color = Color(0.776471, 0.545098, 0.34902, 0.08)
+
+[node name="Era2054" type="Node2D" parent="."]
+
+[node name="CollapsedTollCanopy" type="Polygon2D" parent="Era2054"]
+color = Color(0.309804, 0.427451, 0.478431, 0.85)
+polygon = PackedVector2Array(260, 980, 740, 910, 755, 955, 275, 1025)
+
+[node name="LowerAlcoveNajdiArch" type="Polygon2D" parent="Era2054"]
+color = Color(0.478431, 0.301961, 0.203922, 0.88)
+polygon = PackedVector2Array(2200, 1180, 2200, 930, 2360, 880, 2520, 930, 2520, 1180, 2475, 1180, 2475, 965, 2360, 926, 2245, 965, 2245, 1180)
+
+[node name="ChimneyGripStripesLeft" type="Polygon2D" parent="Era2054"]
+color = Color(0.776471, 0.545098, 0.34902, 0.9)
+polygon = PackedVector2Array(1088, 600, 1100, 600, 1100, 1040, 1088, 1040)
+
+[node name="ChimneyGripStripesRight" type="Polygon2D" parent="Era2054"]
+color = Color(0.776471, 0.545098, 0.34902, 0.9)
+polygon = PackedVector2Array(1320, 680, 1332, 680, 1332, 1060, 1320, 1060)
+
+[node name="Era2034" type="Node2D" parent="."]
+visible = false
+
+[node name="IntactTollwayLights" type="Polygon2D" parent="Era2034"]
+color = Color(0.964706, 0.886275, 0.6, 0.45)
+polygon = PackedVector2Array(1560, 560, 1600, 560, 1600, 580, 1560, 580)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="CeilingBarrier" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1300, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CeilingBarrier"]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/CeilingBarrier"]
+color = Color(0.0509804, 0.0627451, 0.129412, 1)
+polygon = PackedVector2Array(-1300, -20, 1300, -20, 1300, 20, -1300, 20)
+
+[node name="WestUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 490)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestUpperWall"]
+shape = SubResource("RectangleShape2D_west_upper")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -490, 20, -490, 20, 490, -20, 490)
+
+[node name="EastUpperWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2580, 230)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastUpperWall"]
+shape = SubResource("RectangleShape2D_east_upper")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastUpperWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -230, 20, -230, 20, 230, -20, 230)
+
+[node name="EastLowerWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2580, 920)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastLowerWall"]
+shape = SubResource("RectangleShape2D_east_lower")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastLowerWall"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-20, -260, 20, -260, 20, 260, -20, 260)
+
+[node name="WestUpperBlocker" type="StaticBody2D" parent="Geometry"]
+position = Vector2(510, 290)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestUpperBlocker"]
+shape = SubResource("RectangleShape2D_west_roof_blocker")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestUpperBlocker"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-510, -290, 510, -290, 510, 290, -510, 290)
+
+[node name="LowerRim" type="Polygon2D" parent="Geometry/WestUpperBlocker"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-510, 274, 510, 274, 510, 290, -510, 290)
+
+[node name="LowerTollwayFloor" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1300, 1290)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LowerTollwayFloor"]
+shape = SubResource("RectangleShape2D_lower_floor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/LowerTollwayFloor"]
+color = Color(0.0862745, 0.105882, 0.2, 1)
+polygon = PackedVector2Array(-1300, -110, 1300, -110, 1300, 110, -1300, 110)
+
+[node name="OchreRoadCap" type="Polygon2D" parent="Geometry/LowerTollwayFloor"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-1300, -110, 1300, -110, 1300, -94, -1300, -94)
+
+[node name="UpperRingRoadDeck" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1960, 700)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/UpperRingRoadDeck"]
+shape = SubResource("RectangleShape2D_upper_deck")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/UpperRingRoadDeck"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-640, -40, 640, -40, 640, 40, -640, 40)
+
+[node name="OchreCap" type="Polygon2D" parent="Geometry/UpperRingRoadDeck"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-640, -40, 640, -40, 640, -26, -640, -26)
+
+[node name="ChimneyLeftPylon" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1060, 820)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ChimneyLeftPylon"]
+shape = SubResource("RectangleShape2D_chimney_left")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/ChimneyLeftPylon"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-40, -240, 40, -240, 40, 240, -40, 240)
+
+[node name="ChimneyRightPylon" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1360, 870)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ChimneyRightPylon"]
+shape = SubResource("RectangleShape2D_chimney_right")
+
+[node name="Polygon2D" type="Polygon2D" parent="Geometry/ChimneyRightPylon"]
+color = Color(0.309804, 0.427451, 0.478431, 1)
+polygon = PackedVector2Array(-40, -210, 40, -210, 40, 210, -40, 210)
+
+[node name="OneWayPlatforms" type="Node2D" parent="."]
+
+[node name="TollwayCatwalkLeft" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(560, 1090)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/TollwayCatwalkLeft"]
+shape = SubResource("RectangleShape2D_plat_200")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/TollwayCatwalkLeft"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-100, -12, 100, -12, 100, 12, -100, 12)
+
+[node name="UpperRingRoadArchPlat" type="StaticBody2D" parent="OneWayPlatforms"]
+position = Vector2(1880, 575)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/UpperRingRoadArchPlat"]
+shape = SubResource("RectangleShape2D_plat_240")
+one_way_collision = true
+
+[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/UpperRingRoadArchPlat"]
+color = Color(0.776471, 0.545098, 0.34902, 1)
+polygon = PackedVector2Array(-120, -12, 120, -12, 120, 12, -120, 12)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="from_highway_01" type="Marker2D" parent="Spawns"]
+position = Vector2(210, 1146)
+
+[node name="from_riyadh_01" type="Marker2D" parent="Spawns"]
+position = Vector2(2380, 626)
+
+[node name="Transitions" type="Node2D" parent="."]
+
+[node name="ExitWestToHighway01" type="Area2D" parent="Transitions"]
+position = Vector2(35, 1090)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_highway_01"
+target_spawn_id = "from_highway_02"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitWestToHighway01"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="ExitEastToRiyadh01" type="Area2D" parent="Transitions"]
+position = Vector2(2565, 570)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("2_gate")
+target_room_id = "empty_riyadh_01"
+target_spawn_id = "from_highway_02"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ExitEastToRiyadh01"]
+shape = SubResource("RectangleShape2D_gate")
+
+[node name="Interactables" type="Node2D" parent="."]
+
+[node name="MemoryOrbWallCling" parent="Interactables" instance=ExtResource("4_orb")]
+position = Vector2(2360, 1118)
+orb_id = "orb_highway_wall_cling"
+ability_id = "wall_cling"
+vignette_title_key = "VIG_WALL_TITLE"
+vignette_line_keys = Array[String](["VIG_WALL_01", "VIG_WALL_02", "VIG_WALL_03"])
+
+[node name="TutWallCling" type="Area2D" parent="Interactables"]
+position = Vector2(920, 1136)
+collision_layer = 64
+collision_mask = 4
+script = ExtResource("3_tut")
+tutorial_key = "TUT_WALL_CLING"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactables/TutWallCling"]
+shape = SubResource("RectangleShape2D_tut")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="ShardHusk1" parent="Enemies" instance=ExtResource("6_husk")]
+position = Vector2(620, 1000)
+
+[node name="RelicSentinel1" parent="Enemies" instance=ExtResource("5_sentinel")]
+position = Vector2(1920, 1180)
