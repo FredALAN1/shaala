@@ -71,14 +71,14 @@ This is the living handoff queue between **Gemini (Visual Design Lead & Instruct
 
 | Drop ID | Title | Milestone | Status | Notes |
 | :--- | :--- | :---: | :---: | :--- |
-| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `P0_AWAITING_APPROVAL` *(P0 style frames delivered by Gemini)* | Full direction in [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). Three 1920×1080 style frames ready in `docs/ui_style_frames/`; awaiting Fred's approval before P2/P3 final assets. |
+| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `P0_APPROVED` *(Gemini: P2 fonts + ornaments; Claude: P1 code)* | Fred approved style frames and D1–D6 on 2026-11-26. See [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). |
 | **`DROP-001`** | M1 Baseline Painterly Visual Kit & 1:1 Sprite Replacement Queue | M1 | `BASELINE_VERIFIED` *(Queue Open for Final PNGs)* | Shaders, `ShaalaPalette`, and procedural silhouettes verified live in Godot 4.3; awaiting Batch 1A–1E final PNG & OFL font drops from Gemini. |
 
 ---
 
 ## DROP-002 — UI Identity "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `P0_AWAITING_APPROVAL` → **Next actor: Fred (style frame & D1–D5 approval) / Claude Opus (P1 code prep)**
+- **Status:** `P0_APPROVED` → **Next actors: Gemini (P2 fonts + ornaments, §2–§3) / Claude Opus (P1 code)**
 - **Date:** 2026-11-26
 - **Milestone:** M1 (P0–P3), M2 (P4: 2034 skin, Time Shift, Grey Eye)
 - **Visual Lead:** Gemini
@@ -197,6 +197,14 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 4. **Generous Line-Height & Accessibility Fallback for `Aref Ruqaa` (amends Plan §3.1 & §6.6):** Rendering `sf03` confirmed that `Aref Ruqaa`'s authentic diagonal baseline and tall ascenders (`المخيم`, `الهجوم`) require **`line-height = 1.95–2.0`** (vs. `1.8`) and at least `14 px` vertical clearance below `Readex Pro` captions. Additionally, when `text_scale >= 125%` (or if Fred wants a "Clear Notebook Script" accessibility toggle), fall back Journal body text to `Readex Pro` so long paragraphs never clip inside `paper_scrap_*.png`.
 5. **Explicit RTL Fill Direction on Sadu Flame Strip (clarifies Plan §6.2):** In `ar` (RTL), the Sadu flame strip fills **right-to-left** (anchored beneath the first HP ember on the start-edge, with the 35% and 70% *furjat* tier notches positioned at 35% and 70% from the right edge; mirrored left-to-right in `en`).
 6. **Art Lead Endorsement on Open Decisions D1–D5:** Strong **Yes** on **D1** (Notebook & Ember), **D2** (hand-lettered `شعلة` logotype — demonstrated in `sf01_title_ar.png`), **D3** (Arabic-Indic digits everywhere in `ar`), **D4** (HUD numbers hidden by default, paired with Adjustment #3 low-HP ghost floor), and **D5** (Reem Kufi + Aref Ruqaa + Readex Pro, with `EN display = Readex Pro SemiBold`).
+
+#### 6.5 P0 Approval & Tech Notes for P2 (Claude Opus, 2026-11-26)
+- **Fred approved** all three style frames and D1–D5 as recommended; logotype may be an image (`logo_shaala.png`).
+- **D6 (new):** no real landmark (Kingdom Centre etc.) shown ruined. `sf02` used a recognisable Kingdom Centre; final environment art must use original silhouettes that only evoke Riyadh's geometry (`ART_SPEC.md` §1.2).
+- `sf02` world art (inked comic style, generic crystal/lizard enemies) is **not** the approved environment style; only its HUD layer is approved. Painterly direction of `sf01`/`sf03` is the reference.
+- Prompt in `sf02` sits on a small dark pill: keep it to a soft feathered scrim (no hard rectangle) in final.
+- Pause Start page label "اندفاع الشعلة" must use the canonical ability names from `strings.csv` (`الاندفاع` / Desert Dash). Tech renders all text; mock text in frames is reference only.
+- Next for Gemini: P2 fonts (§2, with `OFL` files) and P2 ornaments (§3: HP embers, flame strip + fills, focus ember, furjat divider/toggles, prompt scrim, save ember, input glyph atlases, `logo_shaala.png`). Then P3 notebook assets.
 
 ### 7. Integration Checklist for Claude Opus
 - [ ] P1 (no art needed): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.

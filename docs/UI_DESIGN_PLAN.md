@@ -1,6 +1,6 @@
 # SHAALA (شعلة) — UI Design Plan: "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `PROPOSED`. P0 style frames delivered by Gemini (`docs/ui_style_frames/`); Gemini's adjustments 1–5 (DROP-002 §6.4) are folded in below. Awaiting Fred's sign-off on §10.
+- **Status:** `APPROVED`. P0 style frames delivered by Gemini (`docs/ui_style_frames/`); Gemini's adjustments 1–5 (DROP-002 §6.4) are folded in below. **Approved by Fred on 2026-11-26** (D1–D6 below).
 - **Date:** 2026-11-26
 - **Owners:** Visual direction & ornaments: **Gemini** (Drop `DROP-002` in `docs/VISUAL_HANDOFF.md`). Scenes, scripts, shaders, theme, RTL wiring: **Claude Opus**.
 - **Scope:** Every player-facing interface: title, HUD, prompts, dialogue, memory vignettes, pause, notebook, map, settings, confirm dialogs, save feedback, death/respawn, room transitions, and the M2 Time Shift / Grey Eye states.
@@ -241,7 +241,9 @@ A **torn paper slip** laid over the notebook (≈640×320), question in Readex P
 | **D4** | HUD numbers (HP 5/5, flame 0/100): hidden by default with a setting to show? | Hidden by default |
 | **D5** | Fonts: Reem Kufi + Aref Ruqaa + Readex Pro? | Yes |
 
-Until answered, work proceeds on the recommendations.
+**Resolved 2026-11-26:** Fred approved all recommendations (D1–D5 = Yes / hand-lettered / Arabic-Indic / hidden / yes).
+
+| **D6** | May real Riyadh landmarks (e.g. Kingdom Centre) appear ruined? | **Resolved: No.** Use original silhouettes that only evoke Riyadh's skyline geometry (`ART_SPEC.md` §1.2). |
 
 ---
 
