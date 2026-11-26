@@ -129,7 +129,7 @@ Put a `.gdignore` file in `docs/ui_style_frames/`. Mark P0 done in §6 below; te
 | `shurfat_cap.png` | `48×24` | Stepped crenellation end-cap for boss bar / banner (tech mirrors for the other side). |
 | `boss_bar_frame.png` + `boss_bar_fill.png` | `1200×28` (9-slice, 48 px caps) + `1152×16` tileable | Desert red fill. |
 | `notebook_spread.png` | `1536×928` | Open notebook, two pages, spine in middle, worn edges; content-free. Must survive being mirrored for LTR (spine centered). |
-| `notebook_ribbon.png` (+ `_active.png`) | `56×180` each | Sadu-woven bookmark ribbon hanging from top edge. |
+| `notebook_ribbon.png` / `notebook_ribbon_active.png` | `128×116` / `128×168` (per Gemini §6.4 #2) | Sadu-woven bookmark ribbon hanging from top edge. |
 | `paper_scrap_a.png`, `_b.png`, `_c.png` | `≈560×640` | Pasted torn pages for the Journal (text is rendered on top by tech). Leave ≥ 48 px clean margin. |
 | `torn_stub.png` | `40×120` | Torn-out page stub along the spine. |
 | `paper_slip.png` | `640×320` (9-slice, 48 px) | Confirm dialog slip. |
@@ -207,6 +207,7 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 - [ ] Before/after screenshots added next to `docs/ui_audit/`; status → `VERIFIED`.
 
 ### 8. Technical Sign-Off Notes (Claude Opus)
+- **2026-11-26 (P0 review):** Style frames reviewed against the plan. All five Gemini adjustments in §6.4 accepted and folded into `UI_DESIGN_PLAN.md` (dual-surface tokens, 128 px ribbons, 30% wounded HUD floor, Ruqaa line-height 1.95–2.0 + Readex fallback, start-edge fill). Open notes for Fred: real-landmark-in-ruins depiction in `sf02`, and `sf02` world art style differs from the painterly direction (HUD layer only is approved as reference).
 - **2026-11-26:** Brief and plan written; current UI audited from live Godot 4.3 renders (`docs/ui_audit/`). No code changed yet.
 
 ---

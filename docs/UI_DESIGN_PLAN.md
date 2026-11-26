@@ -1,6 +1,6 @@
 # SHAALA (شعلة) — UI Design Plan: "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `PROPOSED` (awaiting Fred's sign-off on the open decisions in §10)
+- **Status:** `PROPOSED`. P0 style frames delivered by Gemini (`docs/ui_style_frames/`); Gemini's adjustments 1–5 (DROP-002 §6.4) are folded in below. Awaiting Fred's sign-off on §10.
 - **Date:** 2026-11-26
 - **Owners:** Visual direction & ornaments: **Gemini** (Drop `DROP-002` in `docs/VISUAL_HANDOFF.md`). Scenes, scripts, shaders, theme, RTL wiring: **Claude Opus**.
 - **Scope:** Every player-facing interface: title, HUD, prompts, dialogue, memory vignettes, pause, notebook, map, settings, confirm dialogs, save feedback, death/respawn, room transitions, and the M2 Time Shift / Grey Eye states.
@@ -70,7 +70,7 @@ All fonts are **SIL OFL**, bundled under `assets/final/fonts/` (never system fon
 | `type_body_m` | 30 | Readex Pro 400 | Settings rows, prompts, toasts |
 | `type_caption` | 24 | Readex Pro 400 | Hints, legend (minimum size anywhere) |
 
-Rules: Arabic line-height 1.6–1.75 (Ruqaa 1.8); never apply letter-spacing to Arabic; no kashida stretching except in the logotype; never use all-caps English except the 2034 signage style.
+Rules: Arabic line-height 1.6–1.75 (Aref Ruqaa 1.95–2.0, with ≥ 14 px clearance under Readex captions; at `text_scale ≥ 125%` Journal body falls back to Readex Pro); never apply letter-spacing to Arabic; no kashida stretching except in the logotype; never use all-caps English except the 2034 signage style.
 
 ### 3.2 Numerals (see decision D3)
 One digit system per locale, everywhere. Recommended: **Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩) in `ar`**, Western in `en`. Tech will add a single `ArabicFontSetup.localize_digits(text)` helper so code never formats numbers ad hoc.
@@ -90,6 +90,8 @@ One digit system per locale, everywhere. Recommended: **Arabic-Indic digits (٠�
 | Desert red | `#A84432` | Danger only: damage flash, boss bar, destructive confirm. |
 | Grey eye | `#8B95A5` | Grey Eye vision state (M2), disabled. |
 | 2034 glass | `#4F6D7A`, `#4A90D9`, `#9BA7C4` + white | 2034 era UI skin only. |
+
+**Two surfaces, two token sets** (accepted from Gemini, DROP-002 §6.2/§6.4): pale gold / ember / desert red are for dark surfaces only. On paper use `INK_FOCUS_PAPER` `#8C2D1E` (focus), `INK_EMBER_ACCENT` `#B84E24`, `INK_DESTRUCTIVE_PAPER` `#8F2E22`; paper is `PAPER_ASH` `#E4D7C0`, ink `INK_BROWN` `#241914`.
 
 Text contrast: body ≥ 4.5:1 against its scrim/paper; captions ≥ 4.5:1; focus state must also change shape (ember mark), not colour alone.
 
@@ -120,9 +122,9 @@ RTL is the reference; LTR mirrors automatically. "Start edge" = right in Arabic,
 - **Language** = small `ع | EN` text toggle in the bottom end-corner.
 - **Motion:** lantern flicker, sand drift (existing `sand_wind` shader), one slow orb mote. All shader/AnimationPlayer driven, no per-frame `_draw`.
 
-### 6.2 Gameplay HUD (fades to ~0% after 4 s without combat/damage/resource change; setting to keep it on)
+### 6.2 Gameplay HUD (fades after 4 s without combat/damage/resource change: to 0% only at full HP or in safe areas, otherwise holds a 30% ember-ghost floor; setting to keep it on)
 - **Start-top corner, no panel:** 5 **ember teardrops** (HP). Lost HP = cold ash ember (shape changes too, not just colour).
-- Under them: the **Sadu flame strip** (~320×16). Two small furjat notches mark 35 and 70 (dagger tiers). Pattern brightens per tier. When a tier changes, the tier name writes in once (Reem Kufi 30) next to the strip and fades after 1.5 s. No permanent tier label.
+- Under them: the **Sadu flame strip** (~320×16), filling from the start edge (right-to-left in `ar`, mirrored in `en`). Two small furjat notches mark 35 and 70 (dagger tiers). Pattern brightens per tier. When a tier changes, the tier name writes in once (Reem Kufi 30) next to the strip and fades after 1.5 s. No permanent tier label.
 - **Numbers hidden by default** (setting "Show numbers" adds `٥/٥` beside HP).
 - **Era mark (M2+ only, once Time Shift is unlocked):** small year in the end-top corner, `٢٠٥٤` in hand ink / `٢٠٣٤` in lit signage style. Hidden in M1.
 - **Area banner:** centered upper third, Reem Kufi 96, writes on (ink reveal) with a furjat divider beneath; holds 2.5 s; fades. First visit only shows sub-area in Aref Ruqaa beneath.
@@ -144,7 +146,7 @@ RTL is the reference; LTR mirrors automatically. "Start edge" = right in Arabic,
 ### 6.5 Pause = the Notebook
 - World freezes and fades to a charcoal, blurred still (captured **once** on pause, not every frame).
 - **A notebook spread** slides up into view (~1500×900): the start page holds the menu, the end page holds the content of the selected section.
-- **Sections are bookmark ribbons** (woven Sadu ribbons hanging from the notebook top edge): `الدفتر` (journal), `الخريطة`, `الإعدادات`, `التحكم`. Ribbons are navigation; actions are separate.
+- **Sections are bookmark ribbons** (woven Sadu ribbons, 128 px wide so labels stay horizontal, hanging from the top of the content page; navigation lives only on the ribbons): `الدفتر` (journal), `الخريطة`, `الإعدادات`, `التحكم`. Ribbons are navigation; actions are separate.
 - Menu page (handwritten heading, then Readex Pro items): `استئناف`, then a furjat divider, then `حفظ والعودة` in desert red at the bottom (destructive actions are visually different and ask for confirmation).
 - Default section on open: last used, otherwise Journal.
 
