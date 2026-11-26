@@ -71,14 +71,14 @@ This is the living handoff queue between **Gemini (Visual Design Lead & Instruct
 
 | Drop ID | Title | Milestone | Status | Notes |
 | :--- | :--- | :---: | :---: | :--- |
-| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `P0_APPROVED` *(Gemini: P2 fonts + ornaments; Claude: P1 code)* | Fred approved style frames and D1–D6 on 2026-11-26. See [`docs/UI_DESIGN_PLAN.md`](UI_DESIGN_PLAN.md). |
+| **`DROP-002`** | UI Identity "Notebook & Ember": style frames, UI ornaments & OFL fonts | M1→M2 | `READY_FOR_TECH` *(P2/P3 fonts & all 34 UI PNGs delivered by Gemini)* | Fred approved P0 & D1–D6 (2026-11-26). 9 OFL font/licence files + 34 PNG-32 UI ornaments committed under `assets/final/`; `scripts/` & `scenes/` untouched for clean P1 rebase. |
 | **`DROP-001`** | M1 Baseline Painterly Visual Kit & 1:1 Sprite Replacement Queue | M1 | `BASELINE_VERIFIED` *(Queue Open for Final PNGs)* | Shaders, `ShaalaPalette`, and procedural silhouettes verified live in Godot 4.3; awaiting Batch 1A–1E final PNG & OFL font drops from Gemini. |
 
 ---
 
 ## DROP-002 — UI Identity "Notebook & Ember" (دفتر وجمرة)
 
-- **Status:** `P0_APPROVED` → **Next actors: Gemini (P2 fonts + ornaments, §2–§3) / Claude Opus (P1 code)**
+- **Status:** `READY_FOR_TECH` → **Next actor: Claude Opus (P2/P3 integration after P1)**
 - **Date:** 2026-11-26
 - **Milestone:** M1 (P0–P3), M2 (P4: 2034 skin, Time Shift, Grey Eye)
 - **Visual Lead:** Gemini
@@ -205,6 +205,46 @@ Overall, the **"Notebook & Ember"** direction in `UI_DESIGN_PLAN.md` is a massiv
 - Prompt in `sf02` sits on a small dark pill: keep it to a soft feathered scrim (no hard rectangle) in final.
 - Pause Start page label "اندفاع الشعلة" must use the canonical ability names from `strings.csv` (`الاندفاع` / Desert Dash). Tech renders all text; mock text in frames is reference only.
 - Next for Gemini: P2 fonts (§2, with `OFL` files) and P2 ornaments (§3: HP embers, flame strip + fills, focus ember, furjat divider/toggles, prompt scrim, save ember, input glyph atlases, `logo_shaala.png`). Then P3 notebook assets.
+
+#### 6.6 P2 & P3 Production Delivery, 9-Slice Margins & Input Glyph Cell Tables (Gemini, 2026-11-26)
+- **Delivered Scope (zero edits to `scripts/` or `scenes/` for conflict-free P1 merge):**
+  - **9 OFL Font & Licence Files** in `assets/final/fonts/`: `reem_kufi_variable.ttf`, `aref_ruqaa_regular.ttf`, `aref_ruqaa_bold.ttf`, `readex_pro_variable.ttf`, `eb_garamond_italic_variable.ttf`, plus `ofl_reem_kufi.txt`, `ofl_aref_ruqaa.txt`, `ofl_readex_pro.txt`, `ofl_eb_garamond.txt`. All TrueType headers and Arabic/Latin coverage verified (0 missing glyphs).
+  - **All 34 PNG-32 Straight-Alpha sRGB UI Assets** in `assets/final/ui/` covering **both P2 and P3** (`logo_shaala.png`, HP embers, Sadu flame strip + 3 tier fills, focus ember, *furjat* divider & toggles, Sadu slider track & ember knob, *shurfat* cap, boss bar frame & fill, `notebook_spread.png`, `notebook_ribbon.png` & `_active.png`, `paper_scrap_a/b/c.png`, `torn_stub.png`, `paper_slip.png`, `scrim_bottom.png`, `save_ember.png`, all 6 `map_icon_*.png`, and both `512×512` input glyph atlases).
+  - **`docs/ART_SPEC.md` updated:** Recorded Decision **D6** (no real-world Riyadh landmarks shown ruined; painterly `sf01`/`sf03` reference) in §1.2 and replaced §10 with the full `DROP-002` manifest.
+
+- **Exact 9-Slice Margins & Alignment Specs (for Godot `NinePatchRect` / `TextureProgressBar`):**
+  | File | Size (px) | 9-Slice `(L, T, R, B)` | Alignment / Mirror Notes |
+  | :--- | :---: | :---: | :--- |
+  | `flame_strip_frame.png` | `320×24` | `(12, 4, 12, 4)` | Hollow transparent window at `x=12..308, y=7..17`; *furjat* tier notches sit on top bevel at 35% (`x=116`) & 70% (`x=219`); flip horizontally (`flip_h`) in Arabic RTL so notches measure 35%/70% from start-edge (right). |
+  | `flame_strip_fill_t0..t2.png` | `296×12` | Tileable (`16 px` repeat) | Mount directly behind/inside `flame_strip_frame.png` (`offset (12, 7)`). Fill right-to-left in `ar`, left-to-right in `en`. |
+  | `slider_sadu_track.png` | `400×12` | `(12, 2, 12, 2)` | Symmetric end-caps; safe for both RTL and LTR sliders on `#E4D7C0` paper. |
+  | `boss_bar_frame.png` | `1200×28` | `(48, 6, 48, 6)` | Stepped *shurfat* caps at both ends; hollow transparent window at `x=24..1176, y=7..21`; center 50% phase *furjat* notch at `x=600`. |
+  | `boss_bar_fill.png` | `1152×16` | Tileable (`32 px` repeat) | Mount inside `boss_bar_frame.png` (`offset (24, 6)`). |
+  | `notebook_spread.png` | `1536×928` | Full plate (no 9-slice) | Exact symmetrical vertical spine at `x=768`; transparent outer alpha outside the dark cloth cover (`18 px` soft shadow margin); safe to mirror horizontally for LTR. |
+  | `paper_slip.png` | `640×320` | `(48, 48, 48, 48)` | Deckled torn edge lives within outer `48 px`; keep dialog text inside `x=48..592, y=48..272`. |
+  | `paper_scrap_a/b/c.png` | `560×640` | Full plate (no 9-slice) | Clean text safe area `x=52..508, y=52..588` (`≥ 48 px` margin on all sides). |
+  | `torn_stub.png` | `40×120` | Anchor right-center `(40, 60)` | Spine edge sits flush at `x=40`; set `flip_h = true` when mounted on the opposite side of spine in LTR. |
+  | `scrim_bottom.png` | `16×360` | Stretch X, fixed Y | Smooth `0% → 80%` `#0D1021` vertical gradient; also usable for soft world-space prompt fade scrim (never draw a hard rectangle border). |
+
+- **Input Glyph Atlas Cell Index (`512×512`, `8×8` Grid, `64×64` px Cells; `region = Rect2(col * 64, row * 64, 64, 64)`):**
+
+  **`input_glyphs_kbm.png` (Keyboard & Mouse — carved obsidian `#161B33` / ember `#E07A3C`):**
+  | Row \ Col | `0` | `1` | `2` | `3` | `4` | `5` | `6` | `7` |
+  | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+  | **Row 0** | `blank_sq` *(overlay any key)* | `blank_wide` *(overlay wide key)* | `arrow_up` | `arrow_down` | `arrow_left` | `arrow_right` | `space` | `shift` |
+  | **Row 1** | `enter` | `tab` | `esc` | `backspace` | `mouse_lmb` | `mouse_rmb` | `mouse_mmb` | `mouse_neutral` |
+  | **Row 2** | `key_w` | `key_a` | `key_s` | `key_d` | `key_e` | `key_f` | `key_q` | `key_r` |
+  | **Row 3** | `key_j` | `key_k` | `key_l` | `key_i` | `key_z` | `key_x` | `key_c` | `key_v` |
+  | **Row 4** | `key_m` | `key_t` | `key_1` | `key_2` | `key_3` | `key_4` | `key_plus` | `key_minus` |
+  *(Rows 5–7 reserved empty transparent cells for M2+ additions.)*
+
+  **`input_glyphs_pad.png` (Generic Gamepad — zero console brand logos; geometric diamond/shoulder silhouettes):**
+  | Row \ Col | `0` | `1` | `2` | `3` | `4` | `5` | `6` | `7` |
+  | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+  | **Row 0** | `face_south` *(Jump)* | `face_east` *(Interact)* | `face_west` *(Attack)* | `face_north` *(Spell)* | `dpad_up` | `dpad_down` | `dpad_left` | `dpad_right` |
+  | **Row 1** | `bumper_l1` *(Parry)* | `bumper_r1` *(Dash)* | `trigger_l2` *(Grey Eye)* | `trigger_r2` *(Time Shift)* | `stick_left` | `stick_right` | `btn_pause` *(Start/Menu)* | `btn_map` *(Select/Map)* |
+  | **Row 2** | `dpad_all` | — | — | — | — | — | — | — |
+  *(Remaining cells reserved empty transparent for M2+ additions.)*
 
 ### 7. Integration Checklist for Claude Opus
 - [x] P1 (no art needed, done 2026-11-26): font role map in `ArabicFontSetup`; `UITokens`; `localize_digits()`; settings `reduce_motion` / `hud_always_visible` / `show_numbers` / `text_scale`; remove em-dash separators from UI copy; replace per-frame `_draw()` in title and vignette.
