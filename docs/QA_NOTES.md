@@ -94,6 +94,18 @@ Simulated Farid's exact parabolic kinematics (`jump_h = 132.1 px`, `normal_jump_
 
 ---
 
+### 3.1 Performance Review (2026-11-26, Godot 4.3.stable, Linux headless, 4 vCPU)
+
+| Measurement | Before | After | Notes |
+|---|---|---|---|
+| Steady-state script time per room (`TIME_PROCESS`) | 0.3–2 ms | unchanged | Gameplay logic and procedural `_draw()` are light once a room is running. |
+| Worst frame on first entry into a room | 48–97 ms | 9–16 ms | Synchronous `load()` of the room scene; fixed by background neighbor streaming in `RoomManager`. |
+| `start_new_game()` worst frame | ~320 ms | ~320 ms | One-off (UI + player + first room) behind the title fade; acceptable. |
+| Frame rate while unfocused / paused | VSync rate | 15 / 30 FPS | `RoomManager._apply_frame_cap()`. |
+| Ambient audio engine calls | ~22,050 `push_frame()`/s | 1 `push_buffer()`/frame | `AudioManager._fill_ambient_buffer()`. |
+
+GPU cost could not be measured in the cloud container (software rasterizer only); re-check frame time and temperature on target laptops after the first final-art batch lands (see `VR-03`, `VR-05`, `VR-10` in `docs/VISUAL_HANDOFF.md`).
+
 ## 4. Godot 4.3+ Headless & Live Playtest Verification Guide
 
 Because Godot 4.3+ is not installed on the build host, execute these commands on a workstation with Godot 4.3+ installed:

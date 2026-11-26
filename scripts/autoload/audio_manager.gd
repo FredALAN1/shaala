@@ -30,6 +30,7 @@ var _oud_timer: float = 2.4
 var _wind_gain: float = 0.08
 var _oud_interval_min: float = 3.2
 var _oud_interval_max: float = 6.5
+var _ambient_buffer: PackedVector2Array = PackedVector2Array()
 
 
 func _ready() -> void:
@@ -163,7 +164,11 @@ func _fill_ambient_buffer() -> void:
 	if frames_available <= 0:
 		return
 	var inv_sr: float = 1.0 / float(SAMPLE_RATE)
-	for _i: int in range(frames_available):
+	# Fill one batch and hand it to the engine in a single push_buffer() call
+	# instead of ~22k push_frame() calls per second.
+	if _ambient_buffer.size() != frames_available:
+		_ambient_buffer.resize(frames_available)
+	for i: int in range(frames_available):
 		# Soft low-pass filtered desert wind with slow gust swell.
 		var white: float = _rng.randf_range(-1.0, 1.0)
 		_wind_filter_state += (white - _wind_filter_state) * 0.035
@@ -181,7 +186,8 @@ func _fill_ambient_buffer() -> void:
 			_oud_env *= 0.99975
 
 		sample = clampf(sample, -0.8, 0.8)
-		_wind_playback.push_frame(Vector2(sample, sample))
+		_ambient_buffer[i] = Vector2(sample, sample)
+	_wind_playback.push_buffer(_ambient_buffer)
 
 
 func _build_placeholder_sfx_bank() -> void:
