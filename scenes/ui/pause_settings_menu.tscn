@@ -33,21 +33,20 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MainPanel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(1280, 780)
+custom_minimum_size = Vector2(1536, 928)
 layout_mode = 2
 
 [node name="HBox" type="HBoxContainer" parent="CenterContainer/MainPanel"]
 layout_mode = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 0
 
 [node name="Sidebar" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox"]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(656, 0)
 layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="HeaderTitleLabel" type="Label" parent="CenterContainer/MainPanel/HBox/Sidebar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 34
 horizontal_alignment = 1
 
@@ -55,26 +54,6 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="MapButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="NotebookTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="AudioTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="AccessibilityTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="ControlsTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/Sidebar"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
@@ -91,10 +70,53 @@ visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="VerticalDivider" type="VSeparator" parent="CenterContainer/MainPanel/HBox"]
+[node name="Spine" type="Control" parent="CenterContainer/MainPanel/HBox"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PageEnd" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox"]
+custom_minimum_size = Vector2(656, 0)
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="RibbonBar" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd"]
+custom_minimum_size = Vector2(0, 168)
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="NotebookTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/RibbonBar"]
+custom_minimum_size = Vector2(124, 116)
 layout_mode = 2
 
-[node name="ContentArea" type="MarginContainer" parent="CenterContainer/MainPanel/HBox"]
+size_flags_vertical = 0
+
+[node name="MapButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/RibbonBar"]
+custom_minimum_size = Vector2(124, 116)
+layout_mode = 2
+
+size_flags_vertical = 0
+
+[node name="AudioTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/RibbonBar"]
+custom_minimum_size = Vector2(124, 116)
+layout_mode = 2
+
+size_flags_vertical = 0
+
+[node name="AccessibilityTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/RibbonBar"]
+custom_minimum_size = Vector2(124, 116)
+layout_mode = 2
+
+size_flags_vertical = 0
+
+[node name="ControlsTabButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/RibbonBar"]
+custom_minimum_size = Vector2(124, 116)
+layout_mode = 2
+
+size_flags_vertical = 0
+
+[node name="ContentArea" type="MarginContainer" parent="CenterContainer/MainPanel/HBox/PageEnd"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -103,184 +125,180 @@ theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 6
 
-[node name="NotebookSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+[node name="NotebookSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="HeaderRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+[node name="HeaderRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection"]
 layout_mode = 2
 
-[node name="NotebookHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/HeaderRow"]
+[node name="NotebookHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 30
 
-[node name="NotebookCountLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/HeaderRow"]
+[node name="NotebookCountLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection/HeaderRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.776471, 0.545098, 0.34902, 1)
 theme_override_font_sizes/font_size = 20
 
-[node name="Divider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+[node name="Divider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection"]
 layout_mode = 2
 
-[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection"]
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="NotebookList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/NotebookSection/Scroll"]
+[node name="NotebookList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/NotebookSection/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 14
 
-[node name="AudioSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+[node name="AudioSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="LanguageRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="LanguageRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="LanguageLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+[node name="LanguageLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/LanguageRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 
-[node name="LangArButton" type="Button" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+[node name="LangArButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/LanguageRow"]
 custom_minimum_size = Vector2(150, 46)
 layout_mode = 2
 
-[node name="LangEnButton" type="Button" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/LanguageRow"]
+[node name="LangEnButton" type="Button" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/LanguageRow"]
 custom_minimum_size = Vector2(150, 46)
 layout_mode = 2
 
-[node name="LangDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="LangDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
 
-[node name="AudioHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="AudioHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 30
 
-[node name="MasterVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="MasterVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MasterVolRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MasterVolRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.05
 value = 0.85
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MasterVolRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MasterVolRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="MusicVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="MusicVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MusicVolRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MusicVolRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.05
 value = 0.75
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/MusicVolRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/MusicVolRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="SfxVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection"]
+[node name="SfxVolRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/SfxVolRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/SfxVolRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.05
 value = 0.85
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AudioSection/SfxVolRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AudioSection/SfxVolRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="AccessibilitySection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+[node name="AccessibilitySection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="AccessHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="AccessHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 30
 
-[node name="AccessDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="AccessDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
 
-[node name="ShakeRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="ShakeRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/ShakeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/ShakeRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.05
 value = 1.0
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/ShakeRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/ShakeRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="FlashRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="FlashRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/FlashRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/FlashRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CheckButton" type="CheckButton" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/FlashRow"]
+[node name="CheckButton" type="CheckButton" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/FlashRow"]
 layout_mode = 2
 
-[node name="AssistRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="AssistRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/AssistRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/AssistRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 0.7
@@ -288,21 +306,21 @@ max_value = 1.0
 step = 0.05
 value = 1.0
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/AssistRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/AssistRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="DeadzoneRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection"]
+[node name="DeadzoneRow" type="HBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
+[node name="Label" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/DeadzoneRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
-custom_minimum_size = Vector2(320, 0)
+[node name="Slider" type="HSlider" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/DeadzoneRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_vertical = 4
 min_value = 0.1
@@ -310,35 +328,71 @@ max_value = 0.5
 step = 0.02
 value = 0.2
 
-[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/AccessibilitySection/DeadzoneRow"]
+[node name="ValueLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/AccessibilitySection/DeadzoneRow"]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 horizontal_alignment = 2
 
-[node name="ControlsSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea"]
+[node name="ControlsSection" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="ControlsHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+[node name="ControlsHeaderLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/ControlsSection"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 30
 
-[node name="RebindStatusLabel" type="Label" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+[node name="RebindStatusLabel" type="Label" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/ControlsSection"]
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
 theme_override_font_sizes/font_size = 20
 
-[node name="ControlsDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+[node name="ControlsDivider" type="HSeparator" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/ControlsSection"]
 layout_mode = 2
 
-[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection"]
+[node name="Scroll" type="ScrollContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/ControlsSection"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RebindList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/ContentArea/ControlsSection/Scroll"]
+[node name="RebindList" type="VBoxContainer" parent="CenterContainer/MainPanel/HBox/PageEnd/ContentArea/ControlsSection/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
+
+[node name="ConfirmLayer" type="CenterContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfirmSlip" type="PanelContainer" parent="ConfirmLayer"]
+custom_minimum_size = Vector2(640, 320)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="ConfirmLayer/ConfirmSlip"]
+layout_mode = 2
+theme_override_constants/separation = 28
+alignment = 1
+
+[node name="ConfirmLabel" type="Label" parent="ConfirmLayer/ConfirmSlip/VBox"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Row" type="HBoxContainer" parent="ConfirmLayer/ConfirmSlip/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 48
+alignment = 1
+
+[node name="ConfirmYesButton" type="Button" parent="ConfirmLayer/ConfirmSlip/VBox/Row"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+
+[node name="ConfirmNoButton" type="Button" parent="ConfirmLayer/ConfirmSlip/VBox/Row"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2

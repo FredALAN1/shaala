@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/playable_block.gd" id="1_block_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_block"]
+resource_local_to_scene = true
+size = Vector2(256, 64)
+
+[node name="PlayableBlock" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_block_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_block")

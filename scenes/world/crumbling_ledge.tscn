@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/crumbling_ledge.gd" id="1_ledge_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ledge"]
+resource_local_to_scene = true
+size = Vector2(160, 36)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sensor"]
+resource_local_to_scene = true
+size = Vector2(152, 14)
+
+[node name="CrumblingLedge" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_ledge_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ledge")
+
+[node name="TopSensor" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="SensorShape" type="CollisionShape2D" parent="TopSensor"]
+position = Vector2(0, -23)
+shape = SubResource("RectangleShape2D_sensor")

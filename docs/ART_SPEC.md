@@ -22,7 +22,7 @@ All environmental art and prop silhouettes draw from genuine central Arabian (Na
 - **Triangular Ventilation Slits (*Furjat* / فرجات):** Clustered triangular apertures carved into thick mud-brick plaster (`#C68B59`) for cooling airflow and subtle shadow rhythm.
 - **Bedouin Tent (*Bayt al-Sha'r* / بيت الشعر):** Low-slung dark woven hair-tent silhouette anchored by guy-ropes, warm lantern underglow, and crimson-gold *Sadu* geometric textiles.
 - **Date Palms (*Nakheel*) & Acacia Silhouettes:** Wind-bent fronds framing oasis valleys (Wadi Hanifa) and desert camp outskirts.
-- **Riyadh Ruined Skyline (2054) & Intact Skyline (2034):** Original, respectful architectural silhouettes evoking Riyadh's iconic skyline geometry (a towering parabolic-arched glass spire, a slender pyramidal tower, elevated ring-road gantries, and quiet limestone Tuwaiq cliffs).
+- **Riyadh Ruined Skyline (2054) & Intact Skyline (2034) — Decision D6:** Original, respectful architectural silhouettes that evoke Riyadh's modern skyline rhythm (geometric glass spires, elevated ring-road viaducts, quiet limestone Tuwaiq cliffs) — **never** depicting real-world Riyadh landmarks (e.g., Kingdom Centre, Al Faisaliah) in a ruined or destroyed state. All world environment art follows the hand-painted gouache and ink-wash aesthetic of `docs/ui_style_frames/sf01_title_ar.png` and `sf03_pause_notebook_ar.png` (never comic-inked linework).
 
 ### 1.3 Content & Tone Guidelines
 - **Grief in Silence, Not Gore:** Loss (Farid's family, the emptying of Riyadh) is conveyed through empty spaces, torn pages, fading embers, and quiet poses — never graphic injury, blood, or corpse imagery.
@@ -310,14 +310,36 @@ Towering shattered-glass and Najdi-arch guardian of Empty Riyadh's dead mall cou
 
 ---
 
-## 10. UI & Typography Art Slots
+## 10. UI & Typography Art Slots (`DROP-002` — "Notebook & Ember" / دفتر وجمرة)
 
-All UI plates pair with Godot's native RTL layout (`ArabicFontSetup`) and **never bake Arabic or English text directly into PNG artwork**:
+Supersedes the M1 Batch 1E placeholder table. All UI plates pair with Godot's native RTL layout (`ArabicFontSetup`), use PNG-32 straight-alpha sRGB (`Lossless` import preset), and carry **zero baked lettering** (the sole approved exception per Decision **D2** is `logo_shaala.png` on the Title Screen, plus universal hardware key symbols in `input_glyphs_kbm.png`). Full colour tokens, 9-slice margins, and input glyph cell indices live in [`docs/VISUAL_HANDOFF.md`](VISUAL_HANDOFF.md) (`DROP-002` §6).
 
-| UI Element | Drop-In Path | Canvas (px) | Notes |
+### 10.1 Production OFL Fonts (`/assets/final/fonts/`)
+| File Name | Family | Role | Notes |
+| :--- | :--- | :--- | :--- |
+| `reem_kufi_variable.ttf` (+ `ofl_reem_kufi.txt`) | Reem Kufi (wght 400–700) | `display` (Arabic) | Area banners, boss names, headings, 2034 signage |
+| `aref_ruqaa_regular.ttf`, `aref_ruqaa_bold.ttf` (+ `ofl_aref_ruqaa.txt`) | Aref Ruqaa | `hand` (Arabic) | Vignettes, journal scraps, notebook headings, map labels (`line-height 1.95–2.0`) |
+| `readex_pro_variable.ttf` (+ `ofl_readex_pro.txt`) | Readex Pro (wght 160–700) | `body` (AR + EN) & `display` (EN SemiBold +4% tracking) | Menus, settings, dialogue, prompts, toasts, numerals |
+| `eb_garamond_italic_variable.ttf` (+ `ofl_eb_garamond.txt`) | EB Garamond Italic | `hand` (English) | English journal scraps, vignettes, map labels |
+
+### 10.2 Production UI Ornaments (`/assets/final/ui/`)
+| UI Element | Drop-In Path (`assets/final/ui/...`) | Canvas (px) | 9-Slice / Layout Notes |
 | :--- | :--- | :---: | :--- |
-| Health Flame Pip (Full / Empty) | `/assets/final/ui/hp_flame_full.png`, `hp_flame_empty.png` | `48 × 64` | Hand-inked Najdi ember teardrop (`#A84432` -> `#F6E299` core) |
-| Flame Resource Meter Frame | `/assets/final/ui/flame_bar_frame.png` | `320 × 40` | 9-slice-safe ornate pale-gold bezel (`#F6E299`) over indigo glass |
-| Dialogue / Vignette Corner Flourish | `/assets/final/ui/najdi_corner_flourish.png` | `64 × 64` | Mirrored automatically in RTL & LTR panels |
-| Minimap Icons (Player / Shrine / Boss) | `/assets/final/ui/map_icon_*.png` | `32 × 32` | Crisp gold/ochre/teal symbols |
-| Arabic & Latin Production Fonts | `/assets/final/fonts/` | `.ttf` / `.otf` | OFL fonts (`NotoSansArabic-Regular.ttf`, `Amiri-Regular.ttf`, `Cairo-SemiBold.ttf`) auto-discovered by `ArabicFontSetup` |
+| Hand-Lettered Title Logotype (D2) | `logo_shaala.png` | `1400 × 600` | `شعلة` with rising ember flame from final `ة`; transparent bg |
+| HP Ember (Lit / Cold Ash) | `hp_ember_full.png`, `hp_ember_ash.png` | `48 × 64` | Distinct teardrop vs. hollow cracked-ash silhouettes (colour-blind safe) |
+| Flame Strip Frame (Sadu) | `flame_strip_frame.png` | `320 × 24` | 9-slice `(12, 4, 12, 4)`; hollow window `x=12..308, y=7..17`; *furjat* notches at 35% & 70% |
+| Flame Strip Sadu Fills (T0–T2) | `flame_strip_fill_t0.png`, `_t1.png`, `_t2.png` | `296 × 12` | Horizontally tileable Sadu weave (mud-brick → ember → pale gold) |
+| Focus Cursor Ember | `focus_ember.png` | `32 × 32` | Ink-rimmed ember mark readable on both dark scrims & `#E4D7C0` paper |
+| Najdi *Furjat* Divider & Toggles | `furjat_divider.png`, `furjat_toggle_on.png`, `_off.png` | `160 × 16` / `28 × 28` | Carved 5-triangle divider; filled ▲ / hollow △ toggles |
+| Settings Sadu Slider & Knob | `slider_sadu_track.png`, `slider_ember_knob.png` | `400 × 12` / `28 × 28` | Track 9-slice `(12, 2, 12, 2)`; ink-rimmed faceted ember knob |
+| Najdi *Shurfat* End-Cap | `shurfat_cap.png` | `48 × 24` | Mirrorable stepped mud-brick crenellation cap |
+| Boss Health Bar Frame & Fill | `boss_bar_frame.png`, `boss_bar_fill.png` | `1200 × 28` / `1152 × 16` | Frame 9-slice `(48, 6, 48, 6)` with *shurfat* caps & hollow window `x=24..1176, y=7..21`; desert-red tileable fill |
+| Open Notebook Spread | `notebook_spread.png` | `1536 × 928` | Symmetric ash-ivory (`#E4D7C0`) spread, exact spine `x=768`, transparent outer alpha, content-free |
+| Sadu Bookmark Ribbons | `notebook_ribbon.png`, `notebook_ribbon_active.png` | `128 × 116` / `128 × 168` | Content-free Sadu woven ribbons hanging from Content page top edge (zero lettering) |
+| Pasted Torn Journal Scraps | `paper_scrap_a.png`, `_b.png`, `_c.png` | `560 × 640` | Three unique hand-torn silhouettes (`≥ 48 px` clean inner margin); variant C carries subtle coffee-ring kiss |
+| Torn Spine Stub | `torn_stub.png` | `40 × 120` | Jagged spine stub (`x=40` spine edge), mirrorable for LTR |
+| Confirm Dialog Paper Slip | `paper_slip.png` | `640 × 320` | 9-slice `(48, 48, 48, 48)` deckled ash-ivory confirm slip |
+| Soft Bottom Scrim | `scrim_bottom.png` | `16 × 360` | Vertical gradient `rgba(13,16,33,0.0)` → `0.80`; stretch horizontally (no hard box) |
+| Save Indicator Ember | `save_ember.png` | `48 × 48` | Breathing bottom-end save flame |
+| Notebook Ink Map Icons (6) | `map_icon_{player,shrine,boss,gate_sealed,page,shortcut}.png` | `32 × 32` | Ink-on-paper silhouettes matching `#241914` / `#8C2D1E` / `#E07A3C` |
+| Input Glyph Atlases (KBM & Pad) | `input_glyphs_kbm.png`, `input_glyphs_pad.png` | `512 × 512` (`64 × 64` cells) | Generic ink/ember glyphs; zero console brand logos; cell table in `VISUAL_HANDOFF.md` §6.6 |

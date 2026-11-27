@@ -41,6 +41,7 @@ func _connect_child_signals() -> void:
 	pause_settings_menu.closed_from_title.connect(_on_settings_closed_from_title)
 
 	minimap_overlay.closed.connect(_on_minimap_closed)
+	vignette_player.finished.connect(_on_story_finished)
 
 
 func _connect_event_bus() -> void:
@@ -102,6 +103,7 @@ func show_gameplay_hud() -> void:
 	minimap_overlay.visible = false
 	pause_settings_menu.visible = false
 	hud.visible = true
+	hud.set_cinematic(vignette_player.is_playing())
 	hud.refresh_all()
 	refresh_localization(TranslationServer.get_locale())
 
@@ -127,15 +129,21 @@ func _on_room_loaded(_room_id: String, _area_id: String, _room_title_key: String
 		minimap_overlay.refresh_map()
 
 
+func _on_story_finished() -> void:
+	hud.set_cinematic(false)
+
+
 func _on_dialogue_requested(lines: Array) -> void:
 	if not _in_gameplay:
 		return
+	hud.set_cinematic(true)
 	vignette_player.play_dialogue(lines)
 
 
 func _on_vignette_requested(title_key: String, lines: Array, ability_id: String) -> void:
 	if not _in_gameplay:
 		return
+	hud.set_cinematic(true)
 	vignette_player.play_vignette(title_key, lines, ability_id)
 
 

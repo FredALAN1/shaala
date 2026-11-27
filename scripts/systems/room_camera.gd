@@ -18,8 +18,13 @@ var _shake_duration: float = 0.0
 var _shake_timer: float = 0.0
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
+var _free_cam_enabled: bool = false
+var _free_cam_pos: Vector2 = Vector2.ZERO
+var _free_cam_zoom: float = 1.0
+
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_rng.randomize()
 	enabled = true
 	make_current()
@@ -30,22 +35,46 @@ func _ready() -> void:
 
 func set_target(target: Node2D, snap: bool = false) -> void:
 	_target = target
-	if snap and _target != null:
+	if snap and _target != null and not _free_cam_enabled:
 		snap_to_target()
 
 
 func set_bounds(bounds: Rect2) -> void:
 	_bounds = bounds
-	limit_left = int(floorf(bounds.position.x))
-	limit_top = int(floorf(bounds.position.y))
-	limit_right = int(ceilf(bounds.position.x + bounds.size.x))
-	limit_bottom = int(ceilf(bounds.position.y + bounds.size.y))
-	if _target != null:
-		global_position = _clamp_to_bounds(global_position)
+	if not _free_cam_enabled:
+		_apply_bounds_limits()
+		if _target != null:
+			global_position = _clamp_to_bounds(global_position)
+
+
+func set_free_cam(enabled_state: bool, pos: Vector2 = Vector2.ZERO, zoom_val: float = 1.0) -> void:
+	if enabled_state:
+		if not _free_cam_enabled:
+			_free_cam_enabled = true
+			_free_cam_pos = pos if pos != Vector2.ZERO else global_position
+			limit_left = -10000000
+			limit_top = -10000000
+			limit_right = 10000000
+			limit_bottom = 10000000
+		else:
+			_free_cam_pos = pos
+		_free_cam_zoom = clampf(zoom_val, 0.5, 1.5)
+	else:
+		if _free_cam_enabled:
+			_free_cam_enabled = false
+			_free_cam_zoom = 1.0
+			zoom = Vector2.ONE
+			_apply_bounds_limits()
+			if _target != null and is_instance_valid(_target):
+				global_position = _clamp_to_bounds(global_position)
+
+
+func is_free_cam_enabled() -> bool:
+	return _free_cam_enabled
 
 
 func snap_to_target() -> void:
-	if _target == null or not is_instance_valid(_target):
+	if _target == null or not is_instance_valid(_target) or _free_cam_enabled:
 		return
 	_update_facing_sign()
 	_current_lookahead = _facing_sign * lookahead_distance * 0.5
@@ -55,6 +84,17 @@ func snap_to_target() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _free_cam_enabled:
+		var smooth: float = clampf(18.0 * delta, 0.0, 1.0)
+		global_position = global_position.lerp(_free_cam_pos, smooth)
+		var target_zoom: Vector2 = Vector2(_free_cam_zoom, _free_cam_zoom)
+		zoom = zoom.lerp(target_zoom, smooth)
+		offset = Vector2.ZERO
+		return
+
+	if get_tree().paused:
+		return
+
 	if _target != null and is_instance_valid(_target):
 		_update_facing_sign()
 		var target_lookahead: float = _facing_sign * lookahead_distance
@@ -66,6 +106,13 @@ func _physics_process(delta: float) -> void:
 		global_position = _clamp_to_bounds(global_position)
 
 	_update_shake(delta)
+
+
+func _apply_bounds_limits() -> void:
+	limit_left = int(floorf(_bounds.position.x))
+	limit_top = int(floorf(_bounds.position.y))
+	limit_right = int(ceilf(_bounds.position.x + _bounds.size.x))
+	limit_bottom = int(ceilf(_bounds.position.y + _bounds.size.y))
 
 
 func _update_facing_sign() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
 [ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/sand_stalker.tscn" id="4_stalker"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/shard_husk.tscn" id="5_husk"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/relic_sentinel.tscn" id="6_sentinel"]
+[ext_resource type="PackedScene" path="res://scenes/world/playable_block.tscn" id="7_block"]
+[ext_resource type="PackedScene" path="res://scenes/world/deep_sand_zone.tscn" id="8_sand"]
+[ext_resource type="PackedScene" path="res://scenes/world/wind_zone.tscn" id="9_wind"]
+[ext_resource type="PackedScene" path="res://scenes/world/crumbling_ledge.tscn" id="10_crumble"]
+[ext_resource type="PackedScene" path="res://scenes/world/depth_plane_portal.tscn" id="11_depth_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(3400, 40)
@@ -18,39 +23,6 @@ size = Vector2(40, 220)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_east_upper"]
 size = Vector2(40, 780)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_entry"]
-size = Vector2(700, 80)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_shortcut_floor"]
-size = Vector2(1120, 180)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_atrium_floor"]
-size = Vector2(1140, 240)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mall_approach"]
-size = Vector2(1140, 320)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_walkway_west"]
-size = Vector2(320, 40)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_glass_pillar_l"]
-size = Vector2(70, 360)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_glass_pillar_r"]
-size = Vector2(70, 320)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_walkway_upper"]
-size = Vector2(330, 40)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mall_overhang"]
-size = Vector2(300, 40)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_180"]
-size = Vector2(180, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_240"]
-size = Vector2(240, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
 size = Vector2(70, 180)
@@ -96,7 +68,7 @@ motion_scale = Vector2(0.16, 0.1)
 
 [node name="ShatteredSkyscrapersFar" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
 color = Color(0.117647, 0.14902, 0.262745, 0.92)
-polygon = PackedVector2Array(-100, 1280, -100, 540, 140, 540, 170, 260, 265, 295, 290, 520, 560, 520, 600, 175, 690, 120, 745, 195, 790, 480, 1180, 480, 1230, 150, 1315, 210, 1365, 135, 1435, 495, 1840, 495, 1890, 190, 1995, 110, 2065, 220, 2110, 510, 2520, 510, 2560, 250, 2690, 290, 2740, 525, 3120, 525, 3165, 310, 3290, 350, 3360, 540, 3520, 540, 3520, 1280)
+polygon = PackedVector2Array(-100, 1280, -100, 540, 140, 540, 170, 260, 265, 295, 290, 520, 560, 520, 600, 195, 745, 195, 790, 480, 1180, 480, 1230, 165, 1365, 165, 1435, 495, 1840, 495, 1890, 190, 2065, 220, 2110, 510, 2520, 510, 2560, 250, 2690, 290, 2740, 525, 3120, 525, 3165, 310, 3290, 350, 3360, 540, 3520, 540, 3520, 1280)
 
 [node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.42, 0.25)
@@ -132,6 +104,10 @@ polygon = PackedVector2Array(3060, 960, 3060, 660, 3230, 575, 3360, 650, 3360, 9
 [node name="NajdiFacadeTrim" type="Polygon2D" parent="Era2054"]
 color = Color(0.776471, 0.545098, 0.34902, 0.88)
 polygon = PackedVector2Array(3060, 660, 3100, 628, 3140, 660, 3180, 628, 3220, 660, 3260, 628, 3300, 660, 3340, 628, 3360, 650, 3360, 672, 3060, 672)
+
+[node name="ShortcutNajdiArchway" type="Polygon2D" parent="Era2054"]
+color = Color(0.556863, 0.360784, 0.231373, 0.92)
+polygon = PackedVector2Array(70, 1100, 70, 880, 220, 840, 250, 880, 250, 1100, 212, 1100, 212, 916, 155, 892, 108, 916, 108, 1100)
 
 [node name="ShatteredEscalatorBeam" type="Polygon2D" parent="Era2054"]
 color = Color(0.309804, 0.427451, 0.478431, 0.82)
@@ -194,196 +170,129 @@ shape = SubResource("RectangleShape2D_east_upper")
 color = Color(0.0862745, 0.105882, 0.2, 1)
 polygon = PackedVector2Array(-20, -390, 20, -390, 20, 390, -20, 390)
 
-[node name="WestEntryDeck" type="StaticBody2D" parent="Geometry"]
+[node name="WestEntryDeck" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(350, 700)
-collision_layer = 1
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(700, 80)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestEntryDeck"]
-shape = SubResource("RectangleShape2D_west_entry")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestEntryDeck"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-350, -40, 350, -40, 350, 40, -350, 40)
-
-[node name="OchreCap" type="Polygon2D" parent="Geometry/WestEntryDeck"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-350, -40, 350, -40, 350, -26, -350, -26)
-
-[node name="ShortcutCorridorFloor" type="StaticBody2D" parent="Geometry"]
+[node name="ShortcutCorridorFloor" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(560, 1190)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(1120, 180)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ShortcutCorridorFloor"]
-shape = SubResource("RectangleShape2D_shortcut_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/ShortcutCorridorFloor"]
-color = Color(0.0862745, 0.105882, 0.2, 1)
-polygon = PackedVector2Array(-560, -90, 560, -90, 560, 90, -560, 90)
-
-[node name="OchreFloorRim" type="Polygon2D" parent="Geometry/ShortcutCorridorFloor"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-560, -90, 560, -90, 560, -76, -560, -76)
-
-[node name="AtriumFloorCenter" type="StaticBody2D" parent="Geometry"]
+[node name="AtriumFloorCenter" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1690, 1160)
-collision_layer = 1
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(1140, 240)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumFloorCenter"]
-shape = SubResource("RectangleShape2D_atrium_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumFloorCenter"]
-color = Color(0.0862745, 0.105882, 0.2, 1)
-polygon = PackedVector2Array(-570, -120, 570, -120, 570, 120, -570, 120)
-
-[node name="GlassTileCap" type="Polygon2D" parent="Geometry/AtriumFloorCenter"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-570, -120, 570, -120, 570, -104, -570, -104)
-
-[node name="MallApproachFloor" type="StaticBody2D" parent="Geometry"]
+[node name="MallApproachFloor" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(2830, 1120)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(1140, 320)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MallApproachFloor"]
-shape = SubResource("RectangleShape2D_mall_approach")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/MallApproachFloor"]
-color = Color(0.0862745, 0.105882, 0.2, 1)
-polygon = PackedVector2Array(-570, -160, 570, -160, 570, 160, -570, 160)
-
-[node name="OchreMallCap" type="Polygon2D" parent="Geometry/MallApproachFloor"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-570, -160, 570, -160, 570, -144, -570, -144)
-
-[node name="AtriumWalkwayWest" type="StaticBody2D" parent="Geometry"]
+[node name="AtriumWalkwayWest" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1300, 780)
-collision_layer = 1
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(320, 40)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumWalkwayWest"]
-shape = SubResource("RectangleShape2D_walkway_west")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumWalkwayWest"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-160, -20, 160, -20, 160, 20, -160, 20)
-
-[node name="GlassPillarShaftLeft" type="StaticBody2D" parent="Geometry"]
+[node name="GlassPillarShaftLeft" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1615, 720)
-collision_layer = 1
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(70, 360)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/GlassPillarShaftLeft"]
-shape = SubResource("RectangleShape2D_glass_pillar_l")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/GlassPillarShaftLeft"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-35, -180, 35, -180, 35, 180, -35, 180)
-
-[node name="GlassPillarShaftRight" type="StaticBody2D" parent="Geometry"]
+[node name="GlassPillarShaftRight" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(1895, 740)
-collision_layer = 1
-collision_mask = 0
+block_style = "collapsed_building"
+block_size = Vector2(70, 320)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/GlassPillarShaftRight"]
-shape = SubResource("RectangleShape2D_glass_pillar_r")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/GlassPillarShaftRight"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-35, -160, 35, -160, 35, 160, -35, 160)
-
-[node name="AtriumWalkwayUpper" type="StaticBody2D" parent="Geometry"]
+[node name="AtriumWalkwayUpper" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(2095, 680)
-collision_layer = 1
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(330, 40)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/AtriumWalkwayUpper"]
-shape = SubResource("RectangleShape2D_walkway_upper")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/AtriumWalkwayUpper"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-165, -20, 165, -20, 165, 20, -165, 20)
-
-[node name="MallUpperOverhang" type="StaticBody2D" parent="Geometry"]
+[node name="MallUpperOverhang" parent="Geometry" instance=ExtResource("7_block")]
 position = Vector2(2770, 720)
-collision_layer = 1
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/MallUpperOverhang"]
-shape = SubResource("RectangleShape2D_mall_overhang")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/MallUpperOverhang"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-150, -20, 150, -20, 150, 20, -150, 20)
+block_style = "collapsed_building"
+block_size = Vector2(300, 44)
+one_way = false
+tilt_degrees = 8.0
 
 [node name="OneWayPlatforms" type="Node2D" parent="."]
 
-[node name="EscalatorStep1" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="EscalatorStep1" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(850, 1015)
-collision_layer = 2
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(180, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep1"]
-shape = SubResource("RectangleShape2D_plat_180")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep1"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
-
-[node name="EscalatorStep2" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="EscalatorStep2" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(790, 922)
-collision_layer = 2
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(180, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep2"]
-shape = SubResource("RectangleShape2D_plat_180")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep2"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
-
-[node name="EscalatorStep3" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="EscalatorStep3" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(870, 829)
-collision_layer = 2
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(180, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep3"]
-shape = SubResource("RectangleShape2D_plat_180")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep3"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
-
-[node name="EscalatorStep4" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="EscalatorStep4" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(790, 736)
-collision_layer = 2
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(180, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/EscalatorStep4"]
-shape = SubResource("RectangleShape2D_plat_180")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/EscalatorStep4"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-90, -12, 90, -12, 90, 12, -90, 12)
-
-[node name="MallBalconyOneWay" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="MallBalconyOneWay" parent="OneWayPlatforms" instance=ExtResource("7_block")]
 position = Vector2(2620, 876)
-collision_layer = 2
-collision_mask = 0
+block_style = "cracked_glass_bridge"
+block_size = Vector2(240, 26)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/MallBalconyOneWay"]
-shape = SubResource("RectangleShape2D_plat_240")
-one_way_collision = true
+[node name="AtriumCrumbleBridge" parent="OneWayPlatforms" instance=ExtResource("10_crumble")]
+position = Vector2(1020, 720)
+block_size = Vector2(150, 34)
+collapse_delay = 0.6
+respawn_delay = 3.2
 
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/MallBalconyOneWay"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-120, -12, 120, -12, 120, 12, -120, 12)
+[node name="MallCrumbleBridge" parent="OneWayPlatforms" instance=ExtResource("10_crumble")]
+position = Vector2(2440, 685)
+block_size = Vector2(150, 34)
+collapse_delay = 0.6
+respawn_delay = 3.2
+
+[node name="EnvironmentalZones" type="Node2D" parent="."]
+
+[node name="AtriumSandDrift" parent="EnvironmentalZones" instance=ExtResource("8_sand")]
+position = Vector2(1740, 1024)
+zone_size = Vector2(220, 34)
+slow_factor = 0.62
+
+[node name="AtriumSkylightDraft" parent="EnvironmentalZones" instance=ExtResource("9_wind")]
+position = Vector2(1755, 720)
+zone_size = Vector2(200, 320)
+wind_force = Vector2(0, -135)
 
 [node name="Spawns" type="Node2D" parent="."]
 
@@ -469,3 +378,75 @@ position = Vector2(2095, 580)
 
 [node name="RelicSentinel1" parent="Enemies" instance=ExtResource("6_sentinel")]
 position = Vector2(2820, 960)
+
+[node name="DepthGalleryPortals" type="Node2D" parent="."]
+
+[node name="DepthEntrancePortal" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(1180, 1040)
+target_plane = "interior"
+destination_position = Vector2(1245, 1006)
+prompt_key = "PROMPT_ENTER_DEPTH"
+arch_width = 96.0
+arch_height = 152.0
+
+[node name="DepthExitPortal" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(1980, 1040)
+target_plane = "foreground"
+destination_position = Vector2(2040, 1006)
+prompt_key = "PROMPT_EXIT_DEPTH"
+arch_width = 96.0
+arch_height = 152.0
+
+[node name="SpireOrbitEntrance" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(2860, 960)
+target_plane = "orbit_spire"
+destination_position = Vector2(2860, 926)
+prompt_key = "PROMPT_ORBIT_PILLAR"
+arch_width = 110.0
+arch_height = 170.0
+
+[node name="DepthLightShafts" type="Node2D" parent="."]
+z_index = 12
+
+[node name="ShaftWest" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.11)
+polygon = PackedVector2Array(1330, 620, 1425, 620, 1520, 1045, 1395, 1045)
+
+[node name="ShaftCenter" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.13)
+polygon = PackedVector2Array(1560, 620, 1665, 620, 1775, 1045, 1640, 1045)
+
+[node name="ShaftEast" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.1)
+polygon = PackedVector2Array(1795, 620, 1885, 620, 1975, 1045, 1860, 1045)
+
+[node name="DepthForegroundColonnade" type="Node2D" parent="."]
+z_index = 15
+
+[node name="FgPillarWest" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.92)
+polygon = PackedVector2Array(1295, 620, 1355, 620, 1365, 1085, 1285, 1085)
+
+[node name="FgPillarWestCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1282, 620, 1368, 620, 1368, 640, 1282, 640)
+
+[node name="FgPillarCenter" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.93)
+polygon = PackedVector2Array(1510, 600, 1578, 600, 1590, 1085, 1498, 1085)
+
+[node name="FgPillarCenterCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1494, 600, 1594, 600, 1594, 622, 1494, 622)
+
+[node name="FgPillarEast" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.92)
+polygon = PackedVector2Array(1755, 620, 1820, 620, 1830, 1085, 1745, 1085)
+
+[node name="FgPillarEastCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1740, 620, 1835, 620, 1835, 640, 1740, 640)
+
+[node name="FgColonnadeLintel" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0705882, 0.0862745, 0.168627, 0.9)
+polygon = PackedVector2Array(1265, 586, 1860, 586, 1860, 622, 1265, 622)

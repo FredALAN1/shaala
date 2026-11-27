@@ -1,0 +1,299 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/dev/dev_mode_controller.gd" id="1_dev_controller"]
+
+[node name="DevModeOverlay" type="CanvasLayer"]
+process_mode = 3
+layer = 85
+script = ExtResource("1_dev_controller")
+
+[node name="WorldDrawCanvas" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RootControl" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBarPanel" type="PanelContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 14.0
+offset_top = 10.0
+offset_right = -14.0
+offset_bottom = 66.0
+grow_horizontal = 2
+
+[node name="TopBarMargin" type="MarginContainer" parent="RootControl/TopBarPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 6
+
+[node name="TopBarHBox" type="HBoxContainer" parent="RootControl/TopBarPanel/TopBarMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="HintLabel" type="Label" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.776471, 0.545098, 0.34902, 1)
+theme_override_font_sizes/font_size = 15
+
+[node name="SpacerTop" type="Control" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ToolPlaceBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+toggle_mode = true
+
+[node name="ToolMoveBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+toggle_mode = true
+
+[node name="ToolEraseBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+toggle_mode = true
+
+[node name="VSep1" type="VSeparator" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+
+[node name="PlayPauseBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="GridSnapBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="VSep2" type="VSeparator" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+
+[node name="SaveRoomBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="ResetRoomBtn" type="Button" parent="RootControl/TopBarPanel/TopBarMargin/TopBarHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+
+[node name="SidePalettePanel" type="PanelContainer" parent="RootControl"]
+layout_mode = 1
+offset_left = 14.0
+offset_top = 76.0
+offset_right = 374.0
+offset_bottom = 1016.0
+
+[node name="SideMargin" type="MarginContainer" parent="RootControl/SidePalettePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="SideVBox" type="VBoxContainer" parent="RootControl/SidePalettePanel/SideMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TabsHBox" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TabBlocksBtn" type="Button" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/TabsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+
+[node name="TabEnemiesBtn" type="Button" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/TabsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+
+[node name="TabPropsBtn" type="Button" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/TabsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+
+[node name="TabCheatsBtn" type="Button" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/TabsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+toggle_mode = true
+
+[node name="HSep1" type="HSeparator" parent="RootControl/SidePalettePanel/SideMargin/SideVBox"]
+layout_mode = 2
+
+[node name="PaletteScroll" type="ScrollContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PaletteList" type="VBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/PaletteScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="HSep2" type="HSeparator" parent="RootControl/SidePalettePanel/SideMargin/SideVBox"]
+layout_mode = 2
+
+[node name="InspectorBox" type="VBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="WidthRow" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WidthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+
+[node name="WidthSpin" type="SpinBox" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WidthRow"]
+layout_mode = 2
+min_value = 32.0
+max_value = 2400.0
+step = 16.0
+value = 256.0
+
+[node name="HeightRow" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/HeightRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+
+[node name="HeightSpin" type="SpinBox" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/HeightRow"]
+layout_mode = 2
+min_value = 16.0
+max_value = 1200.0
+step = 8.0
+value = 64.0
+
+[node name="TiltRow" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+layout_mode = 2
+
+[node name="TiltLabel" type="Label" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/TiltRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+
+[node name="TiltSpin" type="SpinBox" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/TiltRow"]
+layout_mode = 2
+min_value = -45.0
+max_value = 45.0
+step = 5.0
+
+[node name="OneWayCheck" type="CheckButton" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+
+[node name="WindXRow" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+visible = false
+layout_mode = 2
+
+[node name="WindXLabel" type="Label" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WindXRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+
+[node name="WindXSpin" type="SpinBox" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WindXRow"]
+layout_mode = 2
+min_value = -800.0
+max_value = 800.0
+step = 20.0
+value = -240.0
+
+[node name="WindYRow" type="HBoxContainer" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox"]
+visible = false
+layout_mode = 2
+
+[node name="WindYLabel" type="Label" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WindYRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+
+[node name="WindYSpin" type="SpinBox" parent="RootControl/SidePalettePanel/SideMargin/SideVBox/InspectorBox/WindYRow"]
+layout_mode = 2
+min_value = -800.0
+max_value = 800.0
+step = 20.0
+
+[node name="BottomBarPanel" type="PanelContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 388.0
+offset_top = -46.0
+offset_right = -14.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="BottomMargin" type="MarginContainer" parent="RootControl/BottomBarPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 4
+
+[node name="CamHintLabel" type="Label" parent="RootControl/BottomBarPanel/BottomMargin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.909804, 0.768627, 0.603922, 1)
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+
+[node name="ToastPanel" type="PanelContainer" parent="RootControl"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_top = 78.0
+offset_right = 210.0
+offset_bottom = 122.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="ToastMargin" type="MarginContainer" parent="RootControl/ToastPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 6
+
+[node name="ToastLabel" type="Label" parent="RootControl/ToastPanel/ToastMargin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.964706, 0.886275, 0.6, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1

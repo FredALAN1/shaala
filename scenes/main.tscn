@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/systems/room_manager.gd" id="1_room_manager"]
 [ext_resource type="Script" path="res://scripts/systems/room_camera.gd" id="2_room_camera"]
+[ext_resource type="PackedScene" path="res://scenes/dev/dev_mode_overlay.tscn" id="3_dev_mode"]
 
 [node name="Main" type="Node"]
 process_mode = 3
@@ -15,11 +16,14 @@ process_mode = 1
 [node name="PlayerContainer" type="Node2D" parent="WorldRoot"]
 
 [node name="RoomCamera" type="Camera2D" parent="WorldRoot"]
+process_mode = 3
 script = ExtResource("2_room_camera")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 process_mode = 3
 layer = 20
+
+[node name="DevModeOverlay" parent="." instance=ExtResource("3_dev_mode")]
 
 [node name="TransitionLayer" type="CanvasLayer" parent="."]
 process_mode = 3

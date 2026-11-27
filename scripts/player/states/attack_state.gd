@@ -3,7 +3,7 @@ extends PlayerState
 ## Flame Dagger 3-hit directional combo state (left/right/up/down-pogo).
 
 const ACTIVE_DURATION: float = 0.11
-const TOTAL_DURATION: Array[float] = [0.26, 0.26, 0.38]
+const TOTAL_DURATION: Array = [0.26, 0.26, 0.38]
 const CHAIN_OPEN_TIME: float = 0.10
 
 var _timer: float = 0.0
@@ -15,7 +15,7 @@ var _was_airborne: bool = false
 
 func enter(_prev_state: StringName, _data: Dictionary = {}) -> void:
 	_step = player.advance_combo_step()
-	_total = TOTAL_DURATION[_step]
+	_total = float(TOTAL_DURATION[_step])
 	_timer = 0.0
 	_buffered_attack = false
 	_was_airborne = not player.is_on_floor()
@@ -28,7 +28,8 @@ func enter(_prev_state: StringName, _data: Dictionary = {}) -> void:
 	if not _was_airborne and absf(dir.x) > 0.5:
 		var lunge: float = 120.0 if _step < 2 else 190.0
 		player.velocity.x = float(player.facing_dir) * lunge
-	player.squash_stretch(Vector2(1.10, 0.94))
+	player.squash_stretch(Vector2(1.12, 0.92))
+	player.notify_attack_pose(dir, _step)
 	player.flame_dagger.start_slash(dir, _step, player, ACTIVE_DURATION)
 
 

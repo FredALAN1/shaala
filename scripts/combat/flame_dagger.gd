@@ -9,9 +9,9 @@ signal slash_hit(hurtbox: Hurtbox, info: DamageInfo, slash_dir: Vector2)
 const RESOURCE_GAIN_PER_HIT: float = 12.0
 const HITSTOP_DURATION: float = 0.035
 
-const TIER_DAMAGE: Array[int] = [10, 15, 22]
-const TIER_REACH: Array[float] = [72.0, 96.0, 124.0]
-const TIER_THICKNESS: Array[float] = [52.0, 64.0, 78.0]
+const TIER_DAMAGE: Array = [10, 15, 22]
+const TIER_REACH: Array = [72.0, 96.0, 124.0]
+const TIER_THICKNESS: Array = [52.0, 64.0, 78.0]
 
 const COLOR_TIER_0: Color = Color(0.878, 0.478, 0.235, 1.0) # Sunset orange #E07A3C
 const COLOR_TIER_1: Color = Color(0.945, 0.655, 0.310, 1.0) # Bright orange-gold
@@ -89,9 +89,9 @@ func start_slash(
 	_visual_timer = _visual_duration
 	_slash_active = true
 
-	var reach: float = TIER_REACH[_current_tier]
-	var thickness: float = TIER_THICKNESS[_current_tier]
-	var dmg: int = TIER_DAMAGE[_current_tier]
+	var reach: float = float(TIER_REACH[_current_tier])
+	var thickness: float = float(TIER_THICKNESS[_current_tier])
+	var dmg: int = int(TIER_DAMAGE[_current_tier])
 	if _combo_step == 2:
 		reach += 10.0
 		thickness += 8.0
@@ -211,8 +211,8 @@ func _draw() -> void:
 func _draw_slash_arc() -> void:
 	var progress: float = 1.0 - clampf(_visual_timer / maxf(_visual_duration, 0.001), 0.0, 1.0)
 	var fade: float = clampf(1.0 - progress * progress, 0.0, 1.0)
-	var reach: float = TIER_REACH[_current_tier] + (10.0 if _combo_step == 2 else 0.0)
-	var thickness: float = TIER_THICKNESS[_current_tier] * 0.42
+	var reach: float = float(TIER_REACH[_current_tier]) + (10.0 if _combo_step == 2 else 0.0)
+	var thickness: float = float(TIER_THICKNESS[_current_tier]) * 0.42
 	var base_angle: float = _slash_direction.angle()
 
 	var sweep_sign: float = -1.0 if _combo_step == 1 else 1.0
@@ -224,6 +224,8 @@ func _draw_slash_arc() -> void:
 	var end_angle: float = base_angle + sweep_sign * arc_span * 0.45
 	var segments: int = 14
 
+	var halo_outer_pts := PackedVector2Array()
+	var halo_inner_pts := PackedVector2Array()
 	var outer_pts := PackedVector2Array()
 	var inner_pts := PackedVector2Array()
 	var core_outer := PackedVector2Array()
@@ -233,14 +235,25 @@ func _draw_slash_arc() -> void:
 		var t: float = float(i) / float(segments)
 		var ang: float = lerpf(start_angle, end_angle, t)
 		var taper: float = sin(t * PI)
+		var r_halo_out: float = reach * (0.94 + 0.14 * taper)
+		var r_halo_in: float = clampf(r_halo_out - thickness * (0.55 + 0.85 * taper), 12.0, r_halo_out - 3.0)
 		var r_outer: float = reach * (0.86 + 0.14 * taper)
-		var r_inner: float = maxf(14.0, r_outer - thickness * (0.35 + 0.65 * taper))
-		var r_core_inner: float = maxf(16.0, r_outer - thickness * 0.35 * taper)
+		var r_inner: float = clampf(r_outer - thickness * (0.35 + 0.65 * taper), 14.0, r_outer - 2.5)
+		var r_core_out: float = r_outer * 0.98
+		var r_core_inner: float = clampf(r_core_out - thickness * (0.14 + 0.28 * taper), 16.0, r_core_out - 2.0)
 
-		outer_pts.append(Vector2.from_angle(ang) * r_outer)
-		inner_pts.append(Vector2.from_angle(ang) * r_inner)
-		core_outer.append(Vector2.from_angle(ang) * (r_outer * 0.98))
-		core_inner.append(Vector2.from_angle(ang) * r_core_inner)
+		var unit: Vector2 = Vector2.from_angle(ang)
+		halo_outer_pts.append(unit * r_halo_out)
+		halo_inner_pts.append(unit * r_halo_in)
+		outer_pts.append(unit * r_outer)
+		inner_pts.append(unit * r_inner)
+		core_outer.append(unit * r_core_out)
+		core_inner.append(unit * r_core_inner)
+
+	halo_inner_pts.reverse()
+	var halo_poly := PackedVector2Array()
+	halo_poly.append_array(halo_outer_pts)
+	halo_poly.append_array(halo_inner_pts)
 
 	inner_pts.reverse()
 	var outer_poly := PackedVector2Array()
@@ -254,26 +267,43 @@ func _draw_slash_arc() -> void:
 
 	var main_col: Color = get_tier_color()
 	var rim_col: Color = COLOR_DESERT_RED if _current_tier == 0 else COLOR_TIER_0
-	rim_col.a = fade * 0.55
-	main_col.a = fade * 0.85
+	var halo_col: Color = COLOR_DESERT_RED.lerp(main_col, 0.45)
+	halo_col.a = fade * 0.34
+	rim_col.a = fade * 0.60
+	main_col.a = fade * 0.88
 	var core_col: Color = COLOR_CORE
-	core_col.a = fade * (0.75 if SettingsManager.reduce_flash else 0.95)
+	core_col.a = fade * (0.72 if SettingsManager.reduce_flash else 0.96)
 
+	if halo_poly.size() >= 3:
+		draw_colored_polygon(halo_poly, halo_col)
 	if outer_poly.size() >= 3:
 		draw_colored_polygon(outer_poly, main_col)
 	if core_poly.size() >= 3:
 		draw_colored_polygon(core_poly, core_col)
 
+	# Trailing ember sparks along the crescent edge
+	for j: int in range(4 + _current_tier * 2):
+		var frac: float = (float(j) + 0.5) / float(4 + _current_tier * 2)
+		var spark_ang: float = lerpf(start_angle, end_angle, frac)
+		var spark_r: float = reach * (0.82 + 0.24 * progress + 0.08 * sin(frac * PI))
+		var spark_col: Color = COLOR_CORE.lerp(main_col, 0.4)
+		spark_col.a = fade * 0.85
+		draw_circle(Vector2.from_angle(spark_ang) * spark_r, 2.2 + float(_current_tier) * 0.8, spark_col)
+
 	if _current_tier >= 2:
 		var wave_pts := PackedVector2Array()
+		var wave_pts_2 := PackedVector2Array()
 		for i: int in range(segments + 1):
 			var t: float = float(i) / float(segments)
 			var ang: float = lerpf(start_angle, end_angle, t)
-			var wave_r: float = reach * (1.03 + 0.08 * progress)
+			var wave_r: float = reach * (1.04 + 0.08 * progress)
 			wave_pts.append(Vector2.from_angle(ang) * wave_r)
+			wave_pts_2.append(Vector2.from_angle(ang) * (wave_r + 7.0))
 		var wave_col: Color = COLOR_TIER_2
-		wave_col.a = fade * 0.72
+		wave_col.a = fade * 0.78
 		draw_polyline(wave_pts, wave_col, 4.0, true)
+		wave_col.a = fade * 0.42
+		draw_polyline(wave_pts_2, wave_col, 2.2, true)
 
 	if outer_pts.size() >= 2:
 		draw_polyline(outer_pts, rim_col, 2.5, true)

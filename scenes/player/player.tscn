@@ -44,25 +44,99 @@ shape = SubResource("CapsuleShape2D_body")
 [node name="VisualRoot" type="Node2D" parent="."]
 show_behind_parent = true
 
-[node name="CloakPolygon" type="Polygon2D" parent="VisualRoot"]
-color = Color(0.086, 0.106, 0.2, 1)
-polygon = PackedVector2Array(-10, -14, 11, -13, 14, 2, 12, 26, -5, 30, -18, 28)
-
-[node name="BodyPolygon" type="Polygon2D" parent="VisualRoot"]
-color = Color(0.051, 0.063, 0.129, 1)
-polygon = PackedVector2Array(-8, -11, 8, -11, 10, 12, 7, 30, -7, 30, -10, 12)
-
-[node name="TrimPolygon" type="Polygon2D" parent="VisualRoot"]
-color = Color(0.659, 0.267, 0.196, 1)
-polygon = PackedVector2Array(-11, -9, 11, -8, 12, -2, -12, -1)
-
-[node name="ScarfPolygon" type="Polygon2D" parent="VisualRoot"]
-color = Color(0.149, 0.173, 0.29, 1)
-polygon = PackedVector2Array(-7, -15, 5, -14, -16, 2, -22, -6)
-
-[node name="HeadPolygon" type="Polygon2D" parent="VisualRoot"]
+[node name="BackScarfTail" type="Polygon2D" parent="VisualRoot"]
 color = Color(0.118, 0.141, 0.251, 1)
-polygon = PackedVector2Array(-9, -27, -2, -31, 8, -29, 11, -21, 9, -14, -9, -14, -11, -21)
+polygon = PackedVector2Array(-4, -17, 2, -16, -10, -4, -26, -2, -28, -8, -14, -12)
+
+[node name="BackCloak" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.051, 0.063, 0.129, 1)
+polygon = PackedVector2Array(-9, -14, 7, -14, 10, 4, 8, 25, -7, 28, -19, 25, -13, 3)
+
+[node name="BackLeg" type="Node2D" parent="VisualRoot"]
+position = Vector2(-3, 7)
+
+[node name="LegPoly" type="Polygon2D" parent="VisualRoot/BackLeg"]
+color = Color(0.051, 0.063, 0.129, 1)
+polygon = PackedVector2Array(-4, 0, 4, 0, 5, 16, 7, 23, -3, 24, -5, 15)
+
+[node name="BootCuff" type="Polygon2D" parent="VisualRoot/BackLeg"]
+color = Color(0.431, 0.286, 0.188, 1)
+polygon = PackedVector2Array(-5, 13, 5, 13, 6, 17, -5, 17)
+
+[node name="FrontLeg" type="Node2D" parent="VisualRoot"]
+position = Vector2(3, 7)
+
+[node name="LegPoly" type="Polygon2D" parent="VisualRoot/FrontLeg"]
+color = Color(0.086, 0.106, 0.2, 1)
+polygon = PackedVector2Array(-4, 0, 4, 0, 5, 16, 8, 23, -3, 24, -5, 15)
+
+[node name="BootCuff" type="Polygon2D" parent="VisualRoot/FrontLeg"]
+color = Color(0.659, 0.267, 0.196, 1)
+polygon = PackedVector2Array(-5, 13, 5, 13, 6, 17, -5, 17)
+
+[node name="TorsoRoot" type="Node2D" parent="VisualRoot"]
+position = Vector2(0, 4)
+
+[node name="OffArm" type="Node2D" parent="VisualRoot/TorsoRoot"]
+position = Vector2(-5, -15)
+
+[node name="ArmPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/OffArm"]
+color = Color(0.067, 0.082, 0.165, 1)
+polygon = PackedVector2Array(-3, -2, 3, -2, 4, 13, 2, 16, -2, 16, -4, 12)
+
+[node name="TorsoPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.086, 0.106, 0.2, 1)
+polygon = PackedVector2Array(-9, -18, 9, -18, 10, -4, 8, 6, -8, 6, -10, -4)
+
+[node name="FrontCloak" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.106, 0.133, 0.251, 1)
+polygon = PackedVector2Array(-10, -18, 10, -17, 13, -3, 12, 17, -4, 21, -16, 19, -13, -2)
+
+[node name="CloakPleat" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.051, 0.063, 0.129, 1)
+polygon = PackedVector2Array(-4, -15, 2, -15, 3, 18, -5, 19)
+
+[node name="SaduTrimBand" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.659, 0.267, 0.196, 1)
+polygon = PackedVector2Array(-15, 14, 11, 12, 12, 17, -4, 21, -16, 19)
+
+[node name="WaistSash" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.659, 0.267, 0.196, 1)
+polygon = PackedVector2Array(-10, -4, 10, -4, 10, 2, -10, 2)
+
+[node name="SashGoldStripe" type="Polygon2D" parent="VisualRoot/TorsoRoot"]
+color = Color(0.776, 0.545, 0.349, 1)
+polygon = PackedVector2Array(-10, -2, 10, -2, 10, 0, -10, 0)
+
+[node name="HeadRoot" type="Node2D" parent="VisualRoot/TorsoRoot"]
+position = Vector2(1, -19)
+
+[node name="HeadwrapPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/HeadRoot"]
+color = Color(0.118, 0.145, 0.267, 1)
+polygon = PackedVector2Array(-10, -12, -3, -17, 7, -16, 12, -9, 11, 1, 4, 3, -9, 2, -12, -5)
+
+[node name="HeadbandPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/HeadRoot"]
+color = Color(0.051, 0.063, 0.129, 1)
+polygon = PackedVector2Array(-11, -12, 8, -14, 10, -10, -10, -8)
+
+[node name="FaceShadowPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/HeadRoot"]
+color = Color(0.043, 0.051, 0.106, 1)
+polygon = PackedVector2Array(-2, -9, 9, -9, 10, -2, 6, 0, -2, -2)
+
+[node name="FrontScarfTail" type="Polygon2D" parent="VisualRoot/TorsoRoot/HeadRoot"]
+color = Color(0.165, 0.2, 0.345, 1)
+polygon = PackedVector2Array(-8, -1, 5, 0, -4, 10, -21, 12, -24, 6, -12, 3)
+
+[node name="DaggerArm" type="Node2D" parent="VisualRoot/TorsoRoot"]
+position = Vector2(5, -14)
+
+[node name="ArmPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/DaggerArm"]
+color = Color(0.118, 0.145, 0.267, 1)
+polygon = PackedVector2Array(-3, -2, 4, -2, 6, 12, 3, 15, -2, 14, -3, 9)
+
+[node name="BracerPoly" type="Polygon2D" parent="VisualRoot/TorsoRoot/DaggerArm"]
+color = Color(0.776, 0.545, 0.349, 1)
+polygon = PackedVector2Array(-2, 8, 5, 8, 5, 12, -2, 12)
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 4

@@ -66,7 +66,7 @@ def infer_owner(rel_path: str) -> str:
     if p in ("docs/QA_NOTES.md", "docs/KNOWN_ISSUES.md", "tools/verify_m1.py"):
         return "@qa-verifier"
     if p in ("project.godot", "data/abilities.json", "data/rooms.json", "scenes/main.tscn") or p.startswith(
-        ("scripts/autoload/", "scripts/systems/")
+        ("scripts/autoload/", "scripts/systems/", "scripts/dev/", "scenes/dev/")
     ):
         return "@core-systems"
     if p.startswith(("scripts/combat/", "scripts/player/", "scenes/player/")):
@@ -74,7 +74,7 @@ def infer_owner(rel_path: str) -> str:
     if p == "data/enemies.json" or p.startswith(("scripts/enemies/", "scripts/boss/", "scenes/enemies/", "scenes/boss/")):
         return "@enemies-boss"
     if p in ("docs/ART_SPEC.md", "assets/final/README.md", "assets/placeholder/palettes.gd") or p.startswith(
-        ("assets/placeholder/shaders/", "scripts/interactables/", "scenes/interactables/")
+        ("assets/placeholder/shaders/", "scripts/interactables/", "scenes/interactables/", "scripts/world/", "scenes/world/")
     ):
         return "@art-shaders"
     if p.startswith(("scripts/rooms/", "scenes/rooms/")):
@@ -1420,18 +1420,25 @@ class M1Verifier:
         sec = "A"
         rp = self.rel(sp)
         text = sp.read_text(encoding="utf-8")
-        if "shader_type canvas_item;" not in text:
-            self.add(sec, "HIGH", "SHADER_TYPE", "Shader missing 'shader_type canvas_item;'", rp)
+        shader_type = ""
+        if "shader_type canvas_item;" in text:
+            shader_type = "canvas_item"
+        elif "shader_type spatial;" in text:
+            shader_type = "spatial"
+        elif "shader_type sky;" in text:
+            shader_type = "sky"
+        else:
+            self.add(sec, "HIGH", "SHADER_TYPE", "Shader missing valid 'shader_type canvas_item;' or 'shader_type spatial;'", rp)
         if text.count("{") != text.count("}"):
             self.add(sec, "CRITICAL", "SHADER_BRACES", "Unbalanced braces '{}' in shader", rp)
         if re.search(r"\bhint_color\b", text):
             self.add(sec, "CRITICAL", "SHADER_GODOT3_HINT", "Godot 3 'hint_color' found — use Godot 4 'source_color'", rp)
         if re.search(r"\bSCREEN_TEXTURE\b", text) and "hint_screen_texture" not in text:
             self.add(sec, "CRITICAL", "SHADER_GODOT3_SCREEN", "Godot 3 built-in SCREEN_TEXTURE used without Godot 4 hint_screen_texture uniform", rp)
-        if re.search(r"\bvoid\s+fragment\s*\(\s*\)", text) or re.search(r"\bvoid\s+vertex\s*\(\s*\)", text):
-            self.add(sec, "PASS", "SHADER_OK", f"Shader valid Godot 4 canvas_item syntax: {rp}", rp)
+        if re.search(r"\bvoid\s+(fragment|vertex|light|sky)\s*\(\s*\)", text):
+            self.add(sec, "PASS", "SHADER_OK", f"Shader valid Godot 4 {shader_type or 'unknown'} syntax: {rp}", rp)
         else:
-            self.add(sec, "MEDIUM", "SHADER_NO_ENTRY", "Shader has neither vertex() nor fragment() entry function", rp)
+            self.add(sec, "MEDIUM", "SHADER_NO_ENTRY", "Shader has no vertex()/fragment()/light()/sky() entry function", rp)
 
     # -----------------------------------------------------------------------
     # SECTION B: Typed GDScript & Contract Verification
@@ -1582,6 +1589,11 @@ class M1Verifier:
                 self.add(sec, "CRITICAL", "GD_GODOT3_MOVE_AND_SLIDE", "Godot 3 move_and_slide(vel, ...) — in Godot 4 CharacterBody2D.move_and_slide() takes 0 args!", rp, idx)
             if re.search(r"\binstance\s*\(\s*\)", code):
                 self.add(sec, "HIGH", "GD_GODOT3_INSTANCE", "Possible Godot 3 PackedScene.instance() — in Godot 4 use instantiate()", rp, idx)
+            # Godot 4.3 non-constant typed Array / Packed*Array const expression check
+            if re.match(r"^\s*const\s+[A-Za-z_][A-Za-z0-9_]*\s*:\s*Array\[", code):
+                self.add(sec, "CRITICAL", "GD43_TYPED_CONST_ARRAY", "Godot 4.3 disallows 'const X: Array[T] = [...]' — use untyped 'const X: Array = [...]'", rp, idx)
+            if re.match(r"^\s*const\s+[A-Za-z_][A-Za-z0-9_]*\s*(?::\s*Packed[A-Za-z0-9_]*Array\s*)?=\s*Packed[A-Za-z0-9_]*Array\s*\(", code):
+                self.add(sec, "CRITICAL", "GD43_PACKED_CONST_ARRAY", "Godot 4.3 disallows 'const X = Packed*Array(...)' — use untyped 'const X: Array = [...]'", rp, idx)
 
             # Check res:// path literals
             for m in re.finditer(r'"(res://[^"]+)"', raw):
@@ -2026,7 +2038,7 @@ class M1Verifier:
         # 3. Hardcoded user-facing text check in UI .tscn and .gd
         hardcoded_count = 0
         for rp, scene in sorted(self.parsed_scenes.items()):
-            if not rp.startswith("scenes/ui/"):
+            if not rp.startswith(("scenes/ui/", "scenes/dev/")):
                 continue
             for n in scene.nodes:
                 for prop in ("text", "title", "placeholder_text"):
@@ -2048,7 +2060,7 @@ class M1Verifier:
 
         ui_text_assign_re = re.compile(r'\.(?:text|title|placeholder_text)\s*=\s*"([^"]+)"')
         for rp, gd in sorted(self.parsed_gds.items()):
-            if not rp.startswith("scripts/ui/"):
+            if not rp.startswith(("scripts/ui/", "scripts/dev/")):
                 continue
             for idx, line in enumerate(gd.lines, start=1):
                 nc = line.split("#")[0]
@@ -2227,11 +2239,46 @@ class M1Verifier:
                         elif clayer & 1:
                             solids.append((r, n.full_path, n.line, has_visual))
 
-                # TransitionGate / ShortcutGate
+                # TransitionGate / ShortcutGate / Instanced World Kit (PlayableBlock, CrumblingLedge)
                 sc_ref = n.props.get("script", "")
                 sc_m = EXT_REF_RE.search(sc_ref)
                 script_res = scene.ext_resources[sc_m.group(1)].path if (sc_m and sc_m.group(1) in scene.ext_resources) else ""
                 inst_res = scene.ext_resources[n.instance_id].path if (n.instance_id and n.instance_id in scene.ext_resources) else ""
+
+                if "playable_block.tscn" in inst_res or "crumbling_ledge.tscn" in inst_res:
+                    is_crumble = "crumbling_ledge.tscn" in inst_res
+                    default_sz = (160.0, 36.0) if is_crumble else (256.0, 64.0)
+                    bw, bh = parse_vec2(n.props.get("block_size"), default_sz)
+                    is_ow = parse_bool_prop(n.props.get("one_way"), False) if not is_crumble else False
+                    tilt_deg = 0.0
+                    if "tilt_degrees" in n.props:
+                        try:
+                            tilt_deg = float(n.props["tilt_degrees"].strip())
+                        except ValueError:
+                            tilt_deg = 0.0
+                    elif "rotation_degrees" in n.props:
+                        try:
+                            tilt_deg = float(n.props["rotation_degrees"].strip())
+                        except ValueError:
+                            tilt_deg = 0.0
+                    elif "rotation" in n.props:
+                        try:
+                            tilt_deg = math.degrees(float(n.props["rotation"].strip()))
+                        except ValueError:
+                            tilt_deg = 0.0
+                    wx, wy = pos_map[n.full_path]
+                    if abs(tilt_deg) > 0.1:
+                        rad = math.radians(tilt_deg)
+                        c, s_ang = abs(math.cos(rad)), abs(math.sin(rad))
+                        aw = bw * c + bh * s_ang
+                        ah = bw * s_ang + bh * c
+                        brect = Rect(wx - aw * 0.5, wy - ah * 0.5, aw, ah)
+                    else:
+                        brect = Rect(wx - bw * 0.5, wy - bh * 0.5, bw, bh)
+                    if is_ow:
+                        one_ways.append((brect, n.full_path, n.line))
+                    else:
+                        solids.append((brect, n.full_path, n.line, True))
 
                 if "transition_gate.gd" in script_res:
                     clayer = parse_int_prop(n.props.get("collision_layer"), 1)
@@ -2638,6 +2685,102 @@ class M1Verifier:
     # SECTION E: Deliverables, Docs & Content Rules Audit
     # -----------------------------------------------------------------------
 
+    def check_ui_identity(self) -> None:
+        """DROP-002 "Notebook & Ember" P1 contracts (docs/UI_DESIGN_PLAN.md §8)."""
+        sec = "C"
+        problems = 0
+        tokens_rp = "scripts/ui/ui_tokens.gd"
+        tokens_p = self.root / tokens_rp
+        if not tokens_p.exists():
+            self.add(sec, "HIGH", "UI_TOKENS_MISSING", "UITokens script missing", tokens_rp)
+            problems += 1
+        else:
+            ttxt = tokens_p.read_text(encoding="utf-8")
+            for tok in ("PALE_GOLD", "EMBER", "DESERT_RED", "PAPER_ASH", "INK_BROWN", "INK_FOCUS_PAPER",
+                        "INK_DESTRUCTIVE_PAPER", "HUD_WOUNDED_FLOOR_ALPHA"):
+                if f"const {tok}" not in ttxt:
+                    self.add(sec, "HIGH", "UI_TOKEN_MISSING", f"UITokens missing {tok}", tokens_rp)
+                    problems += 1
+        afs_rp = "scripts/ui/arabic_font_setup.gd"
+        afs_p = self.root / afs_rp
+        if afs_p.exists():
+            atxt = afs_p.read_text(encoding="utf-8")
+            for fn in ("func get_role_font(", "func localize_digits(", "func get_text_scale("):
+                if fn not in atxt:
+                    self.add(sec, "HIGH", "UI_FONT_ROLES", f"ArabicFontSetup missing {fn}", afs_rp)
+                    problems += 1
+        sm_rp = "scripts/autoload/settings_manager.gd"
+        sm_p = self.root / sm_rp
+        if sm_p.exists():
+            stxt = sm_p.read_text(encoding="utf-8")
+            for key in ("reduce_motion", "hud_always_visible", "show_numbers", "text_scale"):
+                if f'"{key}"' not in stxt or f"func set_{key}(" not in stxt:
+                    self.add(sec, "HIGH", "UI_SETTING_MISSING", f"SettingsManager must persist and set '{key}'", sm_rp)
+                    problems += 1
+        ui_dir = self.root / "scripts/ui"
+        if ui_dir.exists():
+            for gd in sorted(ui_dir.glob("*.gd")):
+                txt = gd.read_text(encoding="utf-8")
+                rp = gd.relative_to(self.root).as_posix()
+                if re.search(r"^const COLOR_[A-Z_]+\s*:", txt, re.M):
+                    self.add(sec, "MEDIUM", "UI_LOCAL_COLOR_CONST", "Use UITokens instead of local COLOR_* constants", rp)
+                    problems += 1
+        for rp in ("scripts/ui/title_screen.gd", "scripts/ui/vignette_player.gd"):
+            p_ = self.root / rp
+            if p_.exists() and "AMBIENT_REDRAW_HZ" not in p_.read_text(encoding="utf-8"):
+                self.add(sec, "MEDIUM", "UI_PER_FRAME_REDRAW", "Ambient _draw must be rate-capped (AMBIENT_REDRAW_HZ)", rp)
+                problems += 1
+        csv_p = self.root / "localization/strings.csv"
+        if csv_p.exists():
+            with csv_p.open("r", encoding="utf-8-sig", newline="") as fh:
+                for line_no, row in enumerate(csv.reader(fh), start=1):
+                    if not row:
+                        continue
+                    key = row[0].strip()
+                    if key.startswith(("UI_", "PROMPT_", "AREA_")) or (key.startswith("PAGE_") and key.endswith("_TITLE")):
+                        if any("\u2014" in cell for cell in row[1:]):
+                            self.add(sec, "MEDIUM", "UI_EM_DASH", f"Em-dash separator in UI copy '{key}' (use hierarchy, not punctuation)", "localization/strings.csv", line_no)
+                            problems += 1
+        if problems == 0:
+            self.add(sec, "PASS", "UI_IDENTITY_P1", "Notebook & Ember P1 contracts hold (tokens, font roles, digits, settings, no em-dash UI copy, capped redraw).")
+
+        # DROP-002 P2/P3: final UI art and OFL fonts are present, imported lossless, and wired.
+        p2_problems = 0
+        fonts_dir = self.root / "assets/final/fonts"
+        for font_name in ("reem_kufi_variable.ttf", "aref_ruqaa_regular.ttf", "readex_pro_variable.ttf", "eb_garamond_italic_variable.ttf"):
+            if not (fonts_dir / font_name).exists():
+                self.add(sec, "HIGH", "UI_FONT_MISSING", f"DROP-002 font missing: {font_name}", "assets/final/fonts")
+                p2_problems += 1
+        for lic in ("ofl_reem_kufi.txt", "ofl_aref_ruqaa.txt", "ofl_readex_pro.txt", "ofl_eb_garamond.txt"):
+            if not (fonts_dir / lic).exists():
+                self.add(sec, "HIGH", "UI_FONT_LICENCE_MISSING", f"OFL licence file missing: {lic}", "assets/final/fonts")
+                p2_problems += 1
+        ui_art = self.root / "assets/final/ui"
+        if ui_art.exists():
+            for png in sorted(ui_art.glob("*.png")):
+                imp = png.with_name(png.name + ".import")
+                if imp.exists() and "compress/mode=0" not in imp.read_text(encoding="utf-8"):
+                    self.add(sec, "MEDIUM", "UI_ART_NOT_LOSSLESS", f"UI art must import Lossless (compress/mode=0): {png.name}", imp.relative_to(self.root).as_posix())
+                    p2_problems += 1
+        wiring = [
+            ("scenes/ui/title_screen.tscn", ("logo_shaala.png", "furjat_divider.png")),
+            ("scenes/ui/hud.tscn", ("flame_strip_frame.png", "boss_bar_frame.png", "TextureProgressBar")),
+            ("scripts/ui/hud.gd", ("hp_ember_full.png", "hp_ember_ash.png", "InputGlyphs")),
+            ("scenes/ui/vignette_player.tscn", ("scrim_bottom.png", "LetterboxTop")),
+            ("scripts/ui/pause_settings_menu.gd", ("notebook_spread.png", "notebook_ribbon", "torn_stub.png", "paper_slip.png", "UI_CONFIRM_SAVE_QUIT")),
+        ]
+        for rp, tokens in wiring:
+            p_ = self.root / rp
+            if not p_.exists():
+                continue
+            txt = p_.read_text(encoding="utf-8")
+            for tok in tokens:
+                if tok not in txt:
+                    self.add(sec, "HIGH", "UI_ART_NOT_WIRED", f"DROP-002 element '{tok}' not wired in {rp}", rp)
+                    p2_problems += 1
+        if p2_problems == 0:
+            self.add(sec, "PASS", "UI_IDENTITY_P2_P3", "Notebook & Ember P2/P3 art and OFL fonts present, Lossless, and wired (title, HUD, story, notebook).")
+
     def check_section_e(self) -> None:
         sec = "E"
         # 1. GDD.md
@@ -2805,6 +2948,7 @@ class M1Verifier:
             self.check_section_b()
         if s in ("all", "c"):
             self.check_section_c()
+            self.check_ui_identity()
         if s in ("all", "d"):
             self.check_section_d()
         if s in ("all", "e"):

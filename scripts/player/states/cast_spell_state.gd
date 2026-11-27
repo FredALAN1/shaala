@@ -21,6 +21,7 @@ func enter(_prev_state: StringName, _data: Dictionary = {}) -> void:
 
 	player.spell_cooldown_timer = Player.SPELL_COOLDOWN
 	player.squash_stretch(Vector2(1.14, 0.92))
+	player.notify_cast_pose()
 	AudioManager.play_sfx("spell_cast")
 
 

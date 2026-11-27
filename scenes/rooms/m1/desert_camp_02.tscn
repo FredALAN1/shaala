@@ -1,10 +1,13 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
 [ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
 [ext_resource type="Script" path="res://scripts/rooms/tutorial_sign.gd" id="3_tut"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/memory_orb.tscn" id="4_orb"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/sand_stalker.tscn" id="5_stalker"]
+[ext_resource type="PackedScene" path="res://scenes/world/playable_block.tscn" id="6_block"]
+[ext_resource type="PackedScene" path="res://scenes/world/deep_sand_zone.tscn" id="7_sand"]
+[ext_resource type="PackedScene" path="res://scenes/world/wind_zone.tscn" id="8_wind"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(2800, 40)
@@ -14,27 +17,6 @@ size = Vector2(40, 660)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_east_upper"]
 size = Vector2(40, 560)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_floor"]
-size = Vector2(1120, 220)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_step1"]
-size = Vector2(200, 90)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_orb_plateau"]
-size = Vector2(320, 180)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_west_launch"]
-size = Vector2(310, 320)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_canyon_floor"]
-size = Vector2(460, 80)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_east_ramp"]
-size = Vector2(950, 320)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_canyon_ledge"]
-size = Vector2(60, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
 size = Vector2(70, 180)
@@ -126,7 +108,7 @@ visible = false
 
 [node name="IntactBridgeSpanHint" type="Polygon2D" parent="Era2034"]
 color = Color(0.964706, 0.886275, 0.6, 0.22)
-polygon = PackedVector2Array(1460, 760, 1840, 760, 1840, 782, 1460, 782)
+polygon = PackedVector2Array(1450, 760, 1850, 760, 1850, 782, 1450, 782)
 
 [node name="Geometry" type="Node2D" parent="."]
 
@@ -166,121 +148,92 @@ shape = SubResource("RectangleShape2D_east_upper")
 color = Color(0.0862745, 0.105882, 0.2, 1)
 polygon = PackedVector2Array(-20, -280, 20, -280, 20, 280, -20, 280)
 
-[node name="WestApproachFloor" type="StaticBody2D" parent="Geometry"]
+[node name="WestApproachFloor" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(560, 970)
-collision_layer = 1
-collision_mask = 0
+block_style = "sand_dune_ground"
+block_size = Vector2(1120, 220)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestApproachFloor"]
-shape = SubResource("RectangleShape2D_west_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestApproachFloor"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-560, -110, 560, -110, 560, 110, -560, 110)
-
-[node name="TopSand" type="Polygon2D" parent="Geometry/WestApproachFloor"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-560, -110, 560, -110, 560, -94, -560, -94)
-
-[node name="WestStep1" type="StaticBody2D" parent="Geometry"]
+[node name="WestStep1" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(720, 815)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(200, 90)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestStep1"]
-shape = SubResource("RectangleShape2D_west_step1")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestStep1"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-100, -45, 100, -45, 100, 45, -100, 45)
-
-[node name="WestOrbPlateau" type="StaticBody2D" parent="Geometry"]
+[node name="WestOrbPlateau" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(980, 770)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(320, 180)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestOrbPlateau"]
-shape = SubResource("RectangleShape2D_orb_plateau")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestOrbPlateau"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-160, -90, 160, -90, 160, 90, -160, 90)
-
-[node name="OchreCap" type="Polygon2D" parent="Geometry/WestOrbPlateau"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-160, -90, 160, -90, 160, -74, -160, -74)
-
-[node name="WestLaunchCliff" type="StaticBody2D" parent="Geometry"]
+[node name="WestLaunchCliff" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(1295, 920)
-collision_layer = 1
-collision_mask = 0
+block_style = "sand_dune_ground"
+block_size = Vector2(310, 320)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/WestLaunchCliff"]
-shape = SubResource("RectangleShape2D_west_launch")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/WestLaunchCliff"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-155, -160, 155, -160, 155, 160, -155, 160)
-
-[node name="OchreCap" type="Polygon2D" parent="Geometry/WestLaunchCliff"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-155, -160, 155, -160, 155, -142, -155, -142)
-
-[node name="CanyonFloor" type="StaticBody2D" parent="Geometry"]
+[node name="CanyonFloor" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(1650, 1040)
-collision_layer = 1
-collision_mask = 0
+block_style = "sand_dune_ground"
+block_size = Vector2(460, 80)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CanyonFloor"]
-shape = SubResource("RectangleShape2D_canyon_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/CanyonFloor"]
-color = Color(0.321569, 0.145098, 0.141176, 1)
-polygon = PackedVector2Array(-230, -40, 230, -40, 230, 40, -230, 40)
-
-[node name="EastHighwayRamp" type="StaticBody2D" parent="Geometry"]
+[node name="EastHighwayRamp" parent="Geometry" instance=ExtResource("6_block")]
 position = Vector2(2325, 920)
-collision_layer = 1
-collision_mask = 0
+block_style = "broken_highway_deck"
+block_size = Vector2(950, 320)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/EastHighwayRamp"]
-shape = SubResource("RectangleShape2D_east_ramp")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/EastHighwayRamp"]
-color = Color(0.164706, 0.184314, 0.27451, 1)
-polygon = PackedVector2Array(-475, -160, 475, -160, 475, 160, -475, 160)
-
-[node name="OchreRoadEdge" type="Polygon2D" parent="Geometry/EastHighwayRamp"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-475, -160, 475, -160, 475, -142, -475, -142)
+[node name="EastRuinedCar" parent="Geometry" instance=ExtResource("6_block")]
+position = Vector2(2040, 725)
+block_style = "abandoned_car_platform"
+block_size = Vector2(160, 70)
+one_way = false
+tilt_degrees = 0.0
 
 [node name="OneWayPlatforms" type="Node2D" parent="."]
 
-[node name="CanyonReturnLedge1" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="CanyonReturnLedge1" parent="OneWayPlatforms" instance=ExtResource("6_block")]
 position = Vector2(1480, 932)
-collision_layer = 2
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(60, 24)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/CanyonReturnLedge1"]
-shape = SubResource("RectangleShape2D_canyon_ledge")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/CanyonReturnLedge1"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-30, -12, 30, -12, 30, 12, -30, 12)
-
-[node name="CanyonReturnLedge2" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="CanyonReturnLedge2" parent="OneWayPlatforms" instance=ExtResource("6_block")]
 position = Vector2(1480, 868)
-collision_layer = 2
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(60, 24)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/CanyonReturnLedge2"]
-shape = SubResource("RectangleShape2D_canyon_ledge")
-one_way_collision = true
+[node name="EnvironmentalZones" type="Node2D" parent="."]
 
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/CanyonReturnLedge2"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-30, -12, 30, -12, 30, 12, -30, 12)
+[node name="DuneDeepSandApproach" parent="EnvironmentalZones" instance=ExtResource("7_sand")]
+position = Vector2(480, 844)
+zone_size = Vector2(210, 36)
+slow_factor = 0.6
+
+[node name="PreChasmDeepSand" parent="EnvironmentalZones" instance=ExtResource("7_sand")]
+position = Vector2(1225, 744)
+zone_size = Vector2(140, 34)
+slow_factor = 0.62
+
+[node name="CanyonSandDrift" parent="EnvironmentalZones" instance=ExtResource("7_sand")]
+position = Vector2(1690, 984)
+zone_size = Vector2(260, 36)
+slow_factor = 0.6
+
+[node name="ChasmGustWind" parent="EnvironmentalZones" instance=ExtResource("8_wind")]
+position = Vector2(1650, 680)
+zone_size = Vector2(360, 260)
+wind_force = Vector2(-110, -35)
 
 [node name="Spawns" type="Node2D" parent="."]
 
@@ -339,4 +292,4 @@ shape = SubResource("RectangleShape2D_tut")
 position = Vector2(470, 860)
 
 [node name="SandStalker2" parent="Enemies" instance=ExtResource("5_stalker")]
-position = Vector2(2200, 760)
+position = Vector2(2260, 760)

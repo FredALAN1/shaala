@@ -42,9 +42,10 @@ func physics_update(delta: float) -> void:
 	player.apply_gravity(delta)
 
 	_step_dust_timer -= delta
-	if _step_dust_timer <= 0.0 and absf(player.velocity.x) > 120.0:
-		_step_dust_timer = 0.24
-		player.spawn_dust(Vector2(float(-player.facing_dir) * 8.0, 30.0), 2, 35.0)
+	if _step_dust_timer <= 0.0 and absf(player.velocity.x) > 95.0:
+		var in_sand: bool = player.is_in_deep_sand()
+		_step_dust_timer = 0.16 if in_sand else 0.22
+		player.spawn_dust(Vector2(float(-player.facing_dir) * 8.0, 30.0), 4 if in_sand else 2, 55.0 if in_sand else 38.0)
 
 	if absf(input_x) <= 0.05 and absf(player.velocity.x) < 12.0:
 		state_machine.transition_to(&"idle")

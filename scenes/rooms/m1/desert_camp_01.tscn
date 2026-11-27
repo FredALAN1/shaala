@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
 [ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
@@ -8,6 +8,9 @@
 [ext_resource type="PackedScene" path="res://scenes/interactables/notebook_page.tscn" id="6_page"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/camel_amira.tscn" id="7_amira"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/orb_shrine.tscn" id="8_shrine"]
+[ext_resource type="PackedScene" path="res://scenes/world/playable_block.tscn" id="9_block"]
+[ext_resource type="PackedScene" path="res://scenes/world/deep_sand_zone.tscn" id="10_sand"]
+[ext_resource type="PackedScene" path="res://scenes/world/wind_zone.tscn" id="11_wind"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_west_wall"]
 size = Vector2(40, 1080)
@@ -20,30 +23,6 @@ size = Vector2(40, 320)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_east_mid"]
 size = Vector2(40, 200)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_main_floor"]
-size = Vector2(2600, 200)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tent_hearth"]
-size = Vector2(320, 40)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rock_low"]
-size = Vector2(180, 100)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rock_high"]
-size = Vector2(200, 180)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_shrine_terrace"]
-size = Vector2(360, 60)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_shortcut_ledge"]
-size = Vector2(600, 80)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_190"]
-size = Vector2(190, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_160"]
-size = Vector2(160, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gate_east"]
 size = Vector2(70, 160)
@@ -100,9 +79,9 @@ motion_scale = Vector2(0.18, 0.1)
 color = Color(0.415686, 0.184314, 0.184314, 0.9)
 polygon = PackedVector2Array(-100, 1080, -100, 620, 210, 545, 580, 545, 720, 610, 1140, 575, 1340, 615, 1680, 640, 2600, 640, 2600, 1080)
 
-[node name="DistantRuinedRiyadhSkyline" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
+[node name="DistantRuinedSkyline" type="Polygon2D" parent="ParallaxBackground/FarLayer"]
 color = Color(0.121569, 0.141176, 0.243137, 0.88)
-polygon = PackedVector2Array(1760, 660, 1760, 520, 1790, 520, 1795, 570, 1825, 570, 1835, 455, 1860, 475, 1880, 435, 1905, 560, 1945, 560, 1955, 415, 1982, 375, 1998, 418, 2015, 535, 2050, 535, 2060, 468, 2092, 482, 2110, 555, 2150, 555, 2165, 490, 2205, 505, 2225, 580, 2320, 660)
+polygon = PackedVector2Array(1760, 660, 1760, 520, 1790, 520, 1795, 570, 1825, 570, 1835, 455, 1860, 475, 1880, 435, 1905, 560, 1945, 560, 1955, 425, 1995, 425, 2015, 535, 2050, 535, 2060, 468, 2092, 482, 2110, 555, 2150, 555, 2165, 490, 2205, 505, 2225, 580, 2320, 660)
 
 [node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.42, 0.25)
@@ -135,21 +114,42 @@ color = Color(0.909804, 0.768627, 0.603922, 0.12)
 
 [node name="Era2054" type="Node2D" parent="."]
 
-[node name="BedouinTentBack" type="Polygon2D" parent="Era2054"]
-color = Color(0.0862745, 0.105882, 0.2, 0.95)
-polygon = PackedVector2Array(72, 840, 112, 668, 224, 632, 332, 672, 378, 840)
+[node name="DesertTentLeftRope" type="Line2D" parent="Era2054"]
+points = PackedVector2Array(136, 724, 54, 840)
+width = 2.5
+default_color = Color(0.568627, 0.415686, 0.286275, 0.85)
 
-[node name="BedouinTentStripe" type="Polygon2D" parent="Era2054"]
-color = Color(0.658824, 0.266667, 0.196078, 0.95)
-polygon = PackedVector2Array(108, 692, 224, 658, 336, 694, 342, 718, 224, 684, 102, 716)
+[node name="DesertTentRightRope" type="Line2D" parent="Era2054"]
+points = PackedVector2Array(320, 728, 404, 840)
+width = 2.5
+default_color = Color(0.568627, 0.415686, 0.286275, 0.85)
 
-[node name="BedouinTentOchreTrim" type="Polygon2D" parent="Era2054"]
-color = Color(0.776471, 0.545098, 0.34902, 0.9)
-polygon = PackedVector2Array(100, 720, 224, 688, 344, 722, 347, 734, 224, 700, 97, 732)
+[node name="DesertTentCanopy" type="Polygon2D" parent="Era2054"]
+color = Color(0.560784, 0.376471, 0.247059, 0.96)
+polygon = PackedVector2Array(78, 840, 134, 724, 228, 686, 322, 726, 376, 840)
 
-[node name="BedouinTentOpening" type="Polygon2D" parent="Era2054"]
-color = Color(0.0509804, 0.0627451, 0.129412, 1)
-polygon = PackedVector2Array(166, 840, 190, 730, 260, 730, 286, 840)
+[node name="DesertTentSunlitSlope" type="Polygon2D" parent="Era2054"]
+color = Color(0.741176, 0.52549, 0.352941, 0.92)
+polygon = PackedVector2Array(228, 686, 322, 726, 376, 840, 294, 840, 228, 720)
+
+[node name="DesertTentOpening" type="Polygon2D" parent="Era2054"]
+color = Color(0.219608, 0.137255, 0.105882, 0.96)
+polygon = PackedVector2Array(168, 840, 228, 722, 286, 840)
+
+[node name="DesertTentCenterPole" type="Line2D" parent="Era2054"]
+points = PackedVector2Array(228, 676, 228, 840)
+width = 5.0
+default_color = Color(0.34902, 0.219608, 0.137255, 1)
+
+[node name="DesertTentLeftPole" type="Line2D" parent="Era2054"]
+points = PackedVector2Array(134, 718, 126, 840)
+width = 4.0
+default_color = Color(0.34902, 0.219608, 0.137255, 1)
+
+[node name="DesertTentRightPole" type="Line2D" parent="Era2054"]
+points = PackedVector2Array(322, 720, 330, 840)
+width = 4.0
+default_color = Color(0.34902, 0.219608, 0.137255, 1)
 
 [node name="CampfireEmbers" type="Polygon2D" parent="Era2054"]
 color = Color(0.878431, 0.478431, 0.235294, 0.9)
@@ -216,130 +216,82 @@ shape = SubResource("RectangleShape2D_east_mid")
 color = Color(0.431373, 0.254902, 0.180392, 1)
 polygon = PackedVector2Array(-20, -100, 20, -100, 20, 100, -20, 100)
 
-[node name="CampMainFloor" type="StaticBody2D" parent="Geometry"]
+[node name="CampMainFloor" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(1300, 980)
-collision_layer = 1
-collision_mask = 0
+block_style = "sand_dune_ground"
+block_size = Vector2(2600, 200)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/CampMainFloor"]
-shape = SubResource("RectangleShape2D_main_floor")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/CampMainFloor"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-1300, -100, 1300, -100, 1300, 100, -1300, 100)
-
-[node name="SandTopRim" type="Polygon2D" parent="Geometry/CampMainFloor"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-1300, -100, 1300, -100, 1300, -82, -1300, -82)
-
-[node name="TentPlatformLedge" type="StaticBody2D" parent="Geometry"]
+[node name="TentPlatformLedge" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(240, 860)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(320, 40)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/TentPlatformLedge"]
-shape = SubResource("RectangleShape2D_tent_hearth")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/TentPlatformLedge"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-160, -20, 160, -20, 160, 20, -160, 20)
-
-[node name="PracticeRockLow" type="StaticBody2D" parent="Geometry"]
+[node name="PracticeRockLow" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(980, 830)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(180, 100)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/PracticeRockLow"]
-shape = SubResource("RectangleShape2D_rock_low")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/PracticeRockLow"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-90, -50, 90, -50, 90, 50, -90, 50)
-
-[node name="PracticeRockHigh" type="StaticBody2D" parent="Geometry"]
+[node name="PracticeRockHigh" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(1210, 790)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(200, 180)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/PracticeRockHigh"]
-shape = SubResource("RectangleShape2D_rock_high")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/PracticeRockHigh"]
-color = Color(0.658824, 0.266667, 0.196078, 1)
-polygon = PackedVector2Array(-100, -90, 100, -90, 100, 90, -100, 90)
-
-[node name="TopTrim" type="Polygon2D" parent="Geometry/PracticeRockHigh"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-100, -90, 100, -90, 100, -76, -100, -76)
-
-[node name="ShrineTerrace" type="StaticBody2D" parent="Geometry"]
+[node name="ShrineTerrace" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(1650, 850)
-collision_layer = 1
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(360, 60)
+one_way = false
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ShrineTerrace"]
-shape = SubResource("RectangleShape2D_shrine_terrace")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/ShrineTerrace"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-180, -30, 180, -30, 180, 30, -180, 30)
-
-[node name="ShortcutUpperLedge" type="StaticBody2D" parent="Geometry"]
+[node name="ShortcutUpperLedge" parent="Geometry" instance=ExtResource("9_block")]
 position = Vector2(2300, 560)
-collision_layer = 1
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ShortcutUpperLedge"]
-shape = SubResource("RectangleShape2D_shortcut_ledge")
-
-[node name="Polygon2D" type="Polygon2D" parent="Geometry/ShortcutUpperLedge"]
-color = Color(0.309804, 0.427451, 0.478431, 1)
-polygon = PackedVector2Array(-300, -40, 300, -40, 300, 40, -300, 40)
-
-[node name="OchreCap" type="Polygon2D" parent="Geometry/ShortcutUpperLedge"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-300, -40, 300, -40, 300, -28, -300, -28)
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(600, 80)
+one_way = false
+tilt_degrees = 0.0
 
 [node name="OneWayPlatforms" type="Node2D" parent="."]
 
-[node name="CampStepPlat1" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="CampStepPlat1" parent="OneWayPlatforms" instance=ExtResource("9_block")]
 position = Vector2(1920, 742)
-collision_layer = 2
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(190, 28)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/CampStepPlat1"]
-shape = SubResource("RectangleShape2D_plat_190")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/CampStepPlat1"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-95, -12, 95, -12, 95, 12, -95, 12)
-
-[node name="CampStepPlat2" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="CampStepPlat2" parent="OneWayPlatforms" instance=ExtResource("9_block")]
 position = Vector2(1960, 647)
-collision_layer = 2
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(190, 28)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/CampStepPlat2"]
-shape = SubResource("RectangleShape2D_plat_190")
-one_way_collision = true
-
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/CampStepPlat2"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-95, -12, 95, -12, 95, 12, -95, 12)
-
-[node name="CampStepPlat3" type="StaticBody2D" parent="OneWayPlatforms"]
+[node name="CampStepPlat3" parent="OneWayPlatforms" instance=ExtResource("9_block")]
 position = Vector2(2080, 562)
-collision_layer = 2
-collision_mask = 0
+block_style = "najdi_mudbrick_ruin"
+block_size = Vector2(160, 28)
+one_way = true
+tilt_degrees = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="OneWayPlatforms/CampStepPlat3"]
-shape = SubResource("RectangleShape2D_plat_160")
-one_way_collision = true
+[node name="EnvironmentalZones" type="Node2D" parent="."]
 
-[node name="Polygon2D" type="Polygon2D" parent="OneWayPlatforms/CampStepPlat3"]
-color = Color(0.776471, 0.545098, 0.34902, 1)
-polygon = PackedVector2Array(-80, -12, 80, -12, 80, 12, -80, 12)
+[node name="CampTutorialDeepSand" parent="EnvironmentalZones" instance=ExtResource("10_sand")]
+position = Vector2(770, 864)
+zone_size = Vector2(210, 36)
+slow_factor = 0.65
+
+[node name="CampDesertBreeze" parent="EnvironmentalZones" instance=ExtResource("11_wind")]
+position = Vector2(1240, 620)
+zone_size = Vector2(420, 170)
+wind_force = Vector2(-120, 0)
 
 [node name="Spawns" type="Node2D" parent="."]
 

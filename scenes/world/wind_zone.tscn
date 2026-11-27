@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/wind_zone.gd" id="1_wind_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wind"]
+resource_local_to_scene = true
+size = Vector2(360, 220)
+
+[node name="WindZone" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+script = ExtResource("1_wind_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wind")

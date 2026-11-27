@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/pillar_orbit_controller.gd" id="1_ctrl_script"]
+[ext_resource type="Script" path="res://scripts/world/pillar_orbit_player.gd" id="2_player_script"]
+
+[node name="PillarOrbitSpire" type="Node3D"]
+script = ExtResource("1_ctrl_script")
+
+[node name="PillarOrbitPlayer" type="Node3D" parent="."]
+script = ExtResource("2_player_script")
+
+[node name="OrbitCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 15.5)
+fov = 52.0
+near = 0.1
+far = 160.0
