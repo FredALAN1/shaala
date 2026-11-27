@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/rooms/m1_room_controller.gd" id="1_room_ctrl"]
 [ext_resource type="Script" path="res://scripts/systems/transition_gate.gd" id="2_gate"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/deep_sand_zone.tscn" id="8_sand"]
 [ext_resource type="PackedScene" path="res://scenes/world/wind_zone.tscn" id="9_wind"]
 [ext_resource type="PackedScene" path="res://scenes/world/crumbling_ledge.tscn" id="10_crumble"]
+[ext_resource type="PackedScene" path="res://scenes/world/depth_plane_portal.tscn" id="11_depth_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
 size = Vector2(3400, 40)
@@ -377,3 +378,75 @@ position = Vector2(2095, 580)
 
 [node name="RelicSentinel1" parent="Enemies" instance=ExtResource("6_sentinel")]
 position = Vector2(2820, 960)
+
+[node name="DepthGalleryPortals" type="Node2D" parent="."]
+
+[node name="DepthEntrancePortal" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(1180, 1040)
+target_plane = "interior"
+destination_position = Vector2(1245, 1006)
+prompt_key = "PROMPT_ENTER_DEPTH"
+arch_width = 96.0
+arch_height = 152.0
+
+[node name="DepthExitPortal" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(1980, 1040)
+target_plane = "foreground"
+destination_position = Vector2(2040, 1006)
+prompt_key = "PROMPT_EXIT_DEPTH"
+arch_width = 96.0
+arch_height = 152.0
+
+[node name="SpireOrbitEntrance" parent="DepthGalleryPortals" instance=ExtResource("11_depth_portal")]
+position = Vector2(2860, 960)
+target_plane = "orbit_spire"
+destination_position = Vector2(2860, 926)
+prompt_key = "PROMPT_ORBIT_PILLAR"
+arch_width = 110.0
+arch_height = 170.0
+
+[node name="DepthLightShafts" type="Node2D" parent="."]
+z_index = 12
+
+[node name="ShaftWest" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.11)
+polygon = PackedVector2Array(1330, 620, 1425, 620, 1520, 1045, 1395, 1045)
+
+[node name="ShaftCenter" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.13)
+polygon = PackedVector2Array(1560, 620, 1665, 620, 1775, 1045, 1640, 1045)
+
+[node name="ShaftEast" type="Polygon2D" parent="DepthLightShafts"]
+color = Color(0.964706, 0.886275, 0.6, 0.1)
+polygon = PackedVector2Array(1795, 620, 1885, 620, 1975, 1045, 1860, 1045)
+
+[node name="DepthForegroundColonnade" type="Node2D" parent="."]
+z_index = 15
+
+[node name="FgPillarWest" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.92)
+polygon = PackedVector2Array(1295, 620, 1355, 620, 1365, 1085, 1285, 1085)
+
+[node name="FgPillarWestCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1282, 620, 1368, 620, 1368, 640, 1282, 640)
+
+[node name="FgPillarCenter" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.93)
+polygon = PackedVector2Array(1510, 600, 1578, 600, 1590, 1085, 1498, 1085)
+
+[node name="FgPillarCenterCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1494, 600, 1594, 600, 1594, 622, 1494, 622)
+
+[node name="FgPillarEast" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0509804, 0.0627451, 0.129412, 0.92)
+polygon = PackedVector2Array(1755, 620, 1820, 620, 1830, 1085, 1745, 1085)
+
+[node name="FgPillarEastCap" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.776471, 0.545098, 0.34902, 0.55)
+polygon = PackedVector2Array(1740, 620, 1835, 620, 1835, 640, 1740, 640)
+
+[node name="FgColonnadeLintel" type="Polygon2D" parent="DepthForegroundColonnade"]
+color = Color(0.0705882, 0.0862745, 0.168627, 0.9)
+polygon = PackedVector2Array(1265, 586, 1860, 586, 1860, 622, 1265, 622)

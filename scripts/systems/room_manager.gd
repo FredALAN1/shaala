@@ -6,12 +6,14 @@ extends Node
 const ROOMS_DATA_PATH: String = "res://data/rooms.json"
 const PLAYER_SCENE_PATH: String = "res://scenes/player/player.tscn"
 const UI_ROOT_SCENE_PATH: String = "res://scenes/ui/ui_root.tscn"
+const ORBIT_SPIRE_SCENE_PATH: String = "res://scenes/rooms/m1/pillar_orbit_spire.tscn"
 
 const FADE_OUT_DURATION: float = 0.22
 const FADE_IN_DURATION: float = 0.26
 const REDUCED_FADE_DURATION: float = 0.08
 const DEATH_RESPAWN_DELAY: float = 0.85
 
+@onready var _world_root: Node2D = $WorldRoot
 @onready var _room_container: Node2D = $WorldRoot/RoomContainer
 @onready var _player_container: Node2D = $WorldRoot/PlayerContainer
 @onready var _room_camera: RoomCamera = $WorldRoot/RoomCamera
@@ -26,6 +28,13 @@ var _ui_root: Node = null
 var _is_transitioning: bool = false
 var _hitstop_token: int = 0
 
+var _orbit_spire_node: Node3D = null
+var _in_3d_orbit: bool = false
+var _saved_2d_room_id: String = ""
+var _saved_2d_area_id: String = ""
+var _saved_2d_title_key: String = ""
+var _saved_2d_player_pos: Vector2 = Vector2.ZERO
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -36,6 +45,17 @@ func _ready() -> void:
 	_connect_events()
 
 	AudioManager.set_music_mood("title")
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_orbit_demo"):
+		if not GameState.is_gameplay_active or _is_transitioning:
+			return
+		get_viewport().set_input_as_handled()
+		if _in_3d_orbit:
+			exit_3d_orbit_spire()
+		else:
+			enter_3d_orbit_spire()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -92,6 +112,7 @@ func quit_to_title() -> void:
 		return
 	if _dev_mode != null and _dev_mode.has_method("close_dev_mode"):
 		_dev_mode.call("close_dev_mode")
+	_teardown_3d_orbit_immediate()
 	get_tree().paused = false
 	Engine.time_scale = SettingsManager.assist_game_speed
 	GameState.is_gameplay_active = false
@@ -100,6 +121,121 @@ func quit_to_title() -> void:
 	AudioManager.set_music_mood("title")
 	if _ui_root != null and _ui_root.has_method("show_title_screen"):
 		_ui_root.call("show_title_screen")
+
+
+func enter_3d_orbit_spire() -> void:
+	if _is_transitioning or _in_3d_orbit or not GameState.is_gameplay_active:
+		return
+	if not ResourceLoader.exists(ORBIT_SPIRE_SCENE_PATH):
+		push_warning("RoomManager: 3D orbit spire scene not found at %s" % ORBIT_SPIRE_SCENE_PATH)
+		return
+
+	_is_transitioning = true
+	if _dev_mode != null and _dev_mode.has_method("close_dev_mode"):
+		_dev_mode.call("close_dev_mode")
+	_set_player_controls(false)
+	EventBus.interaction_prompt_changed.emit(false, "")
+
+	var fade_out_sec: float = REDUCED_FADE_DURATION if SettingsManager.reduce_flash else FADE_OUT_DURATION
+	var fade_in_sec: float = REDUCED_FADE_DURATION if SettingsManager.reduce_flash else FADE_IN_DURATION
+	await _tween_fade(1.0, fade_out_sec)
+
+	_saved_2d_room_id = GameState.current_room_id
+	_saved_2d_area_id = _current_room.area_id if _current_room != null else "empty_riyadh"
+	_saved_2d_title_key = _current_room.room_title_key if _current_room != null else "AREA_EMPTY_RIYADH"
+	_saved_2d_player_pos = _player.global_position if (_player != null and is_instance_valid(_player)) else RoomBase.FALLBACK_SPAWN_POSITION
+
+	_world_root.visible = false
+	_world_root.process_mode = Node.PROCESS_MODE_DISABLED
+	_room_camera.enabled = false
+
+	var packed: PackedScene = load(ORBIT_SPIRE_SCENE_PATH) as PackedScene
+	if packed == null:
+		_restore_2d_world_nodes()
+		await _tween_fade(0.0, fade_in_sec)
+		_set_player_controls(true)
+		_is_transitioning = false
+		return
+
+	var instance: Node = packed.instantiate()
+	if instance is Node3D:
+		_orbit_spire_node = instance as Node3D
+		add_child(_orbit_spire_node)
+		if _orbit_spire_node.has_signal("exit_requested"):
+			_orbit_spire_node.connect("exit_requested", _on_orbit_spire_exit_requested)
+		_in_3d_orbit = true
+	else:
+		instance.queue_free()
+		_restore_2d_world_nodes()
+
+	await _tween_fade(0.0, fade_in_sec)
+	_is_transitioning = false
+
+
+func exit_3d_orbit_spire(target_room_id: String = "", target_spawn_id: String = "") -> void:
+	if _is_transitioning or not _in_3d_orbit:
+		return
+
+	_is_transitioning = true
+	EventBus.interaction_prompt_changed.emit(false, "")
+
+	var fade_out_sec: float = REDUCED_FADE_DURATION if SettingsManager.reduce_flash else FADE_OUT_DURATION
+	var fade_in_sec: float = REDUCED_FADE_DURATION if SettingsManager.reduce_flash else FADE_IN_DURATION
+	await _tween_fade(1.0, fade_out_sec)
+
+	if _orbit_spire_node != null and is_instance_valid(_orbit_spire_node):
+		_orbit_spire_node.queue_free()
+		_orbit_spire_node = null
+		await get_tree().process_frame
+
+	_in_3d_orbit = false
+	_restore_2d_world_nodes()
+	_reset_player_depth_plane()
+
+	if not target_room_id.is_empty() and target_room_id != _saved_2d_room_id and _rooms_data.has(target_room_id):
+		_is_transitioning = false
+		await _transition_to_room(target_room_id, target_spawn_id)
+		return
+
+	if _player != null and is_instance_valid(_player):
+		_player.global_position = _saved_2d_player_pos
+		if _player is CharacterBody2D:
+			(_player as CharacterBody2D).velocity = Vector2.ZERO
+		if _current_room != null:
+			_room_camera.set_bounds(_current_room.get_camera_bounds())
+		_room_camera.set_target(_player, true)
+
+	EventBus.room_loaded.emit(_saved_2d_room_id, _saved_2d_area_id, _saved_2d_title_key)
+
+	await _tween_fade(0.0, fade_in_sec)
+	_set_player_controls(true)
+	_is_transitioning = false
+
+
+func _on_orbit_spire_exit_requested(target_room_id: String, target_spawn_id: String) -> void:
+	exit_3d_orbit_spire(target_room_id, target_spawn_id)
+
+
+func _restore_2d_world_nodes() -> void:
+	_world_root.visible = true
+	_world_root.process_mode = Node.PROCESS_MODE_PAUSABLE
+	_room_camera.enabled = true
+	_room_camera.make_current()
+
+
+func _teardown_3d_orbit_immediate() -> void:
+	if _orbit_spire_node != null and is_instance_valid(_orbit_spire_node):
+		_orbit_spire_node.queue_free()
+		_orbit_spire_node = null
+	_in_3d_orbit = false
+	_restore_2d_world_nodes()
+
+
+func _reset_player_depth_plane() -> void:
+	if _player != null and is_instance_valid(_player):
+		_player.scale = Vector2.ONE
+		_player.modulate = Color.WHITE
+		_player.z_index = 0
 
 
 func get_current_room() -> RoomBase:
@@ -288,6 +424,7 @@ func _transition_to_room(target_room_id: String, target_spawn_id: String) -> voi
 		_spawn_fresh_player()
 
 	if _player != null and is_instance_valid(_player):
+		_reset_player_depth_plane()
 		_player.global_position = spawn_pos
 		if _player is CharacterBody2D:
 			(_player as CharacterBody2D).velocity = Vector2.ZERO

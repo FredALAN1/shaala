@@ -1420,18 +1420,25 @@ class M1Verifier:
         sec = "A"
         rp = self.rel(sp)
         text = sp.read_text(encoding="utf-8")
-        if "shader_type canvas_item;" not in text:
-            self.add(sec, "HIGH", "SHADER_TYPE", "Shader missing 'shader_type canvas_item;'", rp)
+        shader_type = ""
+        if "shader_type canvas_item;" in text:
+            shader_type = "canvas_item"
+        elif "shader_type spatial;" in text:
+            shader_type = "spatial"
+        elif "shader_type sky;" in text:
+            shader_type = "sky"
+        else:
+            self.add(sec, "HIGH", "SHADER_TYPE", "Shader missing valid 'shader_type canvas_item;' or 'shader_type spatial;'", rp)
         if text.count("{") != text.count("}"):
             self.add(sec, "CRITICAL", "SHADER_BRACES", "Unbalanced braces '{}' in shader", rp)
         if re.search(r"\bhint_color\b", text):
             self.add(sec, "CRITICAL", "SHADER_GODOT3_HINT", "Godot 3 'hint_color' found — use Godot 4 'source_color'", rp)
         if re.search(r"\bSCREEN_TEXTURE\b", text) and "hint_screen_texture" not in text:
             self.add(sec, "CRITICAL", "SHADER_GODOT3_SCREEN", "Godot 3 built-in SCREEN_TEXTURE used without Godot 4 hint_screen_texture uniform", rp)
-        if re.search(r"\bvoid\s+fragment\s*\(\s*\)", text) or re.search(r"\bvoid\s+vertex\s*\(\s*\)", text):
-            self.add(sec, "PASS", "SHADER_OK", f"Shader valid Godot 4 canvas_item syntax: {rp}", rp)
+        if re.search(r"\bvoid\s+(fragment|vertex|light|sky)\s*\(\s*\)", text):
+            self.add(sec, "PASS", "SHADER_OK", f"Shader valid Godot 4 {shader_type or 'unknown'} syntax: {rp}", rp)
         else:
-            self.add(sec, "MEDIUM", "SHADER_NO_ENTRY", "Shader has neither vertex() nor fragment() entry function", rp)
+            self.add(sec, "MEDIUM", "SHADER_NO_ENTRY", "Shader has no vertex()/fragment()/light()/sky() entry function", rp)
 
     # -----------------------------------------------------------------------
     # SECTION B: Typed GDScript & Contract Verification
